@@ -1,0 +1,50 @@
+{
+  "name": "gatsby-source-takeshape",
+  "main": "index.js",
+  "version": "0.0.1",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source",
+    "takeshape"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir . --extensions \".ts\" --ignore **/__tests__ ",
+    "watch": "babel -w src --out-dir . --extensions \".ts\" --ignore **/__tests__",
+    "lint": "eslint src --ext .ts",
+    "test": "cross-env BABEL_ENV=test jest",
+    "test-changed": "npm run test -- --changedSince=master"
+  },
+  "peerDependencies": {
+    "gatsby": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takeshape/gatsby-source-takeshape"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@types/jest": "^26.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "cross-env": "^5.2.1",
+    "eslint": "^7.4.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.18.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.1.0",
+    "npm": "^6.14.6",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.2",
+    "typescript": "^3.9.6"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  }
+}
