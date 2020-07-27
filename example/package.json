@@ -1,0 +1,27 @@
+{
+  "name": "gatsby-source-takeshape-example",
+  "description": "An example gatsby site for gatsby-source-takeshape",
+  "version": "1.0.0",
+  "author": {
+    "name": "TakeShape",
+    "email": "contact@takeshape.io"
+  },
+  "dependencies": {
+    "@graphql-tools/links": "^6.0.15",
+    "@graphql-tools/wrap": "^6.0.15",
+    "apollo-link-http": "^1.5.17",
+    "gatsby": "^2.24.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "start": "npm run develop"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "dotenv": "^6.1.0"
+  }
+}
