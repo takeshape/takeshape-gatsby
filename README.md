@@ -23,7 +23,6 @@ npm install --save @takeshape/gatsby-source-takeshape
 - `batch` (boolean) -- Set to true to batch queries that happen around the same time. By default, each query is a separate network request. See [gatsby-source-graphql](https://www.gatsbyjs.org/packages/gatsby-source-graphql/#performance-tuning) for more performance tuning tips. Default: `false`
 - `fetch` -- Pass in to use whatever `fetch` implementation you want. By default, `node-fetch` is used.
 - `fetchOptions` (object) -- Additional options to pass in with the second argument to `fetch`.
-- `createSchema` -- Advanced. Override introspection of the remote schema. Should return a `GraphQLSchema` instance or a `Promise` resolving to one.
 - `dataLoaderOptions` (object) -- Advanced. Override or set options passed to [Dataloader](https://www.npmjs.com/package/dataloader#new-dataloaderbatchloadfn--options). Dataloader is used if `batch` is `true`.
 
 ## When do I use this plugin?

@@ -13,14 +13,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   {actions, createNodeId, cache, createContentDigest},
   options
 ): Promise<void> => {
-  const {
-    refetchInterval,
-    batch = false,
-    fetch = nodeFetch,
-    fetchOptions = {},
-    createSchema,
-    dataLoaderOptions = {}
-  } = options;
+  const {refetchInterval, batch = false, fetch = nodeFetch, fetchOptions = {}, dataLoaderOptions = {}} = options;
   const {createNode, addThirdPartySchema} = actions;
   const project = process.env.TAKESHAPE_PROJECT;
   const token = process.env.TAKESHAPE_TOKEN;
@@ -61,21 +54,17 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   let introspectionSchema: GraphQLSchema;
 
-  if (createSchema) {
-    introspectionSchema = await createSchema();
+  const cacheKey = `gatsby-source-takeshape-schema-${typeName}-${fieldName}`;
+  let sdl = await cache.get(cacheKey);
+
+  if (!sdl) {
+    introspectionSchema = await introspectSchema(linkToExecutor(link));
+    sdl = printSchema(introspectionSchema);
   } else {
-    const cacheKey = `gatsby-source-takeshape-schema-${typeName}-${fieldName}`;
-    let sdl = await cache.get(cacheKey);
-
-    if (!sdl) {
-      introspectionSchema = await introspectSchema(linkToExecutor(link));
-      sdl = printSchema(introspectionSchema);
-    } else {
-      introspectionSchema = buildSchema(sdl);
-    }
-
-    await cache.set(cacheKey, sdl);
+    introspectionSchema = buildSchema(sdl);
   }
+
+  await cache.set(cacheKey, sdl);
 
   const nodeId = createNodeId(`gatsby-source-takeshape-${typeName}`);
   const node = createSchemaNode({

@@ -34,7 +34,6 @@ const sourceNodes = async ({
     batch = false,
     fetch = _nodeFetch.default,
     fetchOptions = {},
-    createSchema,
     dataLoaderOptions = {}
   } = options;
   const {
@@ -79,23 +78,17 @@ const sourceNodes = async ({
   }
 
   let introspectionSchema;
+  const cacheKey = `gatsby-source-takeshape-schema-${typeName}-${fieldName}`;
+  let sdl = await cache.get(cacheKey);
 
-  if (createSchema) {
-    introspectionSchema = await createSchema();
+  if (!sdl) {
+    introspectionSchema = await (0, _wrap.introspectSchema)((0, _links.linkToExecutor)(link));
+    sdl = (0, _graphql.printSchema)(introspectionSchema);
   } else {
-    const cacheKey = `gatsby-source-takeshape-schema-${typeName}-${fieldName}`;
-    let sdl = await cache.get(cacheKey);
-
-    if (!sdl) {
-      introspectionSchema = await (0, _wrap.introspectSchema)((0, _links.linkToExecutor)(link));
-      sdl = (0, _graphql.printSchema)(introspectionSchema);
-    } else {
-      introspectionSchema = (0, _graphql.buildSchema)(sdl);
-    }
-
-    await cache.set(cacheKey, sdl);
+    introspectionSchema = (0, _graphql.buildSchema)(sdl);
   }
 
+  await cache.set(cacheKey, sdl);
   const nodeId = createNodeId(`gatsby-source-takeshape-${typeName}`);
   const node = createSchemaNode({
     id: nodeId,
