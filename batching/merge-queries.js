@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.merge = merge;
 exports.resolveResult = resolveResult;
 
-var _graphql = require("graphql");
+var _graphql = require("gatsby/graphql");
 
 var _lodash = _interopRequireDefault(require("lodash"));
 

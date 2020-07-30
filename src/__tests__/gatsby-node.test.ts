@@ -11,8 +11,8 @@ jest.mock('apollo-link-http', () => {
   };
 });
 import {createHttpLink} from 'apollo-link-http';
-jest.mock('graphql', () => {
-  const graphql = jest.requireActual('graphql');
+jest.mock('gatsby/graphql', () => {
+  const graphql = jest.requireActual('gatsby/graphql');
   return {
     ...graphql,
     buildSchema: jest.fn(),

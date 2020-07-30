@@ -11,7 +11,7 @@ var _uuid = require("uuid");
 
 var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 
-var _graphql = require("graphql");
+var _graphql = require("gatsby/graphql");
 
 var _apolloLinkHttp = require("apollo-link-http");
 

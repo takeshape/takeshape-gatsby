@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import {ApolloLink, Observable} from 'apollo-link';
-import {print} from 'graphql';
+import {print} from 'gatsby/graphql';
 import {merge, resolveResult} from './merge-queries';
 import {Response} from 'node-fetch';
 

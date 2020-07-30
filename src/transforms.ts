@@ -1,4 +1,4 @@
-import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema, GraphQLFieldConfigMap} from 'graphql';
+import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema, GraphQLFieldConfigMap} from 'gatsby/graphql';
 import {mapSchema, MapperKind, addTypes, modifyObjectFields} from '@graphql-tools/utils';
 
 type Resolver = (parent, args, context) => Record<string, unknown>;

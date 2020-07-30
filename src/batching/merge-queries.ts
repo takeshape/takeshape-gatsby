@@ -1,6 +1,5 @@
-import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode} from 'graphql';
+import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'gatsby/graphql';
 import _ from 'lodash';
-import {ASTNode} from 'graphql';
 
 type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>;
 

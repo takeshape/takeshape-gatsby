@@ -1,4 +1,4 @@
-import {parse} from 'graphql';
+import {parse} from 'gatsby/graphql';
 import {execute} from 'apollo-link';
 import {createDataloaderLink} from '../dataloader-link';
 import {Response} from 'node-fetch';

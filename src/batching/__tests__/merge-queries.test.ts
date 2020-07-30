@@ -1,4 +1,4 @@
-import {print, parse} from 'graphql';
+import {print, parse} from 'gatsby/graphql';
 import {merge, resolveResult} from '../merge-queries';
 
 describe('Query merging', () => {

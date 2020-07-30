@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from 'uuid';
 import nodeFetch from 'node-fetch';
-import {buildSchema, printSchema, GraphQLSchema} from 'graphql';
+import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql';
 import {createHttpLink} from 'apollo-link-http';
 import {linkToExecutor} from '@graphql-tools/links';
 import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap';

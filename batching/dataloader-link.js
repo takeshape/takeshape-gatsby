@@ -11,7 +11,7 @@ var _dataloader = _interopRequireDefault(require("dataloader"));
 
 var _apolloLink = require("apollo-link");
 
-var _graphql = require("graphql");
+var _graphql = require("gatsby/graphql");
 
 var _mergeQueries = require("./merge-queries");
 

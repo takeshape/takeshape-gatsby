@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.StripNonQueryTransform = exports.NamespaceUnderFieldTransform = void 0;
 
-var _graphql = require("graphql");
+var _graphql = require("gatsby/graphql");
 
 var _utils = require("@graphql-tools/utils");
 
