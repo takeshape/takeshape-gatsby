@@ -26,6 +26,12 @@
     "url": "https://github.com/takeshape/gatsby-source-takeshape"
   },
   "license": "MIT",
+  "files": [
+    "gatsby-node.js",
+    "transforms.js",
+    "batching/dataloader-link.js",
+    "batching/merge-queries.js"
+  ],
   "dependencies": {
     "@babel/preset-typescript": "^7.10.4",
     "@graphql-tools/links": "^6.0.15",
