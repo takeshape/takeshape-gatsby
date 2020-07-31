@@ -106,17 +106,17 @@ npm run test
 
 ## How to develop locally
 
-Standard development tasks:
+Currently, dependency resolution doesn't work when running the tests with npm, but it does work with pnpm or yarn. Therefore, the following examples assume you are using [pnpm](https://pnpm.js.org).
 
-- `npm run lint`
-- `npm run typecheck`
-- `npm run test`
-- `npm run build`
+- `pnpm run lint`
+- `pnpm run typecheck`
+- `pnpm run test`
+- `pnpm run build`
 
 The example project in this repo is provided for development and testing convenience. You can build and copy gatsby-source-takeshape into the example's plugin directory with this command:
 
 ```
-npm run example:deploy
+pnpm run example:deploy
 ```
 
 See [example/README.md](https://github.com/takeshape/gatsby-source-takeshape/tree/master/example/README.md) for instructions on running the example.
