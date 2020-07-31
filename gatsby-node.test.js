@@ -1,3 +1,13 @@
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+var _apolloLinkHttp = require("apollo-link-http");
+
+var _gatsbyNode = require("../gatsby-node");
+
+var _nodeFetch = _interopRequireDefault(require("node-fetch"));
+
 jest.mock('@graphql-tools/wrap', () => {
   return {
     wrapSchema: jest.fn(),
@@ -10,27 +20,21 @@ jest.mock('apollo-link-http', () => {
     createHttpLink: jest.fn()
   };
 });
-import {createHttpLink} from 'apollo-link-http';
-jest.mock('gatsby/graphql', () => {
-  const graphql = jest.requireActual('gatsby/graphql');
-  return {
-    ...graphql,
+jest.mock('graphql', () => {
+  const graphql = jest.requireActual('graphql');
+  return { ...graphql,
     buildSchema: jest.fn(),
     printSchema: jest.fn()
   };
 });
-import {sourceNodes} from '../gatsby-node';
-import nodeFetch from 'node-fetch';
-import {SourceNodesArgs, Actions, PluginOptions} from 'gatsby';
 
 const getInternalGatsbyAPI = () => {
-  const actions = ({
+  const actions = {
     addThirdPartySchema: jest.fn(),
     createPageDependency: jest.fn(),
     createNode: jest.fn()
-  } as unknown) as Actions;
-
-  return ({
+  };
+  return {
     actions,
     cache: {
       get: jest.fn(),
@@ -38,11 +42,11 @@ const getInternalGatsbyAPI = () => {
     },
     createContentDigest: jest.fn(),
     createNodeId: jest.fn()
-  } as unknown) as SourceNodesArgs;
+  };
 };
 
 const getPluginOptions = (options = {}) => {
-  return (options as unknown) as PluginOptions;
+  return options;
 };
 
 describe('validation', () => {
@@ -60,27 +64,24 @@ describe('validation', () => {
     delete process.env.TAKESHAPE_PROJECT;
     const api = getInternalGatsbyAPI();
     const options = getPluginOptions();
-    await expect(sourceNodes(api, options)).rejects.toThrow('Missing TAKESHAPE_PROJECT environment variable.');
+    await expect((0, _gatsbyNode.sourceNodes)(api, options)).rejects.toThrow('Missing TAKESHAPE_PROJECT environment variable.');
   });
   it('throws on missing token', async () => {
     delete process.env.TAKESHAPE_TOKEN;
     const api = getInternalGatsbyAPI();
     const options = getPluginOptions();
-    await expect(sourceNodes(api, options)).rejects.toThrow('Missing TAKESHAPE_TOKEN environment variable.');
+    await expect((0, _gatsbyNode.sourceNodes)(api, options)).rejects.toThrow('Missing TAKESHAPE_TOKEN environment variable.');
   });
 });
-
 describe('createSchemaNode', () => {
   it('invokes createContentDigest', async () => {
     const api = getInternalGatsbyAPI();
     const options = getPluginOptions();
-    await sourceNodes(api, options);
-
+    await (0, _gatsbyNode.sourceNodes)(api, options);
     expect(api.createContentDigest).toHaveBeenCalledWith(expect.any(String));
     expect(api.createContentDigest).toHaveBeenCalledTimes(1);
   });
 });
-
 describe('createHttpLink', () => {
   it('use passed in fetch if provided', async () => {
     const api = getInternalGatsbyAPI();
@@ -88,15 +89,17 @@ describe('createHttpLink', () => {
     const options = getPluginOptions({
       fetch: mockFetch
     });
-    await sourceNodes(api, options);
-
-    expect(createHttpLink).toHaveBeenCalledWith(expect.objectContaining({fetch: mockFetch}));
+    await (0, _gatsbyNode.sourceNodes)(api, options);
+    expect(_apolloLinkHttp.createHttpLink).toHaveBeenCalledWith(expect.objectContaining({
+      fetch: mockFetch
+    }));
   });
   it('use default fetch if not provided', async () => {
     const api = getInternalGatsbyAPI();
     const options = getPluginOptions();
-    await sourceNodes(api, options);
-
-    expect(createHttpLink).toHaveBeenCalledWith(expect.objectContaining({fetch: nodeFetch}));
+    await (0, _gatsbyNode.sourceNodes)(api, options);
+    expect(_apolloLinkHttp.createHttpLink).toHaveBeenCalledWith(expect.objectContaining({
+      fetch: _nodeFetch.default
+    }));
   });
 });

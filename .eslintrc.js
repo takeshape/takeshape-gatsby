@@ -9,7 +9,8 @@ module.exports = {
   ignorePatterns: ['gatsby-node.js'],
   rules: {
     'valid-jsdoc': 'off',
-    '@typescript-eslint/no-var-requires': 'off'
+    '@typescript-eslint/no-var-requires': 'off',
+    'no-warning-comments': 'warn'
   },
   env: {
     'jest/globals': true,
