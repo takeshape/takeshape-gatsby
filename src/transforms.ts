@@ -1,45 +1,57 @@
-import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema, GraphQLFieldConfigMap} from 'gatsby/graphql';
-import {mapSchema, MapperKind, addTypes, modifyObjectFields} from '@graphql-tools/utils';
+import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'graphql'
+import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from '@graphql-tools/utils'
+import {GatsbyGraphQLFieldResolver, GatsbyGraphQLConfigMap} from './types/gatsby'
 
-type Resolver = (parent, args, context) => Record<string, unknown>;
+export class NamespaceUnderFieldTransform implements Transform {
+  typeName: string
+  fieldName: string
+  resolver: GatsbyGraphQLFieldResolver
 
-export class NamespaceUnderFieldTransform {
-  typeName: string;
-  fieldName: string;
-  resolver: Resolver;
-
-  constructor({typeName, fieldName, resolver}: {typeName: string; fieldName: string; resolver: Resolver}) {
-    this.typeName = typeName;
-    this.fieldName = fieldName;
-    this.resolver = resolver;
+  constructor({
+    typeName,
+    fieldName,
+    resolver,
+  }: {
+    typeName: string
+    fieldName: string
+    resolver: GatsbyGraphQLFieldResolver
+  }) {
+    this.typeName = typeName
+    this.fieldName = fieldName
+    this.resolver = resolver
   }
 
   transformSchema(schema: GraphQLSchema): GraphQLSchema {
-    const queryConfig = schema.getQueryType().toConfig();
+    const queryType = schema.getQueryType()
+
+    if (!queryType) {
+      return schema
+    }
+
+    const queryConfig = queryType.toConfig()
 
     const nestedQuery = new GraphQLObjectType({
       ...queryConfig,
-      name: this.typeName
-    });
+      name: this.typeName,
+    })
 
-    let newSchema = addTypes(schema, [nestedQuery]);
+    let newSchema = addTypes(schema, [nestedQuery])
 
-    const newRootFieldConfigMap: GraphQLFieldConfigMap<boolean, boolean> = {
+    const newRootFieldConfigMap: GatsbyGraphQLConfigMap = {
       [this.fieldName]: {
         type: new GraphQLNonNull(nestedQuery),
-        resolve: (parent, args, context) => {
-          if (this.resolver !== null) {
-            return this.resolver(parent, args, context);
-          }
+        resolve: this.resolver,
+      },
+    }
 
-          return {};
-        }
-      }
-    };
+    ;[newSchema] = modifyObjectFields(
+      newSchema,
+      queryConfig.name,
+      () => true,
+      newRootFieldConfigMap,
+    )
 
-    [newSchema] = modifyObjectFields(newSchema, queryConfig.name, () => true, newRootFieldConfigMap);
-
-    return newSchema;
+    return newSchema
   }
 }
 
@@ -47,11 +59,11 @@ export class StripNonQueryTransform {
   transformSchema(schema: GraphQLSchema): GraphQLSchema {
     return mapSchema(schema, {
       [MapperKind.MUTATION]() {
-        return null;
+        return null
       },
       [MapperKind.SUBSCRIPTION]() {
-        return null;
-      }
-    });
+        return null
+      },
+    })
   }
 }

@@ -1,92 +1,112 @@
-import {v4 as uuidv4} from 'uuid';
-import nodeFetch from 'node-fetch';
-import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql';
-import {createHttpLink} from 'apollo-link-http';
-import {linkToExecutor} from '@graphql-tools/links';
-import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap';
-import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms';
-import {createDataloaderLink} from './batching/dataloader-link';
-import {ApolloLink} from 'apollo-link';
-import {GatsbyNode} from 'gatsby';
+import {v4 as uuidv4} from 'uuid'
+import {ApolloLink} from 'apollo-link'
+import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
+import {buildSchema, printSchema, GraphQLSchema} from 'graphql'
+import {linkToExecutor} from '@graphql-tools/links'
+import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
+import {createHttpLink} from 'apollo-link-http'
+import {HeadersInit as FetchHeaders} from 'node-fetch'
+import {createContentDigest} from 'gatsby-core-utils'
+import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms'
+import {createDataloaderLink} from './batching/dataloader-link'
+import {PluginOptions, withDefaults} from './utils/options'
+import {GatsbyGraphQLFieldResolver} from './types/gatsby'
+import {tmpl} from './utils/templates'
+
+const isDevelopMode = process.env.gatsby_executing_command === `develop`
+
+const TYPE_NAME = `TS`
+const FIELD_NAME = `takeshape`
+const NODE_TYPE = `TakeShapeSource`
+
+const createUri = tmpl<[string]>(`https://api.takeshape.io/project/%s/graphql`)
+const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
+const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
-  {actions, createNodeId, cache, createContentDigest},
-  options
+  {actions, createNodeId, cache}: SourceNodesArgs,
+  options: PluginOptions = {} as PluginOptions,
 ): Promise<void> => {
-  const {refetchInterval, batch = false, fetch = nodeFetch, fetchOptions = {}, dataLoaderOptions = {}} = options;
-  const {createNode, addThirdPartySchema} = actions;
-  const project = process.env.TAKESHAPE_PROJECT;
-  const token = process.env.TAKESHAPE_TOKEN;
+  const {createNode, addThirdPartySchema} = actions
+  const {
+    authToken,
+    batch,
+    projectId,
+    fetch,
+    fetchOptions,
+    dataLoaderOptions,
+    refetchInterval,
+    queryConcurrency,
+  } = withDefaults(options)
 
-  if (project === undefined) {
-    throw new Error('Missing TAKESHAPE_PROJECT environment variable.');
-  }
+  const uri = createUri(projectId)
+  const typeName = TYPE_NAME
+  const fieldName = FIELD_NAME
 
-  if (token === undefined) {
-    throw new Error('Missing TAKESHAPE_TOKEN environment variable.');
-  }
-
-  const uri = `https://api.takeshape.io/project/${project}/graphql`;
-  const typeName = 'TS';
-  const fieldName = 'takeshape';
   const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`
-  };
+    'Content-Type': `application/json`,
+    Authorization: `Bearer ${authToken}`,
+  } as FetchHeaders
 
-  let link: ApolloLink;
+  let link: ApolloLink
+
   if (batch) {
     link = createDataloaderLink({
       uri,
       fetch,
       fetchOptions,
       headers,
-      dataLoaderOptions
-    });
+      dataLoaderOptions,
+      queryConcurrency,
+    })
   } else {
     link = createHttpLink({
       uri,
       fetch,
       fetchOptions,
-      headers
-    });
+      headers,
+    })
   }
 
-  let introspectionSchema: GraphQLSchema;
+  let introspectionSchema: GraphQLSchema
 
-  const cacheKey = `gatsby-source-takeshape-schema-${typeName}-${fieldName}`;
-  let sdl = await cache.get(cacheKey);
+  const cacheKey = createCacheKey(typeName, fieldName)
+
+  let sdl = await cache.get(cacheKey)
+
+  const executor = linkToExecutor(link)
 
   if (!sdl) {
-    introspectionSchema = await introspectSchema(linkToExecutor(link));
-    sdl = printSchema(introspectionSchema);
+    introspectionSchema = await introspectSchema(executor)
+    sdl = printSchema(introspectionSchema)
   } else {
-    introspectionSchema = buildSchema(sdl);
+    introspectionSchema = buildSchema(sdl)
   }
 
-  await cache.set(cacheKey, sdl);
+  await cache.set(cacheKey, sdl)
 
-  const nodeId = createNodeId(`gatsby-source-takeshape-${typeName}`);
+  const nodeId = createNodeId(createSourceNodeId(typeName))
   const node = createSchemaNode({
     id: nodeId,
     typeName,
     fieldName,
-    createContentDigest
-  });
-  createNode(node);
+  })
 
-  const resolver = (parent, args, context) => {
-    context.nodeModel.createPageDependency({
-      path: context.path,
-      nodeId: nodeId
-    });
-    return {};
-  };
+  createNode(node)
+
+  const resolver: GatsbyGraphQLFieldResolver = (_, __, context) => {
+    if (context.path) {
+      context.nodeModel.createPageDependency({
+        path: context.path,
+        nodeId,
+      })
+    }
+  }
 
   const schema = wrapSchema(
     {
       schema: introspectionSchema,
-      executor: linkToExecutor(link)
+      executor,
     },
     [
       new StripNonQueryTransform(),
@@ -94,45 +114,43 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
       new NamespaceUnderFieldTransform({
         typeName,
         fieldName,
-        resolver
-      })
-    ]
-  );
+        resolver,
+      }),
+    ],
+  )
 
-  addThirdPartySchema({schema});
+  addThirdPartySchema({schema})
 
-  if (process.env.NODE_ENV !== 'production') {
-    if (refetchInterval) {
-      const msRefetchInterval = refetchInterval * 1000;
-      const refetcher = () => {
-        createNode(
-          createSchemaNode({
-            id: nodeId,
-            typeName,
-            fieldName,
-            createContentDigest
-          })
-        );
-        setTimeout(refetcher, msRefetchInterval);
-      };
-      setTimeout(refetcher, msRefetchInterval);
+  // Refetching is only necessary when running a develop server
+  if (isDevelopMode && refetchInterval > 0) {
+    const msRefetchInterval = refetchInterval * 1000
+    const refetcher = () => {
+      createNode(
+        createSchemaNode({
+          id: nodeId,
+          typeName,
+          fieldName,
+        }),
+      )
+      setTimeout(refetcher, msRefetchInterval)
     }
+    setTimeout(refetcher, msRefetchInterval)
   }
-};
+}
 
-function createSchemaNode({id, typeName, fieldName, createContentDigest}) {
-  const nodeContent = uuidv4();
-  const nodeContentDigest = createContentDigest(nodeContent);
+function createSchemaNode({
+  id,
+  typeName,
+  fieldName,
+}: Pick<NodeInput, 'id' | 'typeName' | 'fieldName'>): NodeInput {
   return {
     id,
-    typeName: typeName,
-    fieldName: fieldName,
-    parent: null,
+    typeName,
+    fieldName,
     children: [],
     internal: {
-      type: 'TakeShapeSource',
-      contentDigest: nodeContentDigest,
-      ignoreType: true
-    }
-  };
+      type: NODE_TYPE,
+      contentDigest: createContentDigest(uuidv4()),
+    },
+  }
 }

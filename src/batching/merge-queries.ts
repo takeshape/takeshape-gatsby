@@ -1,22 +1,22 @@
-import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'gatsby/graphql';
-import _ from 'lodash';
+import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'graphql'
+import _ from 'lodash'
 
-type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>;
+type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>
 
 const Prefix = {
   create: (index) => `gatsby${index}_`,
   parseKey: (prefixedKey) => {
-    const match = /^gatsby([\d]+)_(.*)$/.exec(prefixedKey);
+    const match = /^gatsby([\d]+)_(.*)$/.exec(prefixedKey)
     if (!match || match.length !== 3 || isNaN(Number(match[1])) || !match[2]) {
-      throw new Error(`Unexpected data key: ${prefixedKey}`);
+      throw new Error(`Unexpected data key: ${prefixedKey}`)
     }
-    return {index: Number(match[1]), originalKey: match[2]};
-  }
-};
+    return {index: Number(match[1]), originalKey: match[2]}
+  },
+}
 
 interface MergeResult {
-  query: ASTNode;
-  variables: Record<string, unknown>;
+  query: ASTNode
+  variables: Record<string, unknown>
 }
 
 /**
@@ -56,29 +56,29 @@ interface MergeResult {
  *   fragment FooQuery on Query { baz }
  */
 export function merge(queries: ASTNode[]): MergeResult {
-  const mergedVariables = {};
-  const mergedVariableDefinitions = [];
-  const mergedSelections = [];
-  const mergedFragmentMap = new Map();
+  const mergedVariables = {}
+  const mergedVariableDefinitions = []
+  const mergedSelections = []
+  const mergedFragmentMap = new Map()
 
   queries.forEach((query, index) => {
-    const prefixedQuery = prefixQueryParts(Prefix.create(index), query);
+    const prefixedQuery = prefixQueryParts(Prefix.create(index), query)
 
     prefixedQuery.query.definitions.forEach((def) => {
       if (isQueryDefinition(def)) {
-        mergedSelections.push(...def.selectionSet.selections);
-        mergedVariableDefinitions.push(...(def.variableDefinitions ?? []));
+        mergedSelections.push(...def.selectionSet.selections)
+        mergedVariableDefinitions.push(...(def.variableDefinitions ?? []))
       }
       if (isFragmentDefinition(def)) {
         // Theoretically it is possible to have fragments with the same name but different content
         // in different queries. But Gatsby validation doesn't allow this and we rely on this here
         // One example where this can occur is in gatsby-node or GraphiQL queries
         // (but those are usually not batched)
-        mergedFragmentMap.set(def.name.value, def);
+        mergedFragmentMap.set(def.name.value, def)
       }
-    });
-    Object.assign(mergedVariables, prefixedQuery.variables);
-  });
+    })
+    Object.assign(mergedVariables, prefixedQuery.variables)
+  })
 
   const mergedQueryDefinition = {
     kind: Kind.OPERATION_DEFINITION,
@@ -86,83 +86,85 @@ export function merge(queries: ASTNode[]): MergeResult {
     variableDefinitions: mergedVariableDefinitions,
     selectionSet: {
       kind: Kind.SELECTION_SET,
-      selections: mergedSelections
-    }
-  };
+      selections: mergedSelections,
+    },
+  }
 
   return {
     query: {
       kind: Kind.DOCUMENT,
-      definitions: [mergedQueryDefinition, ...mergedFragmentMap.values()]
+      definitions: [mergedQueryDefinition, ...mergedFragmentMap.values()],
     },
-    variables: mergedVariables
-  };
+    variables: mergedVariables,
+  }
 }
 
 /**
  * Split and transform result of the query produced by the `merge` function
  */
 export function resolveResult(mergedQueryResult: {data: unknown}): {data: unknown}[] {
-  const data = mergedQueryResult.data;
+  const data = mergedQueryResult.data
 
   return Object.keys(data).reduce((acc, prefixedKey) => {
-    const {index, originalKey} = Prefix.parseKey(prefixedKey);
-    if (!acc[index]) acc[index] = {data: {}};
-    acc[index].data[originalKey] = data[prefixedKey];
-    return acc;
-  }, []);
+    const {index, originalKey} = Prefix.parseKey(prefixedKey)
+    if (!acc[index]) acc[index] = {data: {}}
+    acc[index].data[originalKey] = data[prefixedKey]
+    return acc
+  }, [])
 }
 
 const Visitors = {
   detectFragmentsWithVariables: (fragmentsWithVariables) => {
-    let currentFragmentName;
+    let currentFragmentName
     return {
       [Kind.FRAGMENT_DEFINITION]: {
         enter: (def) => {
-          currentFragmentName = def.name.value;
+          currentFragmentName = def.name.value
         },
         leave: () => {
-          currentFragmentName = null;
-        }
+          currentFragmentName = null
+        },
       },
       [Kind.VARIABLE]: () => {
         if (currentFragmentName) {
-          fragmentsWithVariables.add(currentFragmentName);
+          fragmentsWithVariables.add(currentFragmentName)
         }
-      }
-    };
+      },
+    }
   },
   prefixVariables: (prefix) => {
     return {
-      [Kind.VARIABLE]: (variable) => prefixNodeName(variable, prefix)
-    };
+      [Kind.VARIABLE]: (variable) => prefixNodeName(variable, prefix),
+    }
   },
   prefixFragmentNames: (prefix, fragmentNames) => {
     return {
-      [Kind.FRAGMENT_DEFINITION]: (def) => (fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def),
-      [Kind.FRAGMENT_SPREAD]: (def) => (fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def)
-    };
-  }
-};
+      [Kind.FRAGMENT_DEFINITION]: (def) =>
+        fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def,
+      [Kind.FRAGMENT_SPREAD]: (def) =>
+        fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def,
+    }
+  },
+}
 
 function prefixQueryParts(prefix, query) {
-  let document = aliasTopLevelFields(prefix, query.query);
-  const variableNames = Object.keys(query.variables);
+  let document = aliasTopLevelFields(prefix, query.query)
+  const variableNames = Object.keys(query.variables)
 
   if (variableNames.length === 0) {
-    return {...query, query: document};
+    return {...query, query: document}
   }
 
-  const fragmentsWithVariables = new Set();
+  const fragmentsWithVariables = new Set()
 
   document = visit(
     document,
     visitInParallel([
       // Note: the sequence is important due to how visitInParallel deals with node edits
       Visitors.detectFragmentsWithVariables(fragmentsWithVariables),
-      Visitors.prefixVariables(prefix)
-    ])
-  );
+      Visitors.prefixVariables(prefix),
+    ]),
+  )
 
   if (fragmentsWithVariables.size > 0) {
     // Prefix all fragments and spreads having variables
@@ -170,30 +172,30 @@ function prefixQueryParts(prefix, query) {
     // (fragments with variables are relatively rare though)
 
     const visitorKeyMap: PartialVisitorKeyMap = {
-      [Kind.DOCUMENT]: ['definitions'],
-      [Kind.OPERATION_DEFINITION]: ['selectionSet'],
-      [Kind.FRAGMENT_DEFINITION]: ['selectionSet'],
-      [Kind.INLINE_FRAGMENT]: ['selectionSet'],
-      [Kind.FIELD]: ['selectionSet'],
-      [Kind.SELECTION_SET]: ['selections']
-    };
+      [Kind.DOCUMENT]: [`definitions`],
+      [Kind.OPERATION_DEFINITION]: [`selectionSet`],
+      [Kind.FRAGMENT_DEFINITION]: [`selectionSet`],
+      [Kind.INLINE_FRAGMENT]: [`selectionSet`],
+      [Kind.FIELD]: [`selectionSet`],
+      [Kind.SELECTION_SET]: [`selections`],
+    }
 
     document = visit(
       document,
       Visitors.prefixFragmentNames(prefix, fragmentsWithVariables),
-      visitorKeyMap as VisitorKeyMap<ASTKindToNode>
-    );
+      visitorKeyMap as VisitorKeyMap<ASTKindToNode>,
+    )
   }
 
   const prefixedVariables = variableNames.reduce((acc, name) => {
-    acc[prefix + name] = query.variables[name];
-    return acc;
-  }, {});
+    acc[prefix + name] = query.variables[name]
+    return acc
+  }, {})
 
   return {
     query: document,
-    variables: prefixedVariables
-  };
+    variables: prefixedVariables,
+  }
 }
 
 /**
@@ -204,19 +206,19 @@ function prefixQueryParts(prefix, query) {
 function aliasTopLevelFields(prefix, doc) {
   const transformer = {
     [Kind.OPERATION_DEFINITION]: (def) => {
-      const {selections} = def.selectionSet;
+      const {selections} = def.selectionSet
       return {
         ...def,
         selectionSet: {
           ...def.selectionSet,
-          selections: aliasFieldsInSelection(prefix, selections, doc)
-        }
-      };
-    }
-  };
-  const keyMap: PartialVisitorKeyMap = {[Kind.DOCUMENT]: [`definitions`]};
+          selections: aliasFieldsInSelection(prefix, selections, doc),
+        },
+      }
+    },
+  }
+  const keyMap: PartialVisitorKeyMap = {[Kind.DOCUMENT]: [`definitions`]}
 
-  return visit(doc, transformer, keyMap as VisitorKeyMap<ASTKindToNode>);
+  return visit(doc, transformer, keyMap as VisitorKeyMap<ASTKindToNode>)
 }
 
 /**
@@ -243,16 +245,19 @@ function aliasFieldsInSelection(prefix, selections, document) {
   return _.flatMap(selections, (selection) => {
     switch (selection.kind) {
       case Kind.INLINE_FRAGMENT:
-        return [aliasFieldsInInlineFragment(prefix, selection, document)];
+        return [aliasFieldsInInlineFragment(prefix, selection, document)]
       case Kind.FRAGMENT_SPREAD: {
-        const inlineFragment = inlineFragmentSpread(selection, document);
-        return [addSkipDirective(selection), aliasFieldsInInlineFragment(prefix, inlineFragment, document)];
+        const inlineFragment = inlineFragmentSpread(selection, document)
+        return [
+          addSkipDirective(selection),
+          aliasFieldsInInlineFragment(prefix, inlineFragment, document),
+        ]
       }
       case Kind.FIELD:
       default:
-        return [aliasField(selection, prefix)];
+        return [aliasField(selection, prefix)]
     }
-  });
+  })
 }
 
 function addSkipDirective(node) {
@@ -263,14 +268,14 @@ function addSkipDirective(node) {
       {
         kind: Kind.ARGUMENT,
         name: {kind: Kind.NAME, value: `if`},
-        value: {kind: Kind.BOOLEAN, value: true}
-      }
-    ]
-  };
+        value: {kind: Kind.BOOLEAN, value: true},
+      },
+    ],
+  }
   return {
     ...node,
-    directives: [skipDirective]
-  };
+    directives: [skipDirective],
+  }
 }
 
 /**
@@ -283,14 +288,14 @@ function addSkipDirective(node) {
  *   ... on Query { gatsby1_foo: foo, ... on Query { gatsby1_bar: foo } }
  */
 function aliasFieldsInInlineFragment(prefix, fragment, document) {
-  const {selections} = fragment.selectionSet;
+  const {selections} = fragment.selectionSet
   return {
     ...fragment,
     selectionSet: {
       ...fragment.selectionSet,
-      selections: aliasFieldsInSelection(prefix, selections, document)
-    }
-  };
+      selections: aliasFieldsInSelection(prefix, selections, document),
+    },
+  }
 }
 
 /**
@@ -305,18 +310,18 @@ function aliasFieldsInInlineFragment(prefix, fragment, document) {
  */
 function inlineFragmentSpread(spread, document) {
   const fragment = document.definitions.find(
-    (def) => def.kind === Kind.FRAGMENT_DEFINITION && def.name.value === spread.name.value
-  );
+    (def) => def.kind === Kind.FRAGMENT_DEFINITION && def.name.value === spread.name.value,
+  )
   if (!fragment) {
-    throw new Error(`Fragment ${spread.name.value} does not exist`);
+    throw new Error(`Fragment ${spread.name.value} does not exist`)
   }
-  const {typeCondition, selectionSet} = fragment;
+  const {typeCondition, selectionSet} = fragment
   return {
     kind: Kind.INLINE_FRAGMENT,
     typeCondition,
     selectionSet,
-    directives: spread.directives
-  };
+    directives: spread.directives,
+  }
 }
 
 function prefixNodeName(namedNode, prefix) {
@@ -324,9 +329,9 @@ function prefixNodeName(namedNode, prefix) {
     ...namedNode,
     name: {
       ...namedNode.name,
-      value: prefix + namedNode.name.value
-    }
-  };
+      value: prefix + namedNode.name.value,
+    },
+  }
 }
 
 /**
@@ -337,20 +342,20 @@ function prefixNodeName(namedNode, prefix) {
  *   { foo: bar } -> { gatsby1_foo: bar }
  */
 function aliasField(field, aliasPrefix) {
-  const aliasNode = field.alias ? field.alias : field.name;
+  const aliasNode = field.alias ? field.alias : field.name
   return {
     ...field,
     alias: {
       ...aliasNode,
-      value: aliasPrefix + aliasNode.value
-    }
-  };
+      value: aliasPrefix + aliasNode.value,
+    },
+  }
 }
 
 function isQueryDefinition(def) {
-  return def.kind === Kind.OPERATION_DEFINITION && def.operation === `query`;
+  return def.kind === Kind.OPERATION_DEFINITION && def.operation === `query`
 }
 
 function isFragmentDefinition(def) {
-  return def.kind === Kind.FRAGMENT_DEFINITION;
+  return def.kind === Kind.FRAGMENT_DEFINITION
 }
