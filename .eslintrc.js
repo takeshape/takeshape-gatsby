@@ -12,7 +12,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  plugins: [`prettier`],
+  plugins: [`prettier`, `import`],
   overrides: [
     {
       // JavaScript
@@ -26,12 +26,12 @@ module.exports = {
     },
     {
       // TypeScript
+      files: [`**/*.ts`],
       extends: [
         `plugin:import/typescript`,
         `plugin:@typescript-eslint/recommended`,
         `prettier/@typescript-eslint`,
       ],
-      files: [`**/*.ts`],
       parser: `@typescript-eslint/parser`,
       parserOptions: {
         ecmaVersion: 2018,
@@ -60,7 +60,11 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        directory: `./packages/*/tsconfig.json`,
+        directory: [`packages/*/tsconfig.json`, `tsconfig.json`],
+        extensions: [`.ts`, `.tsx`],
+      },
+      node: {
+        extensions: [`.js`, `.jsx`, `.json`],
       },
     },
   },

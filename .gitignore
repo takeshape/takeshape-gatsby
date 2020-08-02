@@ -16,6 +16,7 @@ public
 
 # TypeScript
 *.tsbuildinfo
+.tsbuild/
 
 # Misc...
 *.bak

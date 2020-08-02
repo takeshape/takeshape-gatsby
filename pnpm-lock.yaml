@@ -37,6 +37,9 @@ importers:
   packages/example:
     dependencies:
       gatsby: 2.24.23_fde54655b55e10d1d346ee07c0428ee6
+      gatsby-plugin-pnpm: 1.2.5_gatsby@2.24.23
+      gatsby-plugin-typescript: 2.4.16_gatsby@2.24.23
+      gatsby-source-takeshape: 'link:../gatsby-source-takeshape'
       react: 16.13.1
       react-dom: 16.13.1_react@16.13.1
     devDependencies:
@@ -44,11 +47,14 @@ importers:
     specifiers:
       dotenv: ^6.1.0
       gatsby: ^2.24.2
+      gatsby-plugin-pnpm: ^1.2.5
+      gatsby-plugin-typescript: ^2.4.16
+      gatsby-source-takeshape: 'workspace:^0.0.2'
       react: ^16.13.1
       react-dom: ^16.13.1
   packages/gatsby-source-takeshape:
     dependencies:
-      '@graphql-tools/links': 6.0.15_graphql@14.7.0
+      '@graphql-tools/links': 6.0.15_graphql@14.7.0+react@16.13.1
       '@graphql-tools/wrap': 6.0.15_graphql@14.7.0
       apollo-link: 1.2.14_graphql@14.7.0
       apollo-link-http: 1.5.17_graphql@14.7.0
@@ -66,10 +72,12 @@ importers:
       '@typescript-eslint/eslint-plugin': 3.7.1_ae6984d1b9656a7ff27eb66a46f0bd5d
       '@typescript-eslint/parser': 3.7.1_typescript@4.0.0-dev.20200802
       cross-env: 5.2.1
-      gatsby: 2.24.23_d80ef0f582c3ca9c3a5267214fcebee5
+      gatsby: 2.24.23_00206f92b56022ee80aeffe4dc7fe1c5
       graphql: 14.7.0
       jest: 26.2.2
       prettier: 2.0.5
+      react: 16.13.1
+      react-dom: 16.13.1_react@16.13.1
       rimraf: 3.0.2
       ts-jest: 26.1.4_cc0a68ca7f0ea9e38d9c22f8991a21b1
       typescript: 4.0.0-dev.20200802
@@ -78,7 +86,7 @@ importers:
       '@graphql-tools/links': ^6.0.15
       '@graphql-tools/utils': ^6.0.15
       '@graphql-tools/wrap': ^6.0.15
-      '@types/jest': ^26.0.4
+      '@types/jest': ^26.0.8
       '@types/node': ^14.0.27
       '@types/node-fetch': ^2.5.7
       '@types/uuid': ^8.0.0
@@ -94,13 +102,15 @@ importers:
       jest: ^26.1.0
       node-fetch: ^2.6.0
       prettier: ^2.0.5
+      react: ^16.13.1
+      react-dom: ^16.13.1
       rimraf: ^3.0.2
       ts-jest: ^26.1.2
       typescript: ^4.0.0-beta
       uuid: ^8.3.0
 lockfileVersion: 5.1
 packages:
-  /@apollo/client/3.1.1_graphql@14.7.0:
+  /@apollo/client/3.1.1_graphql@14.7.0+react@16.13.1:
     dependencies:
       '@types/zen-observable': 0.8.0
       '@wry/context': 0.5.2
@@ -111,6 +121,7 @@ packages:
       hoist-non-react-statics: 3.3.2
       optimism: 0.12.1
       prop-types: 15.7.2
+      react: 16.13.1
       symbol-observable: 1.2.0
       ts-invariant: 0.4.4
       tslib: 1.13.0
@@ -1203,11 +1214,11 @@ packages:
       graphql: ^14.0.0 || ^15.0.0
     resolution:
       integrity: sha512-GG/zp29PMfG6eXpfe1M5C3U1EI1f3tJu2glFN8t0RIfp4FEgZs/PRvZuuep5orFge8dvX/LQpJY8Vl2JmU4WMg==
-  /@graphql-tools/links/6.0.15_graphql@14.7.0:
+  /@graphql-tools/links/6.0.15_graphql@14.7.0+react@16.13.1:
     dependencies:
       '@graphql-tools/utils': 6.0.15_graphql@14.7.0
       apollo-link: 1.2.14_graphql@14.7.0
-      apollo-upload-client: 14.0.1_graphql@14.7.0
+      apollo-upload-client: 14.0.1_graphql@14.7.0+react@16.13.1
       cross-fetch: 3.0.5
       form-data: 3.0.0
       graphql: 14.7.0
@@ -1215,6 +1226,7 @@ packages:
     dev: false
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0
+      react: '*'
     resolution:
       integrity: sha512-jvSU7Ro1EM+tagnoXiGyQjB8K/EywaJq/Il4VaMdn1460DulzSNTWira/toDM64m6luKtpTkDiy7kPBlA4bwhw==
   /@graphql-tools/schema/6.0.15_graphql@14.7.0:
@@ -1601,18 +1613,6 @@ packages:
         optional: true
     resolution:
       integrity: sha512-uc6FmPEegAZawSHjUMFQwU7EjaDn7zy1iD/KD/wBROL9F4378OES8MKMYHoRAKT61Fk7LxVKZSDR5VespMQiqw==
-  /@reach/router/1.3.4:
-    dependencies:
-      create-react-context: 0.3.0_prop-types@15.7.2
-      invariant: 2.2.4
-      prop-types: 15.7.2
-      react-lifecycles-compat: 3.0.4
-    dev: true
-    peerDependencies:
-      react: 15.x || 16.x || 16.4.0-alpha.0911da3
-      react-dom: 15.x || 16.x || 16.4.0-alpha.0911da3
-    resolution:
-      integrity: sha512-+mtn9wjlB9NN2CNnnC/BRYtwdKBfSyyasPYraNAyvaV1occr/5NnB4CVzjEZipNHwYebQwcndGUmpFzxAUoqSA==
   /@reach/router/1.3.4_react-dom@16.13.1+react@16.13.1:
     dependencies:
       create-react-context: 0.3.0_prop-types@15.7.2+react@16.13.1
@@ -1899,6 +1899,7 @@ packages:
       functional-red-black-tree: 1.0.1
       regexpp: 3.1.0
       tsutils: 3.17.1
+    dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
@@ -1962,7 +1963,6 @@ packages:
       eslint: 6.8.0
       eslint-scope: 5.1.0
       eslint-utils: 2.1.0
-      typescript: 4.0.0-dev.20200802
     dev: true
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -1978,11 +1978,11 @@ packages:
       eslint: 6.8.0
       eslint-scope: 5.1.0
       eslint-utils: 2.1.0
+    dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
       eslint: '*'
-      typescript: '*'
     resolution:
       integrity: sha512-eS6FTkq+wuMJ+sgtuNTtcqavWXqsflWcfBnlYhg/nS4aZ1leewkXGbvBhaapn1q6qf4M71bsR1tez5JTRMuqwA==
   /@typescript-eslint/experimental-utils/2.34.0_fd20d152386fa6c815dc4db90bd77c8b:
@@ -1992,6 +1992,7 @@ packages:
       eslint: 7.6.0
       eslint-scope: 5.1.0
       eslint-utils: 2.1.0
+      typescript: 4.0.0-dev.20200802
     dev: true
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -2008,6 +2009,7 @@ packages:
       eslint: 7.6.0
       eslint-scope: 5.1.0
       eslint-utils: 2.1.0
+      typescript: 4.0.0-dev.20200802
     dev: true
     engines:
       node: ^10.12.0 || >=12.0.0
@@ -2023,7 +2025,6 @@ packages:
       '@typescript-eslint/typescript-estree': 3.7.1_typescript@4.0.0-dev.20200802
       eslint-scope: 5.1.0
       eslint-utils: 2.1.0
-      typescript: 4.0.0-dev.20200802
     dev: true
     engines:
       node: ^10.12.0 || >=12.0.0
@@ -2058,6 +2059,7 @@ packages:
       '@typescript-eslint/typescript-estree': 2.34.0
       eslint: 6.8.0
       eslint-visitor-keys: 1.3.0
+    dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
@@ -2122,6 +2124,7 @@ packages:
       lodash: 4.17.19
       semver: 7.3.2
       tsutils: 3.17.1
+    dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
@@ -2547,9 +2550,9 @@ packages:
       graphql: ^0.11.3 || ^0.12.3 || ^0.13.0 || ^14.0.0 || ^15.0.0
     resolution:
       integrity: sha512-p67CMEFP7kOG1JZ0ZkYZwRDa369w5PIjtMjvrQd/HnIV8FRsHRqLqK+oAZQnFa1DDdZtOtHTi+aMIW6EatC2jg==
-  /apollo-upload-client/14.0.1_graphql@14.7.0:
+  /apollo-upload-client/14.0.1_graphql@14.7.0+react@16.13.1:
     dependencies:
-      '@apollo/client': 3.1.1_graphql@14.7.0
+      '@apollo/client': 3.1.1_graphql@14.7.0+react@16.13.1
       '@babel/runtime': 7.11.0
       extract-files: 8.1.0
       graphql: 14.7.0
@@ -2558,6 +2561,7 @@ packages:
       node: ^10.17.0 || ^12.0.0 || >= 13.7.0
     peerDependencies:
       graphql: 14 - 15
+      react: '*'
       subscriptions-transport-ws: ^0.9.0
     resolution:
       integrity: sha512-2Ebh5LQukHpGNebAWRdf9i3t91mJbZAyEG7WVrw9Mx3bxKIQ+4iYmBz3XV+pK8lqs8332i4k3D46hGdXDc5/gg==
@@ -4028,17 +4032,6 @@ packages:
       sha.js: 2.4.11
     resolution:
       integrity: sha512-MJG9liiZ+ogc4TzUwuvbER1JRdgvUFSB5+VR/g5h82fGaIRWMWddtKBHi7/sVhfjQZ6SehlyhvQYrcYkaUIpLg==
-  /create-react-context/0.3.0_prop-types@15.7.2:
-    dependencies:
-      gud: 1.0.0
-      prop-types: 15.7.2
-      warning: 4.0.3
-    dev: true
-    peerDependencies:
-      prop-types: ^15.0.0
-      react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    resolution:
-      integrity: sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==
   /create-react-context/0.3.0_prop-types@15.7.2+react@16.13.1:
     dependencies:
       gud: 1.0.0
@@ -5951,21 +5944,6 @@ packages:
       react-dom: ^16.4.2
     resolution:
       integrity: sha512-0qTM9JJvYZCsqAF/FLkChHwECbjl2DxUl8M0cYNgCDcaw5BI6PhF4FhuGUcr17dZ6KlpEMrpApaF5MMQqV0WSQ==
-  /gatsby-link/2.4.13_@reach+router@1.3.4:
-    dependencies:
-      '@babel/runtime': 7.11.0
-      '@reach/router': 1.3.4
-      '@types/reach__router': 1.3.5
-      prop-types: 15.7.2
-    dev: true
-    engines:
-      node: '>=10.13.0'
-    peerDependencies:
-      '@reach/router': ^1.3.3
-      react: ^16.4.2
-      react-dom: ^16.4.2
-    resolution:
-      integrity: sha512-0qTM9JJvYZCsqAF/FLkChHwECbjl2DxUl8M0cYNgCDcaw5BI6PhF4FhuGUcr17dZ6KlpEMrpApaF5MMQqV0WSQ==
   /gatsby-page-utils/0.2.19:
     dependencies:
       '@babel/runtime': 7.11.0
@@ -5996,6 +5974,15 @@ packages:
       gatsby: ^2.0.0
     resolution:
       integrity: sha512-BMEIjg+B05eWeZutgV3bP2o7WZyC3lmZzAhGwWfEi0IYy0zRtH3jRNPCv1qrcyXKI6n5GFUhas4NGiRHmc7vLg==
+  /gatsby-plugin-pnpm/1.2.5_gatsby@2.24.23:
+    dependencies:
+      gatsby: 2.24.23_fde54655b55e10d1d346ee07c0428ee6
+      lodash.uniq: 4.5.0
+    dev: false
+    peerDependencies:
+      gatsby: ~2.x.x
+    resolution:
+      integrity: sha512-zGJUVApj641WTPiE0L4ZEFbt0iK8pEVIP0dtG5hPTRaTrb0zeZRp8Id9COf5sciwO0zGfT1/CmF6OyhV8KZr+g==
   /gatsby-plugin-typescript/2.4.16_gatsby@2.24.23:
     dependencies:
       '@babel/core': 7.11.0
@@ -6017,19 +6004,6 @@ packages:
       '@reach/router': 1.3.4_react-dom@16.13.1+react@16.13.1
       react: 16.13.1
       react-dom: 16.13.1_react@16.13.1
-    engines:
-      node: '>=10.13.0'
-    peerDependencies:
-      '@reach/router': ^1.0.0
-      react: ^16.4.2
-      react-dom: ^16.4.2
-    resolution:
-      integrity: sha512-rA7qe/LjKAPnwI4KdKjvx94XIV9a4hCPT+BzKBiifTkm5sFpQyXsfEWmaFfzIaxpKxOwrWsJGpW0OA39yunL8g==
-  /gatsby-react-router-scroll/3.0.12_@reach+router@1.3.4:
-    dependencies:
-      '@babel/runtime': 7.11.0
-      '@reach/router': 1.3.4
-    dev: true
     engines:
       node: '>=10.13.0'
     peerDependencies:
@@ -6128,7 +6102,7 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-+/onqOrR6DY5PV3X0k0U0Gs8hD9UW9sdLV4rVQV4hb3/8QBTzwj7hSIS1tO4/GZ0Q0UFkeL4THxHPgDltoVH7g==
-  /gatsby/2.24.23_d80ef0f582c3ca9c3a5267214fcebee5:
+  /gatsby/2.24.23_00206f92b56022ee80aeffe4dc7fe1c5:
     dependencies:
       '@babel/code-frame': 7.10.4
       '@babel/core': 7.11.0
@@ -6139,7 +6113,7 @@ packages:
       '@mikaelkristiansson/domready': 1.0.10
       '@pieh/friendly-errors-webpack-plugin': 1.7.0-chalk-2_webpack@4.43.0
       '@pmmmwh/react-refresh-webpack-plugin': 0.3.3_d8528028579e0129932d17e99387126e
-      '@reach/router': 1.3.4
+      '@reach/router': 1.3.4_react-dom@16.13.1+react@16.13.1
       '@types/http-proxy': 1.17.4
       '@typescript-eslint/eslint-plugin': 2.34.0_214fac029e2c0a51fffffb0b916d37bb
       '@typescript-eslint/parser': 2.34.0_490234ad6fe2e8487fea12b8aeb10afa
@@ -6191,15 +6165,15 @@ packages:
       find-cache-dir: 3.3.1
       fs-exists-cached: 1.0.0
       fs-extra: 8.1.0
-      gatsby: 2.24.23_d80ef0f582c3ca9c3a5267214fcebee5
+      gatsby: 2.24.23_00206f92b56022ee80aeffe4dc7fe1c5
       gatsby-cli: 2.12.68
       gatsby-core-utils: 1.3.14
       gatsby-graphiql-explorer: 0.4.12
       gatsby-legacy-polyfills: 0.0.2
-      gatsby-link: 2.4.13_@reach+router@1.3.4
+      gatsby-link: 2.4.13_3914268316c542370cbb046de235e031
       gatsby-plugin-page-creator: 2.3.19_gatsby@2.24.23
       gatsby-plugin-typescript: 2.4.16_gatsby@2.24.23
-      gatsby-react-router-scroll: 3.0.12_@reach+router@1.3.4
+      gatsby-react-router-scroll: 3.0.12_3914268316c542370cbb046de235e031
       gatsby-telemetry: 1.3.24
       glob: 7.1.6
       got: 8.3.2
@@ -6240,9 +6214,11 @@ packages:
       prop-types: 15.7.2
       query-string: 6.13.1
       raw-loader: 0.5.1
+      react: 16.13.1
       react-dev-utils: 4.2.3
+      react-dom: 16.13.1_react@16.13.1
       react-error-overlay: 3.0.0
-      react-hot-loader: 4.12.21
+      react-hot-loader: 4.12.21_react-dom@16.13.1+react@16.13.1
       react-refresh: 0.7.2
       redux: 4.0.5
       redux-thunk: 2.3.0
@@ -6431,6 +6407,7 @@ packages:
       webpack-virtual-modules: 0.2.2
       xstate: 4.11.0
       yaml-loader: 0.6.0
+    dev: false
     engines:
       node: '>=10.13.0'
     hasBin: true
@@ -6438,7 +6415,6 @@ packages:
       gatsby: '*'
       react: ^16.4.2
       react-dom: ^16.4.2
-      typescript: '*'
     requiresBuild: true
     resolution:
       integrity: sha512-Eg8liyseiOgPKjN5VQA6vZgtnLeTdP+z8EQOeK8Mcf5GaOfmTB3FJiZFMOLKwJ9tQI1Wzvn4Ocsu1s/Ih9KqTQ==
@@ -9925,10 +9901,9 @@ packages:
   /pnp-webpack-plugin/1.6.4:
     dependencies:
       ts-pnp: 1.2.0
+    dev: false
     engines:
       node: '>=6'
-    peerDependencies:
-      typescript: '*'
     resolution:
       integrity: sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg==
   /pnp-webpack-plugin/1.6.4_typescript@4.0.0-dev.20200802:
@@ -10596,28 +10571,6 @@ packages:
   /react-error-overlay/3.0.0:
     resolution:
       integrity: sha512-XzgvowFrwDo6TWcpJ/WTiarb9UI6lhA4PMzS7n1joK3sHfBBBOQHUc0U4u57D6DWO9vHv6lVSWx2Q/Ymfyv4hw==
-  /react-hot-loader/4.12.21:
-    dependencies:
-      fast-levenshtein: 2.0.6
-      global: 4.4.0
-      hoist-non-react-statics: 3.3.2
-      loader-utils: 1.4.0
-      prop-types: 15.7.2
-      react-lifecycles-compat: 3.0.4
-      shallowequal: 1.1.0
-      source-map: 0.7.3
-    dev: true
-    engines:
-      node: '>= 6'
-    peerDependencies:
-      '@types/react': ^15.0.0 || ^16.0.0
-      react: ^15.0.0 || ^16.0.0
-      react-dom: ^15.0.0 || ^16.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    resolution:
-      integrity: sha512-Ynxa6ROfWUeKWsTHxsrL2KMzujxJVPjs385lmB2t5cHUxdoRPGind9F00tOkdc1l5WBleOF4XEAMILY1KPIIDA==
   /react-hot-loader/4.12.21_react-dom@16.13.1+react@16.13.1:
     dependencies:
       fast-levenshtein: 2.0.6
@@ -12300,6 +12253,7 @@ packages:
     resolution:
       integrity: sha512-Nd7diUX6NZWfWq6FYyvcIPR/c7GbEF75fH1R6coOp3fbNzbRJBZZAn0ueVS0r8r9ral1VcrpneAFAwB3TsVS1Q==
   /ts-pnp/1.2.0:
+    dev: false
     engines:
       node: '>=6'
     peerDependencies:
@@ -12339,6 +12293,7 @@ packages:
   /tsutils/3.17.1:
     dependencies:
       tslib: 1.13.0
+    dev: false
     engines:
       node: '>= 6'
     peerDependencies:

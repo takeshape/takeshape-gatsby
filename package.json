@@ -1,12 +1,12 @@
 {
-  "private": true,
   "name": "takeshape-gatsby",
   "version": "0.0.2",
   "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
-    "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml"
+    "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml",
+    "watch": "pnpm run build --filter gatsby-source-sanity && pnpm run watch --recursive --parallel"
   },
   "repository": {
     "type": "git",

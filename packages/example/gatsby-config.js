@@ -5,6 +5,8 @@ module.exports = {
     title: `Gatsby Source TakeShape Example`,
   },
   plugins: [
+    `gatsby-plugin-pnpm`,
+    `gatsby-plugin-typescript`,
     {
       resolve: `gatsby-source-takeshape`,
       options: {

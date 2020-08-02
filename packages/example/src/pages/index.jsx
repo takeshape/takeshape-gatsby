@@ -1,16 +1,19 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {graphql} from 'gatsby'
 
 export const query = graphql`
-    query {
-        takeshape {
-            helloWorld: getHelloWorld {
-                content
-            }
-        }
+  query {
+    takeshape {
+      helloWorld: getHelloWorld {
+        content
+      }
     }
+  }
 `
 
-const IndexPage = ({data}) => <Fragment>{data.takeshape.helloWorld.content}</Fragment>
+// eslint-disable-next-line react/prop-types
+const IndexPage = ({data}) => {
+  return <>Hello {data.takeshape.helloWorld.content}</>
+}
 
 export default IndexPage

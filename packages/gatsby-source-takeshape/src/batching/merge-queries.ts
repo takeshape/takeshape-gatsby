@@ -1,5 +1,5 @@
 import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'graphql'
-import {tmpl} from '../utils/templates'
+import {tmpl} from '../utils/strings'
 
 type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>
 
@@ -58,16 +58,16 @@ export interface MergeResult {
  *   }
  *   fragment FooQuery on Query { baz }
  */
-export function merge(queries: ASTNode[]): MergeResult {
+export function merge(queries: any[]): MergeResult {
   const mergedVariables = {}
-  const mergedVariableDefinitions = []
-  const mergedSelections = []
+  const mergedVariableDefinitions: any[] = []
+  const mergedSelections: any[] = []
   const mergedFragmentMap = new Map()
 
   queries.forEach((query, index) => {
     const prefixedQuery = prefixQueryParts(createKeyPrefix(index), query)
 
-    prefixedQuery.query.definitions.forEach((def) => {
+    prefixedQuery.query.definitions.forEach((def: any) => {
       if (isQueryDefinition(def)) {
         mergedSelections.push(...def.selectionSet.selections)
         mergedVariableDefinitions.push(...(def.variableDefinitions ?? []))
@@ -105,10 +105,10 @@ export function merge(queries: ASTNode[]): MergeResult {
 /**
  * Split and transform result of the query produced by the `merge` function
  */
-export function resolveResult(mergedQueryResult: {data: unknown}): {data: unknown}[] {
+export function resolveResult(mergedQueryResult: {data: any}): {data: unknown}[] {
   const data = mergedQueryResult.data
 
-  return Object.keys(data).reduce((acc, prefixedKey) => {
+  return Object.keys(data).reduce<any[]>((acc, prefixedKey) => {
     const {index, originalKey} = parsePrefixedKey(prefixedKey)
     if (!acc[index]) acc[index] = {data: {}}
     acc[index].data[originalKey] = data[prefixedKey]
@@ -117,11 +117,11 @@ export function resolveResult(mergedQueryResult: {data: unknown}): {data: unknow
 }
 
 const Visitors = {
-  detectFragmentsWithVariables: (fragmentsWithVariables) => {
-    let currentFragmentName
+  detectFragmentsWithVariables: (fragmentsWithVariables: any) => {
+    let currentFragmentName: string | null = null
     return {
       [Kind.FRAGMENT_DEFINITION]: {
-        enter: (def) => {
+        enter: (def: any) => {
           currentFragmentName = def.name.value
         },
         leave: () => {
@@ -135,22 +135,22 @@ const Visitors = {
       },
     }
   },
-  prefixVariables: (prefix) => {
+  prefixVariables: (prefix: any) => {
     return {
-      [Kind.VARIABLE]: (variable) => prefixNodeName(variable, prefix),
+      [Kind.VARIABLE]: (variable: any) => prefixNodeName(variable, prefix),
     }
   },
-  prefixFragmentNames: (prefix, fragmentNames) => {
+  prefixFragmentNames: (prefix: any, fragmentNames: any) => {
     return {
-      [Kind.FRAGMENT_DEFINITION]: (def) =>
+      [Kind.FRAGMENT_DEFINITION]: (def: any) =>
         fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def,
-      [Kind.FRAGMENT_SPREAD]: (def) =>
+      [Kind.FRAGMENT_SPREAD]: (def: any) =>
         fragmentNames.has(def.name.value) ? prefixNodeName(def, prefix) : def,
     }
   },
 }
 
-function prefixQueryParts(prefix: string, query: ASTNode) {
+function prefixQueryParts(prefix: string, query: MergeResult) {
   let document = aliasTopLevelFields(prefix, query.query)
   const variableNames = Object.keys(query.variables)
 
@@ -190,7 +190,7 @@ function prefixQueryParts(prefix: string, query: ASTNode) {
     )
   }
 
-  const prefixedVariables = variableNames.reduce((acc, name) => {
+  const prefixedVariables = variableNames.reduce<Record<string, unknown>>((acc, name) => {
     acc[prefix + name] = query.variables[name]
     return acc
   }, {})
@@ -206,9 +206,9 @@ function prefixQueryParts(prefix: string, query: ASTNode) {
  *
  * @see aliasFieldsInSelection for implementation details
  */
-function aliasTopLevelFields(prefix, doc) {
+function aliasTopLevelFields(prefix: any, doc: any) {
   const transformer = {
-    [Kind.OPERATION_DEFINITION]: (def) => {
+    [Kind.OPERATION_DEFINITION]: (def: any) => {
       const {selections} = def.selectionSet
       return {
         ...def,
@@ -244,8 +244,8 @@ function aliasTopLevelFields(prefix, doc) {
  *     ... on Query { gatsby1_bar: bar }
  *   }
  */
-function aliasFieldsInSelection(prefix, selections, document) {
-  return selections.flatMap((selection) => {
+function aliasFieldsInSelection(prefix: any, selections: any, document: any) {
+  return selections.flatMap((selection: any) => {
     switch (selection.kind) {
       case Kind.INLINE_FRAGMENT:
         return [aliasFieldsInInlineFragment(prefix, selection, document)]
@@ -263,7 +263,7 @@ function aliasFieldsInSelection(prefix, selections, document) {
   })
 }
 
-function addSkipDirective(node) {
+function addSkipDirective(node: any) {
   const skipDirective = {
     kind: Kind.DIRECTIVE,
     name: {kind: Kind.NAME, value: `skip`},
@@ -290,7 +290,7 @@ function addSkipDirective(node) {
  * To
  *   ... on Query { gatsby1_foo: foo, ... on Query { gatsby1_bar: foo } }
  */
-function aliasFieldsInInlineFragment(prefix, fragment, document) {
+function aliasFieldsInInlineFragment(prefix: any, fragment: any, document: any) {
   const {selections} = fragment.selectionSet
   return {
     ...fragment,
@@ -311,9 +311,9 @@ function aliasFieldsInInlineFragment(prefix, fragment, document) {
  * Transforms to:
  *   query { ... on Query { bar } }
  */
-function inlineFragmentSpread(spread, document) {
+function inlineFragmentSpread(spread: any, document: any) {
   const fragment = document.definitions.find(
-    (def) => def.kind === Kind.FRAGMENT_DEFINITION && def.name.value === spread.name.value,
+    (def: any) => def.kind === Kind.FRAGMENT_DEFINITION && def.name.value === spread.name.value,
   )
   if (!fragment) {
     throw new Error(`Fragment ${spread.name.value} does not exist`)
@@ -327,7 +327,7 @@ function inlineFragmentSpread(spread, document) {
   }
 }
 
-function prefixNodeName(namedNode, prefix) {
+function prefixNodeName(namedNode: any, prefix: any) {
   return {
     ...namedNode,
     name: {
@@ -344,7 +344,7 @@ function prefixNodeName(namedNode, prefix) {
  *   { foo } -> { gatsby1_foo: foo }
  *   { foo: bar } -> { gatsby1_foo: bar }
  */
-function aliasField(field, aliasPrefix) {
+function aliasField(field: any, aliasPrefix: any) {
   const aliasNode = field.alias ? field.alias : field.name
   return {
     ...field,
@@ -355,10 +355,10 @@ function aliasField(field, aliasPrefix) {
   }
 }
 
-function isQueryDefinition(def) {
+function isQueryDefinition(def: any) {
   return def.kind === Kind.OPERATION_DEFINITION && def.operation === `query`
 }
 
-function isFragmentDefinition(def) {
+function isFragmentDefinition(def: any) {
   return def.kind === Kind.FRAGMENT_DEFINITION
 }

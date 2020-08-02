@@ -55,7 +55,7 @@ export class NamespaceUnderFieldTransform implements Transform {
   }
 }
 
-export class StripNonQueryTransform {
+export class StripNonQueryTransform implements Transform {
   transformSchema(schema: GraphQLSchema): GraphQLSchema {
     return mapSchema(schema, {
       [MapperKind.MUTATION]() {

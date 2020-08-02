@@ -11,20 +11,20 @@ import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms
 import {createDataloaderLink} from './batching/dataloader-link'
 import {PluginOptions, withDefaults} from './utils/options'
 import {GatsbyGraphQLFieldResolver} from './types/gatsby'
-import {tmpl} from './utils/templates'
+import {tmpl} from './utils/strings'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
 
-const TYPE_NAME = `TS`
-const FIELD_NAME = `takeshape`
-const NODE_TYPE = `TakeShapeSource`
+const typeName = `TS`
+const fieldName = `takeshape`
+const nodeType = `TakeShapeSource`
 
 const createUri = tmpl<[string]>(`https://api.takeshape.io/project/%s/graphql`)
 const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
 const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
-  {actions, createNodeId, cache}: SourceNodesArgs,
+  {actions, createNodeId, cache, reporter}: SourceNodesArgs,
   options: PluginOptions = {} as PluginOptions,
 ): Promise<void> => {
   const {createNode, addThirdPartySchema} = actions
@@ -40,8 +40,6 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   } = withDefaults(options)
 
   const uri = createUri(projectId)
-  const typeName = TYPE_NAME
-  const fieldName = FIELD_NAME
 
   const headers = {
     'Content-Type': `application/json`,
@@ -51,6 +49,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   let link: ApolloLink
 
   if (batch) {
+    reporter.info(`[takeshape] Using DataLoader`)
     link = createDataloaderLink({
       uri,
       fetch,
@@ -76,6 +75,8 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   const executor = linkToExecutor(link)
 
+  reporter.info(`[takeshape] Fetching remote schema`)
+
   if (!sdl) {
     introspectionSchema = await introspectSchema(executor)
     sdl = printSchema(introspectionSchema)
@@ -91,16 +92,14 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     typeName,
     fieldName,
   })
-
   createNode(node)
 
   const resolver: GatsbyGraphQLFieldResolver = (_, __, context) => {
-    if (context.path) {
-      context.nodeModel.createPageDependency({
-        path: context.path,
-        nodeId,
-      })
-    }
+    context.nodeModel.createPageDependency({
+      path: context.path || ``,
+      nodeId,
+    })
+    return {}
   }
 
   const schema = wrapSchema(
@@ -123,8 +122,10 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   // Refetching is only necessary when running a develop server
   if (isDevelopMode && refetchInterval > 0) {
+    reporter.info(`[takeshape] Refetching schema every ${refetchInterval} seconds`)
     const msRefetchInterval = refetchInterval * 1000
     const refetcher = () => {
+      reporter.info(`[takeshape] Fetching latest nodes`)
       createNode(
         createSchemaNode({
           id: nodeId,
@@ -149,7 +150,7 @@ function createSchemaNode({
     fieldName,
     children: [],
     internal: {
-      type: NODE_TYPE,
+      type: nodeType,
       contentDigest: createContentDigest(uuidv4()),
     },
   }

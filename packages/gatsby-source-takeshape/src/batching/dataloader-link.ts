@@ -45,7 +45,8 @@ export function createDataloaderLink(options: CreateDataloaderLinkOptions): Apol
         const {query, variables} = operation
         dataloader
           .load({query, variables})
-          .then((response) => {
+          // TODO: properly type this
+          .then((response: any) => {
             operation.setContext({response})
             observer.next(response)
             observer.complete()

@@ -6,7 +6,7 @@
       "changeProcessCWD": true
     }
   ],
-  "eslint.validate": ["javascript", "typescript"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "search.exclude": {
     "**/node_modules": true,
@@ -14,5 +14,6 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "eslint.enable": true
 }

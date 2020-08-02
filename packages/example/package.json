@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-source-takeshape-example",
+  "name": "example",
   "description": "An example gatsby site for gatsby-source-takeshape",
   "version": "1.0.0",
   "author": {
@@ -12,10 +12,14 @@
     "clean": "gatsby clean",
     "develop": "npm run clean && gatsby develop",
     "reset": "npm run clean && rimraf ./node_modules",
-    "start": "npm run develop"
+    "start": "npm run develop",
+    "watch": "npm run develop"
   },
   "dependencies": {
     "gatsby": "^2.24.2",
+    "gatsby-plugin-pnpm": "^1.2.5",
+    "gatsby-plugin-typescript": "^2.4.16",
+    "gatsby-source-takeshape": "workspace:^0.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
