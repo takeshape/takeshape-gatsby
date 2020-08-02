@@ -1,20 +1,23 @@
 import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'graphql'
-import _ from 'lodash'
+import {tmpl} from '../utils/templates'
 
 type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>
 
-const Prefix = {
-  create: (index) => `gatsby${index}_`,
-  parseKey: (prefixedKey) => {
-    const match = /^gatsby([\d]+)_(.*)$/.exec(prefixedKey)
-    if (!match || match.length !== 3 || isNaN(Number(match[1])) || !match[2]) {
-      throw new Error(`Unexpected data key: ${prefixedKey}`)
-    }
-    return {index: Number(match[1]), originalKey: match[2]}
-  },
+const createKeyPrefix = tmpl<[number]>(`gatsby%s_`)
+
+const keyPrefixRe = /^gatsby([\d]+)_(.*)$/
+
+const parsePrefixedKey = (prefixedKey: string) => {
+  const match = keyPrefixRe.exec(prefixedKey)
+
+  if (!match || match.length !== 3) {
+    throw new Error(`Unexpected data key: ${prefixedKey}`)
+  }
+
+  return {index: Number(match[1]), originalKey: match[2]}
 }
 
-interface MergeResult {
+export interface MergeResult {
   query: ASTNode
   variables: Record<string, unknown>
 }
@@ -62,7 +65,7 @@ export function merge(queries: ASTNode[]): MergeResult {
   const mergedFragmentMap = new Map()
 
   queries.forEach((query, index) => {
-    const prefixedQuery = prefixQueryParts(Prefix.create(index), query)
+    const prefixedQuery = prefixQueryParts(createKeyPrefix(index), query)
 
     prefixedQuery.query.definitions.forEach((def) => {
       if (isQueryDefinition(def)) {
@@ -106,7 +109,7 @@ export function resolveResult(mergedQueryResult: {data: unknown}): {data: unknow
   const data = mergedQueryResult.data
 
   return Object.keys(data).reduce((acc, prefixedKey) => {
-    const {index, originalKey} = Prefix.parseKey(prefixedKey)
+    const {index, originalKey} = parsePrefixedKey(prefixedKey)
     if (!acc[index]) acc[index] = {data: {}}
     acc[index].data[originalKey] = data[prefixedKey]
     return acc
@@ -147,7 +150,7 @@ const Visitors = {
   },
 }
 
-function prefixQueryParts(prefix, query) {
+function prefixQueryParts(prefix: string, query: ASTNode) {
   let document = aliasTopLevelFields(prefix, query.query)
   const variableNames = Object.keys(query.variables)
 
@@ -242,7 +245,7 @@ function aliasTopLevelFields(prefix, doc) {
  *   }
  */
 function aliasFieldsInSelection(prefix, selections, document) {
-  return _.flatMap(selections, (selection) => {
+  return selections.flatMap((selection) => {
     switch (selection.kind) {
       case Kind.INLINE_FRAGMENT:
         return [aliasFieldsInInlineFragment(prefix, selection, document)]

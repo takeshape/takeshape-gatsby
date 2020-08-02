@@ -2,11 +2,14 @@
 
 ## What is this?
 
-This is a minimal "Hello world" example of the gatsby-source-takeshape plugin. If you want to see a more sophisticated example, check out [shape-portfolio-gatsbyjs](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs).
+This is a minimal "Hello world" example of the gatsby-source-takeshape plugin.
+If you want to see a more sophisticated example, check out
+[shape-portfolio-gatsbyjs](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs).
 
 ## How to run this example
 
-To build the plugin and copy it into the example's plugins folder, run this command from `gatsby-source-takeshape` directory (one level up).
+To build the plugin and copy it into the example's plugins folder, run this
+command from `gatsby-source-takeshape` directory (one level up).
 
 ```
 npm run example:deploy

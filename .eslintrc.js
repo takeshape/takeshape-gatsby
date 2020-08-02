@@ -19,8 +19,6 @@ module.exports = {
       files: [`**/*.js`],
       parserOptions: {
         ecmaVersion: 2018,
-        sourceType: `module`,
-        tsconfigRootDir: __dirname,
       },
       rules: {
         quotes: [`error`, `backtick`],
@@ -37,7 +35,7 @@ module.exports = {
       parser: `@typescript-eslint/parser`,
       parserOptions: {
         ecmaVersion: 2018,
-        project: [`tsconfig.json`],
+        project: [`tsconfig.json`, `packages/*/tsconfig.json`],
         sourceType: `module`,
         tsconfigRootDir: __dirname,
       },
@@ -62,7 +60,7 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        directory: `*/tsconfig.json`,
+        directory: `./packages/*/tsconfig.json`,
       },
     },
   },
