@@ -2,15 +2,7 @@ module.exports = {
   extends: [`../../.eslintrc.js`],
   overrides: [
     {
-      // TypeScript / React
-      env: {
-        browser: true,
-        node: true,
-        es6: true,
-      },
-      extends: [`plugin:react/recommended`],
-      files: [`src/**/*.ts`],
-      plugins: [`react`],
+      files: [`src/**/*.ts`, `src/**/*.tsx`],
       settings: {
         react: {
           version: `detect`,

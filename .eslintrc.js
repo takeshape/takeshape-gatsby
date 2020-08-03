@@ -44,6 +44,28 @@ module.exports = {
         '@typescript-eslint/quotes': [`error`, `backtick`],
       },
     },
+    {
+      // JavaScript React / TypeScript React
+      env: {
+        browser: true,
+        node: true,
+        es6: true,
+      },
+      extends: [`plugin:react/recommended`],
+      files: [`**/src/**/*.js`, `**/src/**/*.jsx`, `**/src/**/*.ts`, `**/src/**/*.tsx`],
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: `module`,
+      },
+      plugins: [`react`],
+      settings: {
+        'import/resolver': {
+          node: {
+            extensions: [`.js`, `.jsx`, `.json`],
+          },
+        },
+      },
+    },
     // TypeScript ambient type defs
     {
       files: [`**/*.d.ts`],
