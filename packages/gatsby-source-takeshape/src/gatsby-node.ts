@@ -5,7 +5,7 @@ import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {linkToExecutor} from '@graphql-tools/links'
 import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
 import {createHttpLink} from 'apollo-link-http'
-import {HeadersInit as FetchHeaders} from 'node-fetch'
+import fetch, {HeadersInit as FetchHeaders} from 'node-fetch'
 import {createContentDigest} from 'gatsby-core-utils'
 import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms'
 import {createDataloaderLink} from './batching/dataloader-link'
@@ -32,7 +32,6 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     apiKey,
     batch,
     projectId,
-    fetch,
     fetchOptions,
     dataLoaderOptions,
     refetchInterval,
@@ -52,7 +51,6 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     reporter.info(`[takeshape] Using DataLoader`)
     link = createDataloaderLink({
       uri,
-      fetch,
       fetchOptions,
       headers,
       dataLoaderOptions,
