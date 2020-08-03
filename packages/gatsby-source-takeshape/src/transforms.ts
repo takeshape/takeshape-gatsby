@@ -1,4 +1,4 @@
-import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'graphql'
+import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'gatsby/graphql'
 import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from '@graphql-tools/utils'
 import {GatsbyGraphQLFieldResolver, GatsbyGraphQLConfigMap} from './types/gatsby'
 

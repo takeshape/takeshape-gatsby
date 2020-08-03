@@ -1,4 +1,4 @@
-import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'graphql'
+import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'gatsby/graphql'
 import {tmpl} from '../utils/strings'
 import {flatMap} from '../utils/arrays'
 

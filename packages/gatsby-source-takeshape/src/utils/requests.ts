@@ -1,4 +1,4 @@
-import {print, ASTNode} from 'graphql'
+import {print, ASTNode} from 'gatsby/graphql'
 import nodeFetch, {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
 
 export interface GraphQLRequestQuery {

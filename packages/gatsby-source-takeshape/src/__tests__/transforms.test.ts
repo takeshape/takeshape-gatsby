@@ -1,4 +1,4 @@
-import {buildSchema, printSchema} from 'graphql'
+import {buildSchema, printSchema} from 'gatsby/graphql'
 import {NamespaceUnderFieldTransform, StripNonQueryTransform} from '../transforms'
 
 const sdl = `
