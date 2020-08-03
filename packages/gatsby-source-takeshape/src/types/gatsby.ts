@@ -1,5 +1,5 @@
 import {Node} from 'gatsby'
-import {GraphQLFieldResolver, GraphQLFieldConfigMap} from 'graphql'
+import {GraphQLResolveInfo, GraphQLFieldConfigMap} from 'graphql'
 
 export interface CreatePageDependencyArgs {
   connection?: string
@@ -23,10 +23,17 @@ export type GatsbyGraphQLContext = {
   path?: string
 }
 
-export type GatsbyGraphQLFieldResolver = GraphQLFieldResolver<
-  Record<string, unknown>,
-  GatsbyGraphQLContext
->
+// This return type seems for accurate, as void in a resolver seems to lead to bad schemas
+export type GatsbyGraphQLFieldResolver<
+  TSource = Record<string, unknown>,
+  TContext = GatsbyGraphQLContext,
+  TArgs = {[argName: string]: any} // eslint-disable-line @typescript-eslint/no-explicit-any
+> = (
+  source: TSource,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => Record<string, unknown>
 
 export type GatsbyGraphQLConfigMap = GraphQLFieldConfigMap<
   Record<string, unknown>,
