@@ -44,6 +44,7 @@ importers:
       react-dom: 16.13.1_react@16.13.1
     devDependencies:
       dotenv: 6.2.0
+      rimraf: 3.0.2
     specifiers:
       dotenv: ^6.1.0
       gatsby: ^2.24.2
@@ -52,6 +53,7 @@ importers:
       gatsby-source-takeshape: 'workspace:^0.0.2'
       react: ^16.13.1
       react-dom: ^16.13.1
+      rimraf: ^3.0.2
   packages/gatsby-source-takeshape:
     dependencies:
       '@graphql-tools/links': 6.0.15_graphql@14.7.0+react@16.13.1
@@ -71,7 +73,6 @@ importers:
       '@types/uuid': 8.0.0
       '@typescript-eslint/eslint-plugin': 3.7.1_ae6984d1b9656a7ff27eb66a46f0bd5d
       '@typescript-eslint/parser': 3.7.1_typescript@4.0.0-dev.20200802
-      cross-env: 5.2.1
       gatsby: 2.24.23_00206f92b56022ee80aeffe4dc7fe1c5
       graphql: 14.7.0
       jest: 26.2.2
@@ -95,7 +96,6 @@ importers:
       '@typescript-eslint/parser': ^3.7.1
       apollo-link: ^1.2.14
       apollo-link-http: ^1.5.17
-      cross-env: ^5.2.1
       dataloader: ^2.0.0
       gatsby: ^2.24.14
       gatsby-core-utils: ^1.3.14
@@ -4046,15 +4046,6 @@ packages:
       react: ^0.14.0 || ^15.0.0 || ^16.0.0
     resolution:
       integrity: sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==
-  /cross-env/5.2.1:
-    dependencies:
-      cross-spawn: 6.0.5
-    dev: true
-    engines:
-      node: '>=4.0'
-    hasBin: true
-    resolution:
-      integrity: sha512-1yHhtcfAd1r4nwQgknowuUNfIT9E8dOMMspC36g45dN+iD1blloi7xp8X/xAIDnjHWyt1uQ8PHk2fkNaym7soQ==
   /cross-fetch/2.2.2:
     dependencies:
       node-fetch: 2.1.2
