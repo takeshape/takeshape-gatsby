@@ -5,14 +5,33 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "develop:gatsby-source-takeshape": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
+    "commit": "git-cz --no-verify",
+    "develop": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
     "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/takeshape/takeshape-gatsby"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm run pre-commit --parallel",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
   "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
     "@types/jest": "^26.0.8",
     "@types/node": "^14.0.27",
     "@types/node-fetch": "^2.5.7",
@@ -24,8 +43,10 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.5",
+    "husky": "^4.2.5",
     "jest": "^26.2.2",
     "jest-fetch-mock": "^3.0.3",
+    "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.1.4",
