@@ -4,7 +4,7 @@ import {PluginOptions} from '../index'
 import {sourceNodes as _sourceNodes} from '../gatsby-node'
 
 const projectId = `00000000-0000-0000-0000-000000000000`
-const authToken = `00000000000000000000000000000000`
+const apiKey = `00000000000000000000000000000000`
 
 jest.mock(`@graphql-tools/wrap`, () => {
   return {
@@ -69,7 +69,7 @@ const getInternalGatsbyAPI = () => {
 
 const getPluginOptions = (options = {}) => {
   options = {
-    authToken,
+    apiKey,
     projectId,
     ...options,
   }
@@ -90,13 +90,13 @@ describe(`Options are handled correctly`, () => {
       )
     })
 
-    it(`throws on missing authToken`, async () => {
+    it(`throws on missing apiKey`, async () => {
       const args = getInternalGatsbyAPI()
       const options = getPluginOptions({
-        authToken: null,
+        apiKey: null,
       })
       await expect(sourceNodes(args, options)).rejects.toThrow(
-        `[takeshape] \`authToken\` must be specified`,
+        `[takeshape] \`apiKey\` must be specified`,
       )
     })
   })

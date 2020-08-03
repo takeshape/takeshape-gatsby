@@ -4,7 +4,7 @@ import nodeFetch, {RequestInit} from 'node-fetch'
 import {Options as DataLoaderOptions} from 'dataloader'
 
 export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
-  authToken?: string
+  apiKey?: string
   batch?: boolean
   // TODO: Properly type these parameters <cacheKey, cacheMapReturnVal>
   dataLoaderOptions?: DataLoaderOptions<unknown, unknown>
@@ -25,22 +25,22 @@ const defaultOptions = {
 }
 
 // TODO: are there other valid patterns?
-const authTokenPattern = /[0-9a-z]{32}/
+const apiKeyPattern = /[0-9a-z]{32}/
 const projecIdPattern = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
 
 export const withDefaults = ({
-  authToken,
+  apiKey,
   projectId,
   ...options
 }: PluginOptions): Required<PluginOptions> => {
-  assert(typeof authToken === `string` && authToken, `[takeshape] \`authToken\` must be specified`)
-  assert(authTokenPattern.test(authToken), `[takeshape] \`authToken\` is invalid`)
+  assert(typeof apiKey === `string` && apiKey, `[takeshape] \`apiKey\` must be specified`)
+  assert(apiKeyPattern.test(apiKey), `[takeshape] \`apiKey\` is invalid`)
 
   assert(typeof projectId === `string` && projectId, `[takeshape] \`projectId\` must be specified`)
   assert(projecIdPattern.test(projectId), `[takeshape] \`projectId\` is invalid`)
 
   return {
-    authToken,
+    apiKey,
     projectId,
     ...defaultOptions,
     ...options,

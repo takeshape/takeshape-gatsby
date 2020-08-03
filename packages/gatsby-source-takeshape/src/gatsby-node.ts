@@ -29,7 +29,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 ): Promise<void> => {
   const {createNode, addThirdPartySchema} = actions
   const {
-    authToken,
+    apiKey,
     batch,
     projectId,
     fetch,
@@ -43,7 +43,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   const headers = {
     'Content-Type': `application/json`,
-    Authorization: `Bearer ${authToken}`,
+    Authorization: `Bearer ${apiKey}`,
   } as FetchHeaders
 
   let link: ApolloLink
