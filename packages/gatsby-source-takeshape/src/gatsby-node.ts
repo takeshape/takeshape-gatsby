@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
-import {buildSchema, printSchema, GraphQLSchema} from 'graphql'
+import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {linkToExecutor} from '@graphql-tools/links'
 import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
 import {createHttpLink} from 'apollo-link-http'
