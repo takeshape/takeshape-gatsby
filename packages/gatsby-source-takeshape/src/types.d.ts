@@ -26,3 +26,7 @@ declare module '@graphql-tools/wrap' {
 }
 
 declare module 'fetch-mock-jest'
+
+declare module 'uuid' {
+  export declare function validate(uuid: string): boolean
+}

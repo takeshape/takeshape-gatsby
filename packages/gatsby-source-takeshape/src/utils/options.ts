@@ -2,6 +2,7 @@ import assert from 'assert'
 import {PluginOptions as GatsbyPluginOptions} from 'gatsby'
 import nodeFetch, {RequestInit} from 'node-fetch'
 import {Options as DataLoaderOptions} from 'dataloader'
+import {validate as uuidValidate} from 'uuid'
 
 export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
   apiKey?: string
@@ -26,7 +27,6 @@ const defaultOptions = {
 
 // TODO: are there other valid patterns?
 const apiKeyPattern = /[0-9a-z]{32}/
-const projecIdPattern = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
 
 export const withDefaults = ({
   apiKey,
@@ -37,7 +37,7 @@ export const withDefaults = ({
   assert(apiKeyPattern.test(apiKey), `[takeshape] \`apiKey\` is invalid`)
 
   assert(typeof projectId === `string` && projectId, `[takeshape] \`projectId\` must be specified`)
-  assert(projecIdPattern.test(projectId), `[takeshape] \`projectId\` is invalid`)
+  assert(uuidValidate(projectId), `[takeshape] \`projectId\` is invalid`)
 
   return {
     apiKey,
