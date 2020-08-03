@@ -11,7 +11,7 @@
     "clean": "rimraf ./dist *.tsbuildinfo",
     "develop": "tsc --watch --preserveWatchOutput",
     "lint": "eslint src -c ./.eslintrc.js --ignore-path .eslintignore",
-    "pre-commit": "lint-staged",
+    "pre-push": "lint-staged",
     "reset": "npm run clean && rimraf ./node_modules",
     "test": "jest",
     "test:changed": "npm run test -- --changedSince=master",

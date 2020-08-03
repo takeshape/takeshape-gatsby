@@ -16,7 +16,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pnpm run pre-commit --parallel",
+      "pre-push": "pnpm run pre-commit --parallel",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
