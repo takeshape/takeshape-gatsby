@@ -4,7 +4,7 @@
   "types": "./src/index.d.ts",
   "version": "0.0.2",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10"
   },
   "scripts": {
     "build": "npm run clean && tsc --build",

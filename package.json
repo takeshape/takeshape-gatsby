@@ -2,7 +2,7 @@
   "name": "takeshape-gatsby",
   "version": "0.0.0",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10"
   },
   "scripts": {
     "commit": "git-cz --no-verify",
