@@ -19,7 +19,6 @@ export interface CreateDataloaderLinkOptions
 export function createDataloaderLink(options: CreateDataloaderLinkOptions): ApolloLink {
   const load = async (keys: any) => {
     const result = await graphQLRequest<Record<string, any>>(merge(keys), options)
-
     if (result.success === false) {
       const error = new Error(`Failed to load query batch:\n${formatErrors(result)}`)
       error.name = `GraphQLError`

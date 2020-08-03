@@ -58,10 +58,22 @@ export async function graphQLRequest<DataType>(
       body,
     })
 
-    const data = await response.json()
-    return {data} as GraphQLQueryResponse<DataType>
+    const responseJson = await response.json()
+
+    if (responseJson.errors) {
+      return {
+        success: false,
+        ...responseJson,
+      } as GraphQLQueryResponseError
+    }
+
+    return {
+      success: true,
+      ...responseJson,
+    } as GraphQLQueryResponse<DataType>
   } catch (err) {
     return {
+      success: false,
       errors: [{message: err.message, type: `GraphQL request failed`}],
     } as GraphQLQueryResponseError
   }

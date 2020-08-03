@@ -106,7 +106,7 @@ export function merge(queries: any[]): MergeResult {
  * Split and transform result of the query produced by the `merge` function
  */
 export function resolveResult(mergedQueryResult: {data: any}): {data: unknown}[] {
-  const data = mergedQueryResult.data
+  const {data} = mergedQueryResult
 
   return Object.keys(data).reduce<any[]>((acc, prefixedKey) => {
     const {index, originalKey} = parsePrefixedKey(prefixedKey)

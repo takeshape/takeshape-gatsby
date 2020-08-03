@@ -12,8 +12,8 @@
     "clean": "rimraf ./dist *.tsbuildinfo",
     "lint": "eslint -c .eslintrc ./src/**/*",
     "reset": "npm run clean && rimraf ./node_modules",
+    "test": "jest",
     "watch": "tsc --watch --preserveWatchOutput",
-    "test": "cross-env BABEL_ENV=test jest src",
     "test-changed": "npm run test -- --changedSince=master"
   },
   "keywords": [
@@ -50,6 +50,7 @@
     "gatsby": "^2.24.14",
     "graphql": "14.7.0",
     "jest": "^26.1.0",
+    "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

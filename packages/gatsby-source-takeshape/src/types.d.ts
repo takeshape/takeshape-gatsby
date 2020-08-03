@@ -24,3 +24,5 @@ declare module '@graphql-tools/wrap' {
     transforms?: Array<Transform>,
   ): GraphQLSchema
 }
+
+declare module 'fetch-mock-jest'

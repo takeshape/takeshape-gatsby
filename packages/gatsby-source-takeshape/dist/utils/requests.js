@@ -10,11 +10,15 @@ async function graphQLRequest(query, options) {
             variables: query.variables,
         });
         const response = await fetch(uri, Object.assign(Object.assign({ method: `POST` }, fetchOptions), { headers: Object.assign(Object.assign({}, headers), { 'Content-Type': `application/json` }), body }));
-        const data = await response.json();
-        return { data };
+        const responseJson = await response.json();
+        if (responseJson.errors) {
+            return Object.assign({ success: false }, responseJson);
+        }
+        return Object.assign({ success: true }, responseJson);
     }
     catch (err) {
         return {
+            success: false,
             errors: [{ message: err.message, type: `GraphQL request failed` }],
         };
     }

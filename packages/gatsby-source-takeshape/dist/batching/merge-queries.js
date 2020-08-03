@@ -93,7 +93,7 @@ exports.merge = merge;
  * Split and transform result of the query produced by the `merge` function
  */
 function resolveResult(mergedQueryResult) {
-    const data = mergedQueryResult.data;
+    const { data } = mergedQueryResult;
     return Object.keys(data).reduce((acc, prefixedKey) => {
         const { index, originalKey } = parsePrefixedKey(prefixedKey);
         if (!acc[index])

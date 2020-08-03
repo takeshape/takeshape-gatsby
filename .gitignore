@@ -18,6 +18,9 @@ public
 *.tsbuildinfo
 .tsbuild/
 
+# Test artifacts
+coverage
+
 # Misc...
 *.bak
 
