@@ -1,0 +1,60 @@
+{
+  "name": "gatsby-source-takeshape",
+  "main": "./index.js",
+  "types": "./src/index.d.ts",
+  "version": "0.0.2",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc --build",
+    "clean": "rimraf ./dist *.tsbuildinfo",
+    "develop": "tsc --watch --preserveWatchOutput",
+    "lint": "eslint -c .eslintrc ./src/**/*",
+    "pre-commit": "lint-staged",
+    "reset": "npm run clean && rimraf ./node_modules",
+    "test": "jest",
+    "test:changed": "npm run test -- --changedSince=master",
+    "watch": "tsc --watch --preserveWatchOutput"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source",
+    "takeshape"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takeshape/takeshape-gatsby/tree/master/packages/gatsby-source-takeshape"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@graphql-tools/links": "^6.0.15",
+    "@graphql-tools/wrap": "^6.0.15",
+    "apollo-link": "^1.2.14",
+    "apollo-link-http": "^1.5.17",
+    "dataloader": "^2.0.0",
+    "gatsby-core-utils": "^1.3.14",
+    "node-fetch": "^2.6.0",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "@graphql-tools/delegate": "^6.0.15",
+    "@graphql-tools/utils": "^6.0.15",
+    "@types/jest": "^26.0.8",
+    "@types/node": "^14.0.27",
+    "@types/node-fetch": "^2.5.7",
+    "@types/uuid": "^8.0.0",
+    "gatsby": "^2.24.23",
+    "graphql": "14.7.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.0.0-beta"
+  },
+  "peerDependencies": {
+    "gatsby": "^2.24.14",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "example",
+  "description": "An example gatsby site for gatsby-source-takeshape",
+  "version": "1.0.0",
+  "author": {
+    "name": "TakeShape",
+    "email": "contact@takeshape.io"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "clean": "gatsby clean",
+    "develop": "npm run clean && gatsby develop",
+    "reset": "npm run clean && rimraf ./node_modules",
+    "start": "npm run develop"
+  },
+  "dependencies": {
+    "gatsby": "^2.24.2",
+    "gatsby-plugin-pnpm": "^1.2.5",
+    "gatsby-source-takeshape": "workspace:^0.0.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "dotenv": "^6.1.0",
+    "rimraf": "^3.0.2"
+  }
+}

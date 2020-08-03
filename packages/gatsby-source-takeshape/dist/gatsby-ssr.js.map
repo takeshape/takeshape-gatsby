@@ -1,0 +1,1 @@
+{"version":3,"file":"gatsby-ssr.js","sourceRoot":"","sources":["../src/gatsby-ssr.ts"],"names":[],"mappings":";;;AAAA,iCAAmC;AAGtB,QAAA,YAAY,GAAG,CAAC,EAAC,iBAAiB,EAAiB,EAAQ,EAAE;IACxE,iBAAiB,CAAC;QAChB,qBAAa,CAAC,MAAM,EAAE;YACpB,GAAG,EAAE,YAAY;YACjB,GAAG,EAAE,6BAA6B;YAClC,IAAI,EAAE,6BAA6B;SACpC,CAAC;KACH,CAAC,CAAA;AACJ,CAAC,CAAA"}

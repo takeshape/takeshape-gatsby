@@ -1,8 +1,17 @@
-module.exports =  {
-  semi:  true,
-  trailingComma:  'none',
-  singleQuote:  true,
-  printWidth:  120,
-  tabWidth:  2,
-  bracketSpacing: false
-};
+module.exports = {
+  bracketSpacing: false,
+  printWidth: 100,
+  proseWrap: 'always',
+  semi: false,
+  singleQuote: true,
+  trailingComma: 'all',
+  overrides: [
+    {
+      files: ['*.md'],
+      options: {
+        printWidth: 80,
+        proseWrap: 'always',
+      },
+    },
+  ],
+}

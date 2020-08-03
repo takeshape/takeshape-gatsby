@@ -1,19 +1,93 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  env: {
+    node: true,
+    es6: true,
+  },
+  extends: [
+    `eslint:recommended`,
+    `plugin:prettier/recommended`,
+    `plugin:import/errors`,
+    `plugin:import/warnings`,
+  ],
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
   },
-  plugins: ['jest'],
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier/@typescript-eslint', 'plugin:prettier/recommended'],
-  ignorePatterns: ['gatsby-node.js'],
-  rules: {
-    'valid-jsdoc': 'off',
-    '@typescript-eslint/no-var-requires': 'off',
-    'no-warning-comments': 'warn'
+  plugins: [`prettier`, `import`],
+  overrides: [
+    {
+      // JavaScript
+      files: [`**/*.js`],
+      parserOptions: {
+        ecmaVersion: 2018,
+      },
+      rules: {
+        quotes: [`error`, `backtick`],
+      },
+    },
+    {
+      // TypeScript
+      files: [`**/*.ts`],
+      extends: [
+        `plugin:import/typescript`,
+        `plugin:@typescript-eslint/recommended`,
+        `prettier/@typescript-eslint`,
+      ],
+      parser: `@typescript-eslint/parser`,
+      parserOptions: {
+        ecmaVersion: 2018,
+        project: [`tsconfig.json`, `packages/*/tsconfig.json`],
+        sourceType: `module`,
+        tsconfigRootDir: __dirname,
+      },
+      plugins: [`@typescript-eslint`],
+      rules: {
+        '@typescript-eslint/quotes': [`error`, `backtick`],
+      },
+    },
+    {
+      // JavaScript React / TypeScript React
+      env: {
+        browser: true,
+        node: true,
+        es6: true,
+      },
+      extends: [`plugin:react/recommended`],
+      files: [`**/src/**/*.js`, `**/src/**/*.jsx`, `**/src/**/*.ts`, `**/src/**/*.tsx`],
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: `module`,
+      },
+      plugins: [`react`],
+      settings: {
+        'import/resolver': {
+          node: {
+            extensions: [`.js`, `.jsx`, `.json`],
+          },
+        },
+      },
+    },
+    // TypeScript ambient type defs
+    {
+      files: [`**/*.d.ts`],
+      rules: {
+        '@typescript-eslint/no-unused-vars': `off`,
+      },
+    },
+  ],
+  root: true,
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': [`.ts`],
+    },
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        directory: [`packages/*/tsconfig.json`, `tsconfig.json`],
+        extensions: [`.ts`, `.tsx`],
+      },
+      node: {
+        extensions: [`.js`, `.jsx`, `.json`],
+      },
+    },
   },
-  env: {
-    'jest/globals': true,
-    node: true
-  }
-};
+}
