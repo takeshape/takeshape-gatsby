@@ -48,7 +48,6 @@ importers:
     dependencies:
       gatsby: 2.24.23_fde54655b55e10d1d346ee07c0428ee6
       gatsby-plugin-pnpm: 1.2.5_gatsby@2.24.23
-      gatsby-plugin-typescript: 2.4.16_gatsby@2.24.23
       gatsby-source-takeshape: 'link:../gatsby-source-takeshape'
       react: 16.13.1
       react-dom: 16.13.1_react@16.13.1
@@ -59,7 +58,6 @@ importers:
       dotenv: ^6.1.0
       gatsby: ^2.24.2
       gatsby-plugin-pnpm: ^1.2.5
-      gatsby-plugin-typescript: ^2.4.16
       gatsby-source-takeshape: 'workspace:^0.0.2'
       react: ^16.13.1
       react-dom: ^16.13.1
@@ -99,7 +97,7 @@ importers:
       apollo-link: ^1.2.14
       apollo-link-http: ^1.5.17
       dataloader: ^2.0.0
-      gatsby: ^2.24.14
+      gatsby: ^2.24.23
       gatsby-core-utils: ^1.3.14
       graphql: 14.7.0
       node-fetch: ^2.6.0
@@ -2119,7 +2117,6 @@ packages:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
       eslint: '*'
-      typescript: '*'
     resolution:
       integrity: sha512-eS6FTkq+wuMJ+sgtuNTtcqavWXqsflWcfBnlYhg/nS4aZ1leewkXGbvBhaapn1q6qf4M71bsR1tez5JTRMuqwA==
   /@typescript-eslint/experimental-utils/2.34.0_fd20d152386fa6c815dc4db90bd77c8b:
@@ -3045,7 +3042,7 @@ packages:
       integrity: sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==
   /babel-plugin-remove-graphql-queries/2.9.15_gatsby@2.24.23:
     dependencies:
-      gatsby: 2.24.23_00206f92b56022ee80aeffe4dc7fe1c5
+      gatsby: 2.24.23_fde54655b55e10d1d346ee07c0428ee6
     engines:
       node: '>=10.13.0'
     peerDependencies:
@@ -5137,8 +5134,8 @@ packages:
       integrity: sha512-oB8cpLWSAjOVFEJhhyMZh6NOEOtBVziaqdDQ86+qhDHFbZXoRTM7pNSvFRfW/W/L/LrQ38C99J5CGuRBBzBsdA==
   /eslint-config-react-app/5.2.1_ed4bb8193c09380c49568c172c1788a7:
     dependencies:
-      '@typescript-eslint/eslint-plugin': 2.34.0_214fac029e2c0a51fffffb0b916d37bb
-      '@typescript-eslint/parser': 2.34.0_490234ad6fe2e8487fea12b8aeb10afa
+      '@typescript-eslint/eslint-plugin': 2.34.0_984cbb313f9ea271f36cadd8f9814e06
+      '@typescript-eslint/parser': 2.34.0_eslint@6.8.0
       babel-eslint: 10.1.0_eslint@6.8.0
       confusing-browser-globals: 1.0.9
       eslint: 6.8.0
@@ -6184,7 +6181,7 @@ packages:
       '@babel/runtime': 7.11.0
       bluebird: 3.7.2
       fs-exists-cached: 1.0.0
-      gatsby: 2.24.23_00206f92b56022ee80aeffe4dc7fe1c5
+      gatsby: 2.24.23_fde54655b55e10d1d346ee07c0428ee6
       gatsby-page-utils: 0.2.19
       glob: 7.1.6
       lodash: 4.17.19
@@ -6636,7 +6633,6 @@ packages:
       gatsby: '*'
       react: ^16.4.2
       react-dom: ^16.4.2
-      typescript: '*'
     requiresBuild: true
     resolution:
       integrity: sha512-Eg8liyseiOgPKjN5VQA6vZgtnLeTdP+z8EQOeK8Mcf5GaOfmTB3FJiZFMOLKwJ9tQI1Wzvn4Ocsu1s/Ih9KqTQ==
@@ -10414,8 +10410,6 @@ packages:
     dev: false
     engines:
       node: '>=6'
-    peerDependencies:
-      typescript: '*'
     resolution:
       integrity: sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg==
   /pnp-webpack-plugin/1.6.4_typescript@4.0.0-dev.20200802:

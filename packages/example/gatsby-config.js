@@ -6,7 +6,6 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-pnpm`,
-    `gatsby-plugin-typescript`,
     {
       resolve: `gatsby-source-takeshape`,
       options: {
