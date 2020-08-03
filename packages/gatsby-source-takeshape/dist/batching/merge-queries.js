@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolveResult = exports.merge = void 0;
 const graphql_1 = require("graphql");
 const strings_1 = require("../utils/strings");
+const arrays_1 = require("../utils/arrays");
 const createKeyPrefix = strings_1.tmpl(`gatsby%s_`);
 const keyPrefixRe = /^gatsby([\d]+)_(.*)$/;
 const parsePrefixedKey = (prefixedKey) => {
@@ -211,7 +212,7 @@ function aliasTopLevelFields(prefix, doc) {
  *   }
  */
 function aliasFieldsInSelection(prefix, selections, document) {
-    return selections.flatMap((selection) => {
+    return arrays_1.flatMap(selections, (selection) => {
         switch (selection.kind) {
             case graphql_1.Kind.INLINE_FRAGMENT:
                 return [aliasFieldsInInlineFragment(prefix, selection, document)];

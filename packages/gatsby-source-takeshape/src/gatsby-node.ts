@@ -1,9 +1,3 @@
-// Polyfills so we can use ES2019 setting
-import 'ts-polyfill/lib/es2019-array'
-import 'ts-polyfill/lib/es2019-object'
-import 'ts-polyfill/lib/es2019-string'
-import 'ts-polyfill/lib/es2019-symbol'
-
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'

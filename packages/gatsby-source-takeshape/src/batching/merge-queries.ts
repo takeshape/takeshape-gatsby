@@ -1,5 +1,6 @@
 import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'graphql'
 import {tmpl} from '../utils/strings'
+import {flatMap} from '../utils/arrays'
 
 type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>
 
@@ -244,8 +245,8 @@ function aliasTopLevelFields(prefix: any, doc: any) {
  *     ... on Query { gatsby1_bar: bar }
  *   }
  */
-function aliasFieldsInSelection(prefix: any, selections: any, document: any) {
-  return selections.flatMap((selection: any) => {
+function aliasFieldsInSelection(prefix: any, selections: any, document: any): any[] {
+  return flatMap(selections, (selection: any) => {
     switch (selection.kind) {
       case Kind.INLINE_FRAGMENT:
         return [aliasFieldsInInlineFragment(prefix, selection, document)]

@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sourceNodes = void 0;
-// Polyfills so we can use ES2019 setting
-require("ts-polyfill/lib/es2019-array");
-require("ts-polyfill/lib/es2019-object");
-require("ts-polyfill/lib/es2019-string");
-require("ts-polyfill/lib/es2019-symbol");
 const uuid_1 = require("uuid");
 const graphql_1 = require("graphql");
 const links_1 = require("@graphql-tools/links");
