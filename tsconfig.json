@@ -22,10 +22,5 @@
     "strictNullChecks": true,
     "target": "ES2017"
   },
-  "exclude": ["./node_modules"],
-  "references": [
-    {
-      "path": "packages/gatsby-source-takeshape"
-    }
-  ]
+  "exclude": ["./node_modules"]
 }
