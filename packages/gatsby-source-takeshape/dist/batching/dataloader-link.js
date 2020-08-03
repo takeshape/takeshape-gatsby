@@ -20,7 +20,12 @@ function createDataloaderLink(options) {
     };
     const { queryConcurrency } = options;
     const maxBatchSize = Math.min(4, Math.round(queryConcurrency / 5));
-    const dataloader = new dataloader_1.default(load, Object.assign({ cache: false, maxBatchSize, batchScheduleFn: (cb) => setTimeout(cb, 50) }, options.dataLoaderOptions));
+    const dataloader = new dataloader_1.default(load, {
+        cache: false,
+        maxBatchSize,
+        batchScheduleFn: (cb) => setTimeout(cb, 50),
+        ...options.dataLoaderOptions,
+    });
     return new apollo_link_1.ApolloLink((operation) => new apollo_link_1.Observable((observer) => {
         const { query, variables } = operation;
         dataloader

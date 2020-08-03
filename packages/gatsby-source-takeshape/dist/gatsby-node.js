@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sourceNodes = void 0;
+// Polyfills so we can use ES2019 setting
+require("ts-polyfill/lib/es2019-array");
+require("ts-polyfill/lib/es2019-object");
+require("ts-polyfill/lib/es2019-string");
+require("ts-polyfill/lib/es2019-symbol");
 const uuid_1 = require("uuid");
 const graphql_1 = require("graphql");
 const links_1 = require("@graphql-tools/links");
@@ -20,11 +25,11 @@ const createCacheKey = strings_1.tmpl(`gatsby-source-takeshape-schema-%s-%s`);
 const createSourceNodeId = strings_1.tmpl(`gatsby-source-takeshape-%s`);
 exports.sourceNodes = async ({ actions, createNodeId, cache, reporter }, options = {}) => {
     const { createNode, addThirdPartySchema } = actions;
-    const { authToken, batch, projectId, fetch, fetchOptions, dataLoaderOptions, refetchInterval, queryConcurrency, } = options_1.withDefaults(options);
+    const { apiKey, batch, projectId, fetch, fetchOptions, dataLoaderOptions, refetchInterval, queryConcurrency, } = options_1.withDefaults(options);
     const uri = createUri(projectId);
     const headers = {
         'Content-Type': `application/json`,
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${apiKey}`,
     };
     let link;
     if (batch) {

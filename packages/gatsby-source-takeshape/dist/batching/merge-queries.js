@@ -138,7 +138,7 @@ function prefixQueryParts(prefix, query) {
     let document = aliasTopLevelFields(prefix, query.query);
     const variableNames = Object.keys(query.variables);
     if (variableNames.length === 0) {
-        return Object.assign(Object.assign({}, query), { query: document });
+        return { ...query, query: document };
     }
     const fragmentsWithVariables = new Set();
     document = graphql_1.visit(document, graphql_1.visitInParallel([
@@ -178,7 +178,13 @@ function aliasTopLevelFields(prefix, doc) {
     const transformer = {
         [graphql_1.Kind.OPERATION_DEFINITION]: (def) => {
             const { selections } = def.selectionSet;
-            return Object.assign(Object.assign({}, def), { selectionSet: Object.assign(Object.assign({}, def.selectionSet), { selections: aliasFieldsInSelection(prefix, selections, doc) }) });
+            return {
+                ...def,
+                selectionSet: {
+                    ...def.selectionSet,
+                    selections: aliasFieldsInSelection(prefix, selections, doc),
+                },
+            };
         },
     };
     const keyMap = { [graphql_1.Kind.DOCUMENT]: [`definitions`] };
@@ -234,7 +240,10 @@ function addSkipDirective(node) {
             },
         ],
     };
-    return Object.assign(Object.assign({}, node), { directives: [skipDirective] });
+    return {
+        ...node,
+        directives: [skipDirective],
+    };
 }
 /**
  * Add aliases to top-level fields of the inline fragment.
@@ -247,7 +256,13 @@ function addSkipDirective(node) {
  */
 function aliasFieldsInInlineFragment(prefix, fragment, document) {
     const { selections } = fragment.selectionSet;
-    return Object.assign(Object.assign({}, fragment), { selectionSet: Object.assign(Object.assign({}, fragment.selectionSet), { selections: aliasFieldsInSelection(prefix, selections, document) }) });
+    return {
+        ...fragment,
+        selectionSet: {
+            ...fragment.selectionSet,
+            selections: aliasFieldsInSelection(prefix, selections, document),
+        },
+    };
 }
 /**
  * Replaces fragment spread with inline fragment
@@ -273,7 +288,13 @@ function inlineFragmentSpread(spread, document) {
     };
 }
 function prefixNodeName(namedNode, prefix) {
-    return Object.assign(Object.assign({}, namedNode), { name: Object.assign(Object.assign({}, namedNode.name), { value: prefix + namedNode.name.value }) });
+    return {
+        ...namedNode,
+        name: {
+            ...namedNode.name,
+            value: prefix + namedNode.name.value,
+        },
+    };
 }
 /**
  * Returns a new FieldNode with prefixed alias
@@ -284,7 +305,13 @@ function prefixNodeName(namedNode, prefix) {
  */
 function aliasField(field, aliasPrefix) {
     const aliasNode = field.alias ? field.alias : field.name;
-    return Object.assign(Object.assign({}, field), { alias: Object.assign(Object.assign({}, aliasNode), { value: aliasPrefix + aliasNode.value }) });
+    return {
+        ...field,
+        alias: {
+            ...aliasNode,
+            value: aliasPrefix + aliasNode.value,
+        },
+    };
 }
 function isQueryDefinition(def) {
     return def.kind === graphql_1.Kind.OPERATION_DEFINITION && def.operation === `query`;

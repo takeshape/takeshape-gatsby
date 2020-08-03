@@ -15,7 +15,10 @@ class NamespaceUnderFieldTransform {
             return schema;
         }
         const queryConfig = queryType.toConfig();
-        const nestedQuery = new graphql_1.GraphQLObjectType(Object.assign(Object.assign({}, queryConfig), { name: this.typeName }));
+        const nestedQuery = new graphql_1.GraphQLObjectType({
+            ...queryConfig,
+            name: this.typeName,
+        });
         let newSchema = utils_1.addTypes(schema, [nestedQuery]);
         const newRootFieldConfigMap = {
             [this.fieldName]: {

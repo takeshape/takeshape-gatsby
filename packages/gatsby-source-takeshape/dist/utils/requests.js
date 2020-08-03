@@ -9,12 +9,26 @@ async function graphQLRequest(query, options) {
             query: graphql_1.print(query.query),
             variables: query.variables,
         });
-        const response = await fetch(uri, Object.assign(Object.assign({ method: `POST` }, fetchOptions), { headers: Object.assign(Object.assign({}, headers), { 'Content-Type': `application/json` }), body }));
+        const response = await fetch(uri, {
+            method: `POST`,
+            ...fetchOptions,
+            headers: {
+                ...headers,
+                'Content-Type': `application/json`,
+            },
+            body,
+        });
         const responseJson = await response.json();
         if (responseJson.errors) {
-            return Object.assign({ success: false }, responseJson);
+            return {
+                success: false,
+                ...responseJson,
+            };
         }
-        return Object.assign({ success: true }, responseJson);
+        return {
+            success: true,
+            ...responseJson,
+        };
     }
     catch (err) {
         return {

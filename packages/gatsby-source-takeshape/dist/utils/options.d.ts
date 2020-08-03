@@ -2,7 +2,7 @@ import { PluginOptions as GatsbyPluginOptions } from 'gatsby';
 import nodeFetch, { RequestInit } from 'node-fetch';
 import { Options as DataLoaderOptions } from 'dataloader';
 export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
-    authToken?: string;
+    apiKey?: string;
     batch?: boolean;
     dataLoaderOptions?: DataLoaderOptions<unknown, unknown>;
     fetch?: typeof nodeFetch;
@@ -11,5 +11,5 @@ export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
     refetchInterval?: number;
     queryConcurrency?: number;
 }
-export declare const withDefaults: ({ authToken, projectId, ...options }: PluginOptions) => Required<PluginOptions>;
+export declare const withDefaults: ({ apiKey, projectId, ...options }: PluginOptions) => Required<PluginOptions>;
 //# sourceMappingURL=options.d.ts.map
