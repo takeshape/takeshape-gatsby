@@ -15,7 +15,7 @@ describe(`createDataloaderLink`, () => {
     fetchMock.resetMocks()
   })
 
-  it(`works with minimal set of options`, (done) => {
+  it(`works with minimal set of options`, async () => {
     const link = createDataloaderLink({
       uri: `http://localhost`,
       fetch: nodeFetch,
@@ -26,16 +26,18 @@ describe(`createDataloaderLink`, () => {
     })
     fetchMock.mockResponse(JSON.stringify(fetchResult))
     const observable = execute(link, {query: sampleQuery})
-    observable.subscribe({
-      next: (result) => {
-        expect(result).toEqual(expectedSampleQueryResult)
-        done()
-      },
-      error: done,
+    return new Promise((resolve, reject) => {
+      observable.subscribe({
+        next: (result) => {
+          expect(result).toEqual(expectedSampleQueryResult)
+          resolve()
+        },
+        error: reject,
+      })
     })
   })
 
-  it(`reports fetch errors`, (done) => {
+  it(`reports fetch errors`, async () => {
     const link = createDataloaderLink({
       uri: `http://localhost`,
       fetch: nodeFetch,
@@ -46,18 +48,20 @@ describe(`createDataloaderLink`, () => {
     })
     fetchMock.mockReject(new Error(`FetchError`))
     const observable = execute(link, {query: sampleQuery})
-    observable.subscribe({
-      error: (error) => {
-        expect(error.message).toMatch(/FetchError/)
-        done()
-      },
-      complete: () => {
-        done.fail(`Expected error not thrown`)
-      },
+    return new Promise((resolve, reject) => {
+      observable.subscribe({
+        error: (error) => {
+          expect(error.message).toMatch(/FetchError/)
+          resolve()
+        },
+        complete: () => {
+          reject(`Expected error not thrown`)
+        },
+      })
     })
   })
 
-  it(`reports graphql errors`, (done) => {
+  it(`reports graphql errors`, async () => {
     const result = ({
       errors: [{message: `Error1`}, {message: `Error2`}],
     } as unknown) as Response
@@ -72,15 +76,17 @@ describe(`createDataloaderLink`, () => {
     })
     fetchMock.mockResponse(JSON.stringify(result))
     const observable = execute(link, {query: sampleQuery})
-    observable.subscribe({
-      error: (error) => {
-        expect(error.name).toEqual(`GraphQLError`)
-        expect(error.message).toEqual(`Failed to load query batch:\nError1\nError2`)
-        done()
-      },
-      complete: () => {
-        done.fail(`Expected error not thrown`)
-      },
+    return new Promise((resolve, reject) => {
+      observable.subscribe({
+        error: (error) => {
+          expect(error.name).toEqual(`GraphQLError`)
+          expect(error.message).toEqual(`Failed to load query batch:\nError1\nError2`)
+          resolve()
+        },
+        complete: () => {
+          reject(`Expected error not thrown`)
+        },
+      })
     })
   })
 })

@@ -52,23 +52,27 @@ module.exports = {
         es6: true,
       },
       extends: [`plugin:react/recommended`],
-      files: [`**/src/**/*.js`, `**/src/**/*.jsx`, `**/src/**/*.ts`, `**/src/**/*.tsx`],
+      files: [`**/src/**/*.{js,jsx}`, `**/src/**/*.{ts,tsx}`],
       parserOptions: {
         ecmaVersion: 2018,
         sourceType: `module`,
       },
       plugins: [`react`],
-      settings: {
-        'import/resolver': {
-          node: {
-            extensions: [`.js`, `.jsx`, `.json`],
-          },
-        },
+    },
+    {
+      // Jest test files
+      env: {
+        browser: false,
+        'jest/globals': true,
+        node: true,
       },
+      extends: [`plugin:jest/recommended`],
+      files: [`**/*.test.js`, `**/*.test.ts`],
     },
     // TypeScript ambient type defs
     {
       files: [`**/*.d.ts`],
+      plugins: [`@typescript-eslint`],
       rules: {
         '@typescript-eslint/no-unused-vars': `off`,
       },
@@ -82,7 +86,7 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        directory: [`packages/*/tsconfig.json`, `tsconfig.json`],
+        directory: `packages/*/tsconfig.json`,
         extensions: [`.ts`, `.tsx`],
       },
       node: {

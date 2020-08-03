@@ -26,6 +26,6 @@ jobs:
         with:
           version: 5.4.11
 
-      - run: pnpm run lint
-      - run: pnpm run test
-      - run: pnpm run build
+      - run: pnpm run lint --recursive
+      - run: pnpm run test --recursive
+      - run: pnpm run build --recursive
