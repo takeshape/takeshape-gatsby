@@ -5,8 +5,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml",
-    "watch": "pnpm run build --filter gatsby-source-sanity && pnpm run watch --recursive --parallel"
+    "develop:gatsby-source-takeshape": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
+    "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml"
   },
   "repository": {
     "type": "git",

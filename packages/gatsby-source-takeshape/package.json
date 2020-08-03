@@ -10,11 +10,12 @@
     "build": "npm run clean && tsc --build",
     "check": "tsc --skipLibCheck --noEmit",
     "clean": "rimraf ./dist *.tsbuildinfo",
+    "develop": "tsc --watch --preserveWatchOutput",
     "lint": "eslint -c .eslintrc ./src/**/*",
     "reset": "npm run clean && rimraf ./node_modules",
     "test": "jest",
-    "watch": "tsc --watch --preserveWatchOutput",
-    "test-changed": "npm run test -- --changedSince=master"
+    "test:changed": "npm run test -- --changedSince=master",
+    "watch": "tsc --watch --preserveWatchOutput"
   },
   "keywords": [
     "gatsby",

@@ -12,8 +12,7 @@
     "clean": "gatsby clean",
     "develop": "npm run clean && gatsby develop",
     "reset": "npm run clean && rimraf ./node_modules",
-    "start": "npm run develop",
-    "watch": "npm run develop"
+    "start": "npm run develop"
   },
   "dependencies": {
     "gatsby": "^2.24.2",
@@ -24,6 +23,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "dotenv": "^6.1.0"
+    "dotenv": "^6.1.0",
+    "rimraf": "^3.0.2"
   }
 }
