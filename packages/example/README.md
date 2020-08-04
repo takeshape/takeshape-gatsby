@@ -17,7 +17,7 @@ npm run example:deploy
 
 Create a TakeShape project using this button:
 
-<a href="//app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/gatsby-source-takeshape/tree/master/example/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" width=205 height=38></a>
+<a href="//app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/gatsby-source-takeshape/tree/trunk/example/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" width=205 height=38></a>
 
 Create an `.env` file in this directory with this format:
 

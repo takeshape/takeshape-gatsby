@@ -20,7 +20,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "pnpm run pre-push --parallel --filter ...[origin/master]",
+      "pre-push": "pnpm run pre-push --parallel --filter ...[origin/trunk]",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },

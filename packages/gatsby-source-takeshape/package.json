@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/takeshape/takeshape-gatsby/tree/master/packages/gatsby-source-takeshape"
+    "url": "https://github.com/takeshape/takeshape-gatsby/tree/trunk/packages/gatsby-source-takeshape"
   },
   "scripts": {
     "build": "npm run clean && tsc --build",
@@ -22,7 +22,7 @@
     "pre-push": "lint-staged",
     "reset": "npm run clean && rimraf ./node_modules",
     "test": "jest",
-    "test:changed": "npm run test -- --changedSince=master",
+    "test:changed": "npm run test -- --changedSince=trunk",
     "watch": "tsc --watch --preserveWatchOutput"
   },
   "keywords": [
