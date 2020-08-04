@@ -14,7 +14,7 @@ export const query = graphql`
 `
 
 const IndexPage = ({data}) => {
-  return <>Hello {data.takeshape.helloWorld.content}</>
+  return <>{data.takeshape.helloWorld.content}</>
 }
 
 export default IndexPage

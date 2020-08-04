@@ -9,7 +9,7 @@ module.exports = {
     {
       resolve: `gatsby-source-takeshape`,
       options: {
-        authToken: process.env.TAKESHAPE_TOKEN,
+        apiKey: process.env.TAKESHAPE_TOKEN,
         projectId: process.env.TAKESHAPE_PROJECT,
       },
     },
