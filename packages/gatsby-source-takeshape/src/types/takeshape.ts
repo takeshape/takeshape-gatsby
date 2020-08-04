@@ -11,6 +11,7 @@ export interface PluginOptions extends Omit<_PluginOptions, 'plugins'> {
   fetchOptions: RequestInit
   projectId: string
   queryConcurrency: number
+  throttle: boolean
 }
 
 export type PluginOptionsInit = Partial<PluginOptions>

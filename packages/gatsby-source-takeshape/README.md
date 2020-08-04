@@ -54,6 +54,13 @@ module.exports = {
 -   `dataLoaderOptions` (object) -- Advanced. Override or set options passed to
     [Dataloader](https://www.npmjs.com/package/dataloader#new-dataloaderbatchloadfn--options).
     Dataloader is used if `batch` is `true`.
+-   `throttle` (boolean) -- Throttle queries based on the `x-ratelimit-limit`
+    response header. Enabling throttling will slow down your build, but will
+    reduce the risk of hitting your API rate limit. Regardless of throttling,
+    [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) errors
+    are handled with
+    [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
+    Default `false`
 
 > You can get your project ID from the URL when logged in to a project on the
 > [TakeShape](https://app.takeshape.io/). For example, the URL might look like

@@ -2,14 +2,16 @@ import DataLoader from 'dataloader'
 import {HeadersInit} from 'node-fetch'
 import {ApolloLink, Observable} from 'apollo-link'
 import {merge, resolveResult} from './merge-queries'
-import {graphQLRequest} from '../utils/requests'
+import {graphQLRequest, formatErrors} from '../utils/requests'
 import {PluginOptions} from '../types/takeshape'
+import {Fetch} from '../types/fetch'
 import {handleGraphQLError} from '../errors'
 
 export interface CreateDataloaderLinkOptions
   extends Required<
     Pick<PluginOptions, 'headers' | 'fetchOptions' | 'dataLoaderOptions' | 'queryConcurrency'>
   > {
+  fetch: Fetch
   headers: HeadersInit
   uri: string
 }
