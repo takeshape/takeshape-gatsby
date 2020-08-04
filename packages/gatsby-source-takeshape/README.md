@@ -32,6 +32,13 @@ npm install --save @takeshape/gatsby-source-takeshape
 -   `dataLoaderOptions` (object) -- Advanced. Override or set options passed to
     [Dataloader](https://www.npmjs.com/package/dataloader#new-dataloaderbatchloadfn--options).
     Dataloader is used if `batch` is `true`.
+-   `throttle` (boolean) -- Throttle queries based on the `x-ratelimit-limit`
+    response header. Enabling throttling will slow down your build, but will
+    reduce the risk of hitting your API rate limit. Regardless of throttling,
+    [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) errors
+    are handled with
+    [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
+    Default `false`
 
 ## When do I use this plugin?
 

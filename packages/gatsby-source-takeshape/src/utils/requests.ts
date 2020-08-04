@@ -1,5 +1,6 @@
 import {print, ASTNode} from 'gatsby/graphql'
-import fetch, {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
+import {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
+import {Fetch} from '../types/fetch'
 
 export interface GraphQLRequestQuery {
   query: ASTNode
@@ -7,6 +8,7 @@ export interface GraphQLRequestQuery {
 }
 
 export interface GraphQLRequestOptions {
+  fetch: Fetch
   fetchOptions: RequestInit
   headers: HeadersInit
   uri: RequestInfo
@@ -39,7 +41,7 @@ export async function graphQLRequest<DataType>(
   query: GraphQLRequestQuery,
   options: GraphQLRequestOptions,
 ): Promise<GraphQLQueryResult<DataType>> {
-  const {uri, fetchOptions, headers} = options
+  const {fetch, uri, fetchOptions, headers} = options
 
   try {
     const body = JSON.stringify({

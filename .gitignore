@@ -21,6 +21,10 @@ public
 # Test artifacts
 coverage
 
+# Editor configs
+*.code-workspace
+
 # Misc...
 *.bak
+.DS_Store
 

@@ -13,6 +13,7 @@ export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
   projectId?: string
   refetchInterval?: number
   queryConcurrency?: number
+  throttle?: boolean
 }
 
 const defaultOptions = {
@@ -21,6 +22,7 @@ const defaultOptions = {
   fetchOptions: {},
   refetchInterval: 60,
   queryConcurrency: Number(process.env.GATSBY_EXPERIMENTAL_QUERY_CONCURRENCY || `4`),
+  throttle: false,
 }
 
 // TODO: are there other valid patterns?
