@@ -6,6 +6,14 @@
   "engines": {
     "node": ">=10"
   },
+  "author": {
+    "name": "TakeShape",
+    "email": "contact@takeshape.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takeshape/takeshape-gatsby/tree/master/packages/gatsby-source-takeshape"
+  },
   "scripts": {
     "build": "npm run clean && tsc --build",
     "clean": "rimraf ./dist *.tsbuildinfo",
@@ -23,10 +31,6 @@
     "gatsby-source",
     "takeshape"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/takeshape/takeshape-gatsby/tree/master/packages/gatsby-source-takeshape"
-  },
   "license": "MIT",
   "dependencies": {
     "@graphql-tools/links": "^6.0.15",
