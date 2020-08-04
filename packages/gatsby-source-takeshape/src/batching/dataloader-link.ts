@@ -7,16 +7,14 @@ import {PluginOptions} from '../utils/options'
 
 export interface CreateDataloaderLinkOptions
   extends Required<
-    Pick<
-      PluginOptions,
-      'headers' | 'fetch' | 'fetchOptions' | 'dataLoaderOptions' | 'queryConcurrency'
-    >
+    Pick<PluginOptions, 'headers' | 'fetchOptions' | 'dataLoaderOptions' | 'queryConcurrency'>
   > {
   headers: HeadersInit
   uri: string
 }
 
 export function createDataloaderLink(options: CreateDataloaderLinkOptions): ApolloLink {
+  // WHY? Don't feel like properly typing all this borrowed code yet.. but soon
   const load = async (keys: any) => {
     const result = await graphQLRequest<Record<string, any>>(merge(keys), options)
     if (result.success === false) {
@@ -44,7 +42,6 @@ export function createDataloaderLink(options: CreateDataloaderLinkOptions): Apol
         const {query, variables} = operation
         dataloader
           .load({query, variables})
-          // TODO: properly type this
           .then((response: any) => {
             operation.setContext({response})
             observer.next(response)

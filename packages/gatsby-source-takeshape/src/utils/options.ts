@@ -1,6 +1,6 @@
 import assert from 'assert'
 import {PluginOptions as GatsbyPluginOptions} from 'gatsby'
-import nodeFetch, {RequestInit} from 'node-fetch'
+import {RequestInit} from 'node-fetch'
 import {Options as DataLoaderOptions} from 'dataloader'
 import {validate as uuidValidate} from 'uuid'
 
@@ -9,7 +9,6 @@ export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
   batch?: boolean
   // TODO: Properly type these parameters <cacheKey, cacheMapReturnVal>
   dataLoaderOptions?: DataLoaderOptions<unknown, unknown>
-  fetch?: typeof nodeFetch
   fetchOptions?: RequestInit
   projectId?: string
   refetchInterval?: number
@@ -19,7 +18,6 @@ export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
 const defaultOptions = {
   batch: false,
   dataLoaderOptions: {},
-  fetch: nodeFetch,
   fetchOptions: {},
   refetchInterval: 60,
   queryConcurrency: Number(process.env.GATSBY_EXPERIMENTAL_QUERY_CONCURRENCY || `4`),

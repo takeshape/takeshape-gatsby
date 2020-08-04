@@ -1,10 +1,9 @@
 import fetchMock, {enableFetchMocks} from 'jest-fetch-mock'
 enableFetchMocks()
-
 import {parse} from 'graphql'
 import {execute} from 'apollo-link'
 import {createDataloaderLink} from '../dataloader-link'
-import nodeFetch, {Response} from 'node-fetch'
+import {Response} from 'node-fetch'
 
 const sampleQuery = parse(`{ foo }`)
 const expectedSampleQueryResult = {data: {foo: `bar`}}
@@ -18,7 +17,6 @@ describe(`createDataloaderLink`, () => {
   it(`works with minimal set of options`, async () => {
     const link = createDataloaderLink({
       uri: `http://localhost`,
-      fetch: nodeFetch,
       fetchOptions: {},
       dataLoaderOptions: {},
       headers: {},
@@ -40,7 +38,6 @@ describe(`createDataloaderLink`, () => {
   it(`reports fetch errors`, async () => {
     const link = createDataloaderLink({
       uri: `http://localhost`,
-      fetch: nodeFetch,
       fetchOptions: {},
       dataLoaderOptions: {},
       headers: {},
@@ -68,7 +65,6 @@ describe(`createDataloaderLink`, () => {
 
     const link = createDataloaderLink({
       uri: `http://localhost`,
-      fetch: nodeFetch,
       fetchOptions: {},
       dataLoaderOptions: {},
       headers: {},

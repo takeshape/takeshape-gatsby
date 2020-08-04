@@ -1,6 +1,6 @@
 import {ExecutionResult, Transform} from '@graphql-tools/utils'
 import {ExecutionParams, SubschemaConfig, Executor} from '@graphql-tools/delegate'
-import {GraphQLSchema} from 'graphql'
+import {GraphQLSchema, GraphQLScalarType} from 'graphql'
 
 // GraphQL Tools has some bad types: https://github.com/ardatan/graphql-tools/issues/1585
 type MyAsyncExecutor<TContext = Record<string, unknown>> = <
@@ -23,10 +23,4 @@ declare module '@graphql-tools/wrap' {
     subschemaOrSubschemaConfig: GraphQLSchema | MySubschemaConfig,
     transforms?: Array<Transform>,
   ): GraphQLSchema
-}
-
-declare module 'fetch-mock-jest'
-
-declare module 'uuid' {
-  export declare function validate(uuid: string): boolean
 }

@@ -4,15 +4,19 @@
   "engines": {
     "node": ">=10"
   },
+  "author": {
+    "name": "TakeShape",
+    "email": "contact@takeshape.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takeshape/takeshape-gatsby"
+  },
   "scripts": {
     "commit": "git-cz --no-verify",
     "develop": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
     "preinstall": "npx only-allow pnpm",
     "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/takeshape/takeshape-gatsby"
   },
   "husky": {
     "hooks": {

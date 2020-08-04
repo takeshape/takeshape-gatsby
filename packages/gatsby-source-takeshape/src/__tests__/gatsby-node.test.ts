@@ -1,5 +1,3 @@
-import {createHttpLink} from 'apollo-link-http'
-import nodeFetch from 'node-fetch'
 import {PluginOptions} from '../index'
 import {sourceNodes as _sourceNodes} from '../gatsby-node'
 
@@ -20,8 +18,8 @@ jest.mock(`apollo-link-http`, () => {
   }
 })
 
-jest.mock(`graphql`, () => {
-  const graphql = jest.requireActual(`graphql`)
+jest.mock(`gatsby/graphql`, () => {
+  const graphql = jest.requireActual(`gatsby/graphql`)
   return {
     ...graphql,
     buildSchema: jest.fn(),
@@ -98,27 +96,6 @@ describe(`Options are handled correctly`, () => {
       await expect(sourceNodes(args, options)).rejects.toThrow(
         `[takeshape] \`apiKey\` must be specified`,
       )
-    })
-  })
-
-  describe(`createHttpLink`, () => {
-    it(`use passed in fetch if provided`, async () => {
-      const args = getInternalGatsbyAPI()
-      const mockFetch = jest.fn()
-      const options = getPluginOptions({
-        fetch: mockFetch,
-      })
-      await sourceNodes(args, options)
-
-      expect(createHttpLink).toHaveBeenCalledWith(expect.objectContaining({fetch: mockFetch}))
-    })
-
-    it(`use default fetch if not provided`, async () => {
-      const api = getInternalGatsbyAPI()
-      const options = getPluginOptions()
-      await sourceNodes(api, options)
-
-      expect(createHttpLink).toHaveBeenCalledWith(expect.objectContaining({fetch: nodeFetch}))
     })
   })
 })
