@@ -1,4 +1,4 @@
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema } from 'gatsby/graphql';
 import { Transform } from '@graphql-tools/utils';
 import { GatsbyGraphQLFieldResolver } from './types/gatsby';
 export declare class NamespaceUnderFieldTransform implements Transform {

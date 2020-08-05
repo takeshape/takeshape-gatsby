@@ -1,3 +1,3 @@
 export declare const pkgName = "gatsby-source-takeshape";
-export { PluginOptions } from './utils/options';
+export { PluginOptionsInit, PluginOptions } from './types/takeshape';
 //# sourceMappingURL=index.d.ts.map

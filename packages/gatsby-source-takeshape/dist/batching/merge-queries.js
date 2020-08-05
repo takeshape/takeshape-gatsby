@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolveResult = exports.merge = void 0;
-const graphql_1 = require("graphql");
+const graphql_1 = require("gatsby/graphql");
 const strings_1 = require("../utils/strings");
 const arrays_1 = require("../utils/arrays");
 const createKeyPrefix = strings_1.tmpl(`gatsby%s_`);

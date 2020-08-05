@@ -1,2 +1,2 @@
 export const pkgName = `gatsby-source-takeshape`
-export {PluginOptions} from './utils/options'
+export {PluginOptionsInit, PluginOptions} from './types/takeshape'

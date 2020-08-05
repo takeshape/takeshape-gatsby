@@ -9,8 +9,10 @@ import fetch, {HeadersInit as FetchHeaders} from 'node-fetch'
 import {createContentDigest} from 'gatsby-core-utils'
 import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms'
 import {createDataloaderLink} from './batching/dataloader-link'
-import {PluginOptions, withDefaults} from './utils/options'
+import {withDefaults} from './options'
+import {PluginOptionsInit} from './types/takeshape'
 import {GatsbyGraphQLFieldResolver} from './types/gatsby'
+import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
@@ -19,26 +21,28 @@ const typeName = `TS`
 const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
 
-const createUri = tmpl<[string]>(`https://api.takeshape.io/project/%s/graphql`)
+const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
 const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
 const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   {actions, createNodeId, cache, reporter}: SourceNodesArgs,
-  options: PluginOptions = {} as PluginOptions,
+  options: PluginOptionsInit = {} as PluginOptionsInit,
 ): Promise<void> => {
   const {createNode, addThirdPartySchema} = actions
+  const config = withDefaults(options)
+
   const {
     apiKey,
+    apiUrl,
     batch,
     projectId,
     fetchOptions,
     dataLoaderOptions,
-    refetchInterval,
     queryConcurrency,
-  } = withDefaults(options)
+  } = config
 
-  const uri = createUri(projectId)
+  const uri = createUri(apiUrl, projectId)
 
   const headers = {
     'Content-Type': `application/json`,
@@ -118,12 +122,10 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   addThirdPartySchema({schema})
 
-  // Refetching is only necessary when running a develop server
-  if (isDevelopMode && refetchInterval > 0) {
-    reporter.info(`[takeshape] Refetching schema every ${refetchInterval} seconds`)
-    const msRefetchInterval = refetchInterval * 1000
-    const refetcher = () => {
-      reporter.info(`[takeshape] Fetching latest nodes`)
+  // Only need to subscribe to updates in develop mode
+  if (isDevelopMode) {
+    subscribe(config, () => {
+      reporter.info(`[takeshape] Content updated`)
       createNode(
         createSchemaNode({
           id: nodeId,
@@ -131,9 +133,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
           fieldName,
         }),
       )
-      setTimeout(refetcher, msRefetchInterval)
-    }
-    setTimeout(refetcher, msRefetchInterval)
+    })
   }
 }
 

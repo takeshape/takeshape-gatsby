@@ -9,6 +9,7 @@ const apollo_link_1 = require("apollo-link");
 const merge_queries_1 = require("./merge-queries");
 const requests_1 = require("../utils/requests");
 function createDataloaderLink(options) {
+    // WHY? Don't feel like properly typing all this borrowed code yet.. but soon
     const load = async (keys) => {
         const result = await requests_1.graphQLRequest(merge_queries_1.merge(keys), options);
         if (result.success === false) {
@@ -30,7 +31,6 @@ function createDataloaderLink(options) {
         const { query, variables } = operation;
         dataloader
             .load({ query, variables })
-            // TODO: properly type this
             .then((response) => {
             operation.setContext({ response });
             observer.next(response);

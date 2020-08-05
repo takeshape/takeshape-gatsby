@@ -13,7 +13,7 @@
   "scripts": {
     "build": "gatsby build",
     "clean": "gatsby clean",
-    "develop": "npm run clean && gatsby develop",
+    "develop": "npm run clean && gatsby develop --port 9999",
     "reset": "npm run clean && rimraf ./node_modules",
     "start": "npm run develop"
   },

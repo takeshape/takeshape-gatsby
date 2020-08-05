@@ -3,7 +3,7 @@ import {HeadersInit} from 'node-fetch'
 import {ApolloLink, Observable} from 'apollo-link'
 import {merge, resolveResult} from './merge-queries'
 import {graphQLRequest, formatErrors} from '../utils/requests'
-import {PluginOptions} from '../utils/options'
+import {PluginOptions} from '../types/takeshape'
 
 export interface CreateDataloaderLinkOptions
   extends Required<

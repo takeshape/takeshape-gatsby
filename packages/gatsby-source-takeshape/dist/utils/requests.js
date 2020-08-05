@@ -1,15 +1,19 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatErrors = exports.graphQLRequest = void 0;
-const graphql_1 = require("graphql");
+const graphql_1 = require("gatsby/graphql");
+const node_fetch_1 = __importDefault(require("node-fetch"));
 async function graphQLRequest(query, options) {
-    const { uri, fetch, fetchOptions, headers } = options;
+    const { uri, fetchOptions, headers } = options;
     try {
         const body = JSON.stringify({
             query: graphql_1.print(query.query),
             variables: query.variables,
         });
-        const response = await fetch(uri, {
+        const response = await node_fetch_1.default(uri, {
             method: `POST`,
             ...fetchOptions,
             headers: {
