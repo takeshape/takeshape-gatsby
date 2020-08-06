@@ -4,7 +4,6 @@ import {PluginOptionsInit, PluginOptions} from './types/takeshape'
 
 const defaultOptions = {
   apiUrl: `https://api.takeshape.io`,
-  appUrl: `https://app.takeshape.io`,
   batch: false,
   dataLoaderOptions: {},
   fetchOptions: {},

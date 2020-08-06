@@ -1,15 +1,6 @@
+import { Reporter } from 'gatsby';
 import { PluginOptions } from '../types/takeshape';
-declare type Action = {
-    type: string;
-    meta: {
-        source: string;
-    };
-    payload: {
-        contentId: string;
-        contentTypeId: string;
-    };
-};
-export declare function handleAction(callback: (action: any) => void): (action: Action) => void;
-export declare function subscribe({ apiKey, apiUrl, appUrl, projectId, }: Pick<PluginOptions, 'appUrl' | 'apiKey' | 'apiUrl' | 'projectId'>, callback: (payload: any) => void): Promise<void>;
-export {};
+import { ActionPayload } from '../types/pusher';
+export declare function handleAction(reporter: Reporter, callback: (action: ActionPayload) => void): (action: ActionPayload) => void;
+export declare function subscribe({ apiKey, apiUrl, projectId }: Pick<PluginOptions, 'apiKey' | 'apiUrl' | 'projectId'>, reporter: Reporter, callback: (payload?: ActionPayload) => void): Promise<void>;
 //# sourceMappingURL=pusher.d.ts.map

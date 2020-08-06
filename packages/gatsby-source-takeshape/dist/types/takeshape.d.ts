@@ -4,7 +4,6 @@ import { Options as DataLoaderOptions } from 'dataloader';
 export interface PluginOptions extends Omit<_PluginOptions, 'plugins'> {
     apiKey: string;
     apiUrl: string;
-    appUrl: string;
     batch: boolean;
     dataLoaderOptions: DataLoaderOptions<unknown, unknown>;
     fetchOptions: RequestInit;
@@ -13,7 +12,6 @@ export interface PluginOptions extends Omit<_PluginOptions, 'plugins'> {
 }
 export declare type PluginOptionsInit = Partial<PluginOptions>;
 export interface ApiConfig {
-    appUrl: string;
     endpoint: string;
     authToken?: string;
     cliLogin?: boolean;

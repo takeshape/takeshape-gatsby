@@ -1,36 +1,26 @@
-import Pusher, {AuthorizerGenerator} from 'pusher-js'
-import fetch, {Headers} from 'node-fetch'
+import Pusher, {AuthorizerGenerator, AuthorizerCallback} from 'pusher-js'
+import fetch, {Headers, Response} from 'node-fetch'
 import {URLSearchParams} from 'url'
+import {Reporter} from 'gatsby'
 import {PluginOptions} from '../types/takeshape'
+import {ActionPayload, ActionContentTypes} from '../types/pusher'
 import api from './takeshape-api'
 import {tmpl} from './strings'
+import {AuthData} from 'pusher-js/types/src/core/auth/options'
 
 const createAuthEndpoint = tmpl<[string, string]>(`%s/project/%s/channel-auth`)
 
-// export function handleWarning(type: string, error: Record<string, unknown>): void {
-//   if (type === `Error` && error.type === `WebSocketError`) {
-//     console.log(`Disconnected from TakeShape. Restart this process to resume live content updates.`)
-//   }
-// }
-
-// Pusher.warn = handleWarning
-
-type Action = {
-  type: string
-  meta: {source: string}
-  payload: {
-    contentId: string
-    contentTypeId: string
-  }
-}
-
-export function handleAction(callback: (action: any) => void): (action: Action) => void {
+export function handleAction(
+  reporter: Reporter,
+  callback: (action: ActionPayload) => void,
+): (action: ActionPayload) => void {
   return (action) => {
     if (
-      action.type === `content/CONTENT_UPDATED` ||
-      action.type === `content/CONTENT_CREATED` ||
-      action.type === `content/CONTENT_DELETED`
+      action.type === ActionContentTypes.Updated ||
+      action.type === ActionContentTypes.Created ||
+      action.type === ActionContentTypes.Deleted
     ) {
+      reporter.info(`[takeshape] Content updated`)
       callback(action)
     }
   }
@@ -38,30 +28,35 @@ export function handleAction(callback: (action: any) => void): (action: Action) 
 
 const authorizer: AuthorizerGenerator = (channel, options) => {
   return {
-    authorize: (socketId: string, callback: any) => {
+    authorize: (socketId: string, callback: AuthorizerCallback) => {
       if (!options.auth) {
         throw new Error(`missing auth params`)
       }
 
+      const {
+        params: {authUrl},
+        headers,
+      } = options.auth
+
       const params = new URLSearchParams()
       params.append(`channel_name`, channel.name)
       params.append(`socket_id`, socketId)
-      fetch(options.auth.params.authUrl, {
+      fetch(authUrl, {
         body: params,
         method: `POST`,
         headers: new Headers({
           'Content-Type': `application/x-www-form-url-encoded`,
           Accept: `application/json`,
-          ...options.auth?.headers,
+          ...headers,
         }),
       })
-        .then((res: any) => {
+        .then((res: Response) => {
           if (!res.ok) {
-            throw new Error(`Received ${res.statusCode} from ${options.auth?.params.authUrl}`)
+            throw new Error(`Received ${res.status} from ${authUrl}`)
           }
           return res.json()
         })
-        .then((data) => {
+        .then((data: AuthData) => {
           callback(null, data)
         })
         .catch((err) => {
@@ -74,18 +69,13 @@ const authorizer: AuthorizerGenerator = (channel, options) => {
 }
 
 export async function subscribe(
-  {
-    apiKey,
-    apiUrl,
-    appUrl,
-    projectId,
-  }: Pick<PluginOptions, 'appUrl' | 'apiKey' | 'apiUrl' | 'projectId'>,
-  callback: (payload: any) => void,
+  {apiKey, apiUrl, projectId}: Pick<PluginOptions, 'apiKey' | 'apiUrl' | 'projectId'>,
+  reporter: Reporter,
+  callback: (payload?: ActionPayload) => void,
 ): Promise<void> {
   const apiConfig = {
     authToken: apiKey,
     endpoint: apiUrl,
-    appUrl,
   }
 
   const config = await api(apiConfig, `GET`, `/project/${projectId}/pusher-client-config`)
@@ -102,14 +92,23 @@ export async function subscribe(
     authorizer,
     cluster: config.cluster,
   })
-  // handle bad states: https://github.com/pusher/pusher-js#connection-states
-  pusher.connection.bind(`error`, function (err) {
-    if (err.error.data.code === 4004) {
-      log(`Over limit!`)
-    }
+
+  // Connection states: https://github.com/pusher/pusher-js#connection-states
+  pusher.connection.bind(`connecting`, () => {
+    reporter.info(`[takeshape] Update channel connecting...`)
+  })
+
+  pusher.connection.bind(`connected`, () => {
+    reporter.info(`[takeshape] Update channel connected`)
+  })
+
+  pusher.connection.bind(`unavailable`, () => {
+    reporter.error(
+      `[takeshape] Update channel unavailable, your internet connection may have been lost`,
+    )
   })
 
   const channel = pusher.subscribe(`presence-project.${projectId}`)
 
-  channel.bind(`server-action`, handleAction(callback))
+  channel.bind(`server-action`, handleAction(reporter, callback))
 }

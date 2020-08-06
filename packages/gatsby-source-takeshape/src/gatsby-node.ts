@@ -124,8 +124,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   // Only need to subscribe to updates in develop mode
   if (isDevelopMode) {
-    subscribe(config, () => {
-      reporter.info(`[takeshape] Content updated`)
+    subscribe(config, reporter, () => {
       createNode(
         createSchemaNode({
           id: nodeId,

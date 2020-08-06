@@ -8,6 +8,12 @@ module.exports = {
         react: {
           version: `detect`,
         },
+        // needing this here also seems pnpm related
+        'import/resolver': {
+          node: {
+            extensions: [`.js`, `.jsx`, `.json`],
+          },
+        },
       },
     },
   ],

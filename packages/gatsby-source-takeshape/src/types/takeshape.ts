@@ -5,7 +5,6 @@ import {Options as DataLoaderOptions} from 'dataloader'
 export interface PluginOptions extends Omit<_PluginOptions, 'plugins'> {
   apiKey: string
   apiUrl: string
-  appUrl: string
   batch: boolean
   // TODO: Properly type these parameters <cacheKey, cacheMapReturnVal>
   dataLoaderOptions: DataLoaderOptions<unknown, unknown>
@@ -17,7 +16,6 @@ export interface PluginOptions extends Omit<_PluginOptions, 'plugins'> {
 export type PluginOptionsInit = Partial<PluginOptions>
 
 export interface ApiConfig {
-  appUrl: string
   endpoint: string
   authToken?: string
   cliLogin?: boolean

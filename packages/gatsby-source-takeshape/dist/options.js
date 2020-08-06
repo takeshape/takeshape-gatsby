@@ -8,7 +8,6 @@ const assert_1 = __importDefault(require("assert"));
 const uuid_1 = require("uuid");
 const defaultOptions = {
     apiUrl: `https://api.takeshape.io`,
-    appUrl: `https://app.takeshape.io`,
     batch: false,
     dataLoaderOptions: {},
     fetchOptions: {},

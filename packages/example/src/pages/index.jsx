@@ -6,15 +6,15 @@ import {graphql} from 'gatsby'
 export const query = graphql`
   query {
     takeshape {
-      helloWorld: getSiteSettings {
-        siteTitle
+      homepage: getHomepage {
+        title
       }
     }
   }
 `
 
 const IndexPage = ({data}) => {
-  return <>{data.takeshape.helloWorld.siteTitle}</>
+  return <>{data.takeshape.homepage.title}</>
 }
 
 export default IndexPage

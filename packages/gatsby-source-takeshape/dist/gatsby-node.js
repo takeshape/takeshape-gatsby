@@ -93,8 +93,7 @@ exports.sourceNodes = async ({ actions, createNodeId, cache, reporter }, options
     addThirdPartySchema({ schema });
     // Only need to subscribe to updates in develop mode
     if (isDevelopMode) {
-        pusher_1.subscribe(config, () => {
-            reporter.info(`[takeshape] Content updated`);
+        pusher_1.subscribe(config, reporter, () => {
             createNode(createSchemaNode({
                 id: nodeId,
                 typeName,
