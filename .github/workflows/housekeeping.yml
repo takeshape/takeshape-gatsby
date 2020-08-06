@@ -2,7 +2,7 @@ name: Housekeeping
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened, edited, closed]
+    types: [opened]
   issues:
     types: [opened]
         
