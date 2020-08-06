@@ -3,3 +3,4 @@ Use TakeShape content in your Gatsby project
 test
 test
 test
+test
