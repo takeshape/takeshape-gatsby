@@ -1,4 +1,4 @@
-name: PR Housekeeping
+name: Housekeeping
 
 on:
   pull_request:
