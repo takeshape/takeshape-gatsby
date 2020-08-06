@@ -28,7 +28,7 @@ jobs:
 
   add-new-issue-to-column:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue' && github.event.action == 'opened'
+    if: github.event_name == 'issues' && github.event.action == 'opened'
     steps:
       - uses: konradpabjan/actions-add-new-issue-to-column@v1.1
         with:
