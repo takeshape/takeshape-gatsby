@@ -1,5 +1,6 @@
 import {print, ASTNode} from 'gatsby/graphql'
 import fetch, {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
+import {GraphQLError} from '../errors'
 
 export interface GraphQLRequestQuery {
   query: ASTNode
@@ -19,18 +20,7 @@ export type GraphQLQueryResponse<T = Record<string, unknown>> = {
 
 export type GraphQLQueryResponseError = {
   success: false
-  errors?: [
-    {
-      locations?: [
-        {
-          column: number
-          line: number
-        },
-      ]
-      message: string
-      type: string
-    },
-  ]
+  errors?: GraphQLError[]
 }
 
 type GraphQLQueryResult<T> = GraphQLQueryResponse<T> | GraphQLQueryResponseError

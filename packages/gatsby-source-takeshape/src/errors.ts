@@ -6,6 +6,17 @@ export class HTTPError extends Error {
   }
 }
 
+export type GraphQLError = {
+  locations?: [
+    {
+      column: number
+      line: number
+    },
+  ]
+  message: string
+  type: string
+}
+
 export function formatErrorMessage(error: Error | HTTPError, activity: string): Error {
   if (`statusCode` in error) {
     if (error.statusCode === 401 || error.statusCode === 403) {
@@ -22,4 +33,16 @@ export function formatErrorMessage(error: Error | HTTPError, activity: string): 
 
 export function handleHttpErrors(error: Error | HTTPError, activity: string): void {
   throw formatErrorMessage(error, activity)
+}
+
+export function formatGraphQLErrors(errors: GraphQLError[]): Error {
+  const error = new Error(
+    `Failed to load query batch:\n${errors.map((err) => err.message).join(`\n`)}`,
+  )
+  error.name = `GraphQLError`
+  return error
+}
+
+export function handleGraphQLError(errors?: GraphQLError[]): Error {
+  return errors ? formatGraphQLErrors(errors) : new Error(`GraphQLError`)
 }

@@ -2,8 +2,9 @@ import DataLoader from 'dataloader'
 import {HeadersInit} from 'node-fetch'
 import {ApolloLink, Observable} from 'apollo-link'
 import {merge, resolveResult} from './merge-queries'
-import {graphQLRequest, formatErrors} from '../utils/requests'
+import {graphQLRequest} from '../utils/requests'
 import {PluginOptions} from '../types/takeshape'
+import {handleGraphQLError} from '../errors'
 
 export interface CreateDataloaderLinkOptions
   extends Required<
@@ -18,11 +19,8 @@ export function createDataloaderLink(options: CreateDataloaderLinkOptions): Apol
   const load = async (keys: any) => {
     const result = await graphQLRequest<Record<string, any>>(merge(keys), options)
     if (result.success === false) {
-      const error = new Error(`Failed to load query batch:\n${formatErrors(result)}`)
-      error.name = `GraphQLError`
-      throw error
+      throw handleGraphQLError(result.errors)
     }
-
     return resolveResult(result)
   }
 
