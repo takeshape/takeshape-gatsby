@@ -16,7 +16,7 @@ jobs:
 
   issue-link:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     steps:
       - uses: tkt-actions/add-issue-links@v1.4.0
         with:
@@ -24,6 +24,7 @@ jobs:
           branch-prefix: issue-
           position: top
           resolve: true
+          link-style: comment
 
   add-new-issue-to-column:
     runs-on: ubuntu-latest
