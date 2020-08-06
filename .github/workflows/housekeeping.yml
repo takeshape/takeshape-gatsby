@@ -24,7 +24,7 @@ jobs:
           branch-prefix: issue-
           position: top
           resolve: true
-          link-style: comment
+          link-style: body
 
   add-new-issue-to-column:
     runs-on: ubuntu-latest
