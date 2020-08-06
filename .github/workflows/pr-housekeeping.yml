@@ -20,5 +20,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           branch-prefix: issue-
           position: top
-          resolve: "true"
-          link-style: comment
+          resolve: true
