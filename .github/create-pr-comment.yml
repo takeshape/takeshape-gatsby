@@ -1,0 +1,6 @@
+branchName: 'issue-${issue.number}/${issue.title,}'
+branches:
+  - label: 'type: bug 🐛'
+    template: 'bug.md'
+  - label: 'type: feature 🔨'
+    template: 'feature.md'  
