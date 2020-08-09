@@ -40,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issues' && github.event.action == 'assigned'
     steps:
+      - uses: actions/checkout@v2
       - uses: takeshape/github-action-create-pr-comment@trunk
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
