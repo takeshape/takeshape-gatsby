@@ -1,6 +1,15 @@
-import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'gatsby/graphql'
+import {
+  visit,
+  visitInParallel,
+  Kind,
+  VisitorKeyMap,
+  ASTKindToNode,
+  ASTNode,
+  DefinitionNode,
+} from 'gatsby/graphql'
 import {tmpl} from '../utils/strings'
 import {flatMap} from '../utils/arrays'
+import {Key} from './dataloader-link'
 
 type PartialVisitorKeyMap = Partial<VisitorKeyMap<ASTKindToNode>>
 
@@ -59,7 +68,7 @@ export interface MergeResult {
  *   }
  *   fragment FooQuery on Query { baz }
  */
-export function merge(queries: any[]): MergeResult {
+export function merge(queries: readonly Key[]): MergeResult {
   const mergedVariables = {}
   const mergedVariableDefinitions: any[] = []
   const mergedSelections: any[] = []
@@ -68,7 +77,7 @@ export function merge(queries: any[]): MergeResult {
   queries.forEach((query, index) => {
     const prefixedQuery = prefixQueryParts(createKeyPrefix(index), query)
 
-    prefixedQuery.query.definitions.forEach((def: any) => {
+    prefixedQuery.query.definitions.forEach((def: Definition) => {
       if (isQueryDefinition(def)) {
         mergedSelections.push(...def.selectionSet.selections)
         mergedVariableDefinitions.push(...(def.variableDefinitions ?? []))
@@ -356,10 +365,10 @@ function aliasField(field: any, aliasPrefix: any) {
   }
 }
 
-function isQueryDefinition(def: any) {
+function isQueryDefinition(def: DefinitionNode) {
   return def.kind === Kind.OPERATION_DEFINITION && def.operation === `query`
 }
 
-function isFragmentDefinition(def: any) {
+function isFragmentDefinition(def: DefinitionNode) {
   return def.kind === Kind.FRAGMENT_DEFINITION
 }

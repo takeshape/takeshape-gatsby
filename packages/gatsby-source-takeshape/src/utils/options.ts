@@ -3,12 +3,13 @@ import {PluginOptions as GatsbyPluginOptions} from 'gatsby'
 import {RequestInit} from 'node-fetch'
 import {Options as DataLoaderOptions} from 'dataloader'
 import {validate as uuidValidate} from 'uuid'
+import {Key} from '../batching/dataloader-link'
 
 export interface PluginOptions extends Omit<GatsbyPluginOptions, 'plugins'> {
   apiKey?: string
   batch?: boolean
   // TODO: Properly type these parameters <cacheKey, cacheMapReturnVal>
-  dataLoaderOptions?: DataLoaderOptions<unknown, unknown>
+  dataLoaderOptions?: DataLoaderOptions<Key, unknown>
   fetchOptions?: RequestInit
   projectId?: string
   refetchInterval?: number

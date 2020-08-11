@@ -5,6 +5,7 @@ import {merge, resolveResult} from './merge-queries'
 import {graphQLRequest, formatErrors} from '../utils/requests'
 import {PluginOptions} from '../utils/options'
 import {Fetch} from '../types/fetch'
+import {ASTNode} from 'gatsby/graphql'
 
 export interface CreateDataloaderLinkOptions
   extends Required<
@@ -15,10 +16,16 @@ export interface CreateDataloaderLinkOptions
   uri: string
 }
 
+type Variables = Record<string, unknown>
+
+export interface Key {
+  query: ASTNode
+  variables: Variables
+}
+
 export function createDataloaderLink(options: CreateDataloaderLinkOptions): ApolloLink {
-  // WHY? Don't feel like properly typing all this borrowed code yet.. but soon
-  const load = async (keys: any) => {
-    const result = await graphQLRequest<Record<string, any>>(merge(keys), options)
+  const load = async (keys: readonly Key[]) => {
+    const result = await graphQLRequest<Variables>(merge(keys), options)
     if (result.success === false) {
       const error = new Error(`Failed to load query batch:\n${formatErrors(result)}`)
       error.name = `GraphQLError`
@@ -31,7 +38,7 @@ export function createDataloaderLink(options: CreateDataloaderLinkOptions): Apol
   const {queryConcurrency} = options
   const maxBatchSize = Math.min(4, Math.round(queryConcurrency / 5))
 
-  const dataloader = new DataLoader(load, {
+  const dataloader = new DataLoader<Key, unknown>(load, {
     cache: false,
     maxBatchSize,
     batchScheduleFn: (cb) => setTimeout(cb, 50),
@@ -44,6 +51,7 @@ export function createDataloaderLink(options: CreateDataloaderLinkOptions): Apol
         const {query, variables} = operation
         dataloader
           .load({query, variables})
+          // How do you un-any this?
           .then((response: any) => {
             operation.setContext({response})
             observer.next(response)

@@ -12,6 +12,7 @@ module.exports = {
         apiKey: process.env.TAKESHAPE_TOKEN,
         projectId: process.env.TAKESHAPE_PROJECT,
         refetchInterval: 0,
+        batch: true,
       },
     },
   ],
