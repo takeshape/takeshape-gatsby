@@ -1,7 +1,7 @@
 import { HeadersInit } from 'node-fetch';
 import { ApolloLink } from 'apollo-link';
-import { PluginOptions } from '../utils/options';
-export interface CreateDataloaderLinkOptions extends Required<Pick<PluginOptions, 'headers' | 'fetch' | 'fetchOptions' | 'dataLoaderOptions' | 'queryConcurrency'>> {
+import { PluginOptions } from '../types/takeshape';
+export interface CreateDataloaderLinkOptions extends Required<Pick<PluginOptions, 'headers' | 'fetchOptions' | 'dataLoaderOptions' | 'queryConcurrency'>> {
     headers: HeadersInit;
     uri: string;
 }

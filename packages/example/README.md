@@ -1,39 +1,23 @@
-# gatsby-source-takeshape example
+# takeshape-gatsby example
 
-## What is this?
-
-This is a minimal "Hello world" example of the gatsby-source-takeshape plugin.
-If you want to see a more sophisticated example, check out
-[shape-portfolio-gatsbyjs](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs).
+A demo of `gatsby-source-takeshape`, primarily for development and debugging.
 
 ## How to run this example
 
-To build the plugin and copy it into the example's plugins folder, run this
-command from `gatsby-source-takeshape` directory (one level up).
+> You'll need [pnpm](https://pnpm.js.org/en/installation) installed to use this
+> monorepo.
 
-```
-npm run example:deploy
-```
+1. Get a `projectId` and `apiKey` from a TakeShape project. Currently this uses
+   the `Shape Blog` starter project.
+2. Create a `.env` file in this directory:
 
-Create a TakeShape project using this button:
-
-<a href="//app.takeshape.io/add-to-takeshape?repo=https://github.com/takeshape/gatsby-source-takeshape/tree/trunk/example/.takeshape/pattern"><img alt="Deploy To TakeShape" src="https://images.takeshape.io/2cccc825-70be-431c-9ba0-10ab38ecd3a7/dev/8e2f7bda-0e08-4ede-a546-6df59be6a8bb/Deploy%20to%20TakeShape%402x.png?auto=format%2Ccompress" width=205 height=38></a>
-
-Create an `.env` file in this directory with this format:
-
-```
-TAKESHAPE_PROJECT=<takeshape project id from url>
-TAKESHAPE_TOKEN=<create token in API Keys under project menu>
+```inputrc
+TAKESHAPE_PROJECT=<projectId>
+TAKESHAPE_TOKEN=<apiKey>
 ```
 
-Install example dependencies in this directory.
+3. From the root of the monorepo (`cd ../../`):
 
-```
-npm install
-```
-
-Now you can run the example in this directory.
-
-```
-npm run start
+```console
+$ pnpm develop
 ```

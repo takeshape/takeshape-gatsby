@@ -1,11 +1,10 @@
-import { ASTNode } from 'graphql';
-import nodeFetch, { RequestInfo, RequestInit, HeadersInit } from 'node-fetch';
+import { ASTNode } from 'gatsby/graphql';
+import { RequestInfo, RequestInit, HeadersInit } from 'node-fetch';
 export interface GraphQLRequestQuery {
     query: ASTNode;
     variables: Record<string, unknown>;
 }
 export interface GraphQLRequestOptions {
-    fetch: typeof nodeFetch;
     fetchOptions: RequestInit;
     headers: HeadersInit;
     uri: RequestInfo;

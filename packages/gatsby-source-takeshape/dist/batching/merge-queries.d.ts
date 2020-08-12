@@ -1,4 +1,4 @@
-import { ASTNode } from 'graphql';
+import { ASTNode } from 'gatsby/graphql';
 export interface MergeResult {
     query: ASTNode;
     variables: Record<string, unknown>;

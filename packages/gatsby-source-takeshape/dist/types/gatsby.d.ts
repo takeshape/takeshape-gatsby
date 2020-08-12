@@ -1,5 +1,5 @@
 import { Node } from 'gatsby';
-import { GraphQLFieldResolver, GraphQLFieldConfigMap } from 'graphql';
+import { GraphQLResolveInfo, GraphQLFieldConfigMap } from 'graphql';
 export interface CreatePageDependencyArgs {
     connection?: string;
     path: string;
@@ -20,6 +20,8 @@ export declare type GatsbyGraphQLContext = {
     nodeModel: GatsbyNodeModel;
     path?: string;
 };
-export declare type GatsbyGraphQLFieldResolver = GraphQLFieldResolver<Record<string, unknown>, GatsbyGraphQLContext>;
+export declare type GatsbyGraphQLFieldResolver<TSource = Record<string, unknown>, TContext = GatsbyGraphQLContext, TArgs = {
+    [argName: string]: any;
+}> = (source: TSource, args: TArgs, context: TContext, info: GraphQLResolveInfo) => Record<string, unknown>;
 export declare type GatsbyGraphQLConfigMap = GraphQLFieldConfigMap<Record<string, unknown>, GatsbyGraphQLContext>;
 //# sourceMappingURL=gatsby.d.ts.map

@@ -11,6 +11,7 @@ module.exports = {
       options: {
         apiKey: process.env.TAKESHAPE_TOKEN,
         projectId: process.env.TAKESHAPE_PROJECT,
+        apiUrl: process.env.TAKESHAPE_API,
       },
     },
   ],

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StripNonQueryTransform = exports.NamespaceUnderFieldTransform = void 0;
-const graphql_1 = require("graphql");
+const graphql_1 = require("gatsby/graphql");
 const utils_1 = require("@graphql-tools/utils");
 class NamespaceUnderFieldTransform {
     constructor({ typeName, fieldName, resolver, }) {
