@@ -8,6 +8,7 @@ const defaultOptions = {
   dataLoaderOptions: {},
   fetchOptions: {},
   queryConcurrency: Number(process.env.GATSBY_EXPERIMENTAL_QUERY_CONCURRENCY || `4`),
+  throttle: false,
 }
 
 // TODO: are there other valid patterns?
