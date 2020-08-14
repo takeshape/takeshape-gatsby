@@ -35,15 +35,11 @@
       "releaseType": "none",
       "overwrite": true,
       "default": true
+    },
+    {
+      "name": "pushToBaseBranch",
+      "releaseType": "none",
+      "overwrite": true
     }
-  ],
-  "plugins": [
-    "@auto-it/git-tag",
-    [
-      "@auto-it/released",
-      {
-        "label": "status: released ✌️"
-      }
-    ]
   ]
 }
