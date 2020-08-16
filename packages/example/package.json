@@ -18,7 +18,7 @@
     "start": "npm run develop"
   },
   "dependencies": {
-    "gatsby": "^2.24.2",
+    "gatsby": "^2.24.47",
     "gatsby-plugin-pnpm": "^1.2.5",
     "gatsby-source-takeshape": "workspace:^1.0.0",
     "react": "^16.13.1",

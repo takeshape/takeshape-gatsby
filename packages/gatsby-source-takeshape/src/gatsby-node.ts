@@ -1,6 +1,13 @@
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
-import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
+import {
+  GatsbyNode,
+  SourceNodesArgs,
+  NodeInput,
+  CreateSchemaCustomizationArgs,
+  CreateNodeArgs,
+  CreateResolversArgs,
+} from 'gatsby'
 import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {linkToExecutor} from '@graphql-tools/links'
 // import {mergeSchemas} from '@graphql-tools/merge'
@@ -16,10 +23,10 @@ import {GatsbyGraphQLFieldResolver} from './types/gatsby'
 import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
-import {stitchSchemas} from '@graphql-tools/stitch'
+import {stitchSchemas, forwardArgsToSelectionSet} from '@graphql-tools/stitch'
 import {makeExecutableSchema} from '@graphql-tools/schema'
 import {delegateToSchema} from '@graphql-tools/delegate'
-// import {IResolvers, ITypeDefinitions} from '@graphql-tools/utils'
+// import {IResolvers, ITypeDefinitions, selection} from '@graphql-tools/utils'
 // import {extendImageNode} from './images/extend-image-node'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
@@ -132,12 +139,28 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     return {}
   }
 
-  const remoteSchema = wrapSchema(
-    {
-      schema: introspectionSchema,
-      executor,
-    },
-    [
+  // const remoteSchema = wrapSchema(
+  //   {
+  //     schema: introspectionSchema,
+  //     executor,
+  //   },
+  //   [
+  //     new StripNonQueryTransform(),
+  //     new RenameTypes((name) => `${typeName}_${name}`),
+  //     new NamespaceUnderFieldTransform({
+  //       typeName,
+  //       fieldName,
+  //       resolver,
+  //     }),
+  //     // new TransformObjectFields(testFieldTransformer, testFieldNodeTransformer),
+  //   ],
+  // )
+
+  const remoteSubschemaConfig = {
+    schema: introspectionSchema,
+    // @ts-ignore
+    executor,
+    transforms: [
       new StripNonQueryTransform(),
       new RenameTypes((name) => `${typeName}_${name}`),
       new NamespaceUnderFieldTransform({
@@ -145,26 +168,32 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         fieldName,
         resolver,
       }),
-      // new TransformObjectFields(testFieldTransformer, testFieldNodeTransformer),
     ],
-  )
-
-  // const fluidResolver: GraphQLFieldResolver = (source, args, context, info) => {
-  //   return info.mergeInfo.delegateToSchema({
-  //     schema: remoteSchema,
-  //     operation: `query`,
-  //     fieldName: `getAsset`,
-  //     args: {
-  //       _id: user.id,
-  //     },
-  //     context,
-  //     info,
-  //   })
-  // }
-
-  const remoteSubschemaConfig = {
-    schema: remoteSchema,
+    merge: {
+      TS_Asset: {
+        fieldName: 'getAsset',
+        selectionSet: '{ _id }',
+        args: (partialAsset: any) => {
+          console.log('000000000000')
+          return {_id: partialAsset._id}
+        },
+      },
+    },
   }
+
+  // const remoteSubschemaConfig = {
+  //   schema: remoteSchema,
+  //   merge: {
+  //     TS_Asset: {
+  //       fieldName: 'getAsset',
+  //       selectionSet: '{ _id }',
+  //       args: (partialAsset: any) => {
+  //         console.log('000000000000')
+  //         return {_id: partialAsset._id}
+  //       },
+  //     },
+  //   },
+  // }
 
   const fluidSubschemaConfig = {
     schema: makeExecutableSchema({
@@ -172,6 +201,12 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         type FluidImage {
           name: String
         }
+
+        type TS_Asset {
+          _id: ID!
+          fluid: FluidImage!
+        }
+
         type Query {
           fluid(path: String!): FluidImage
         }
@@ -179,6 +214,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
       resolvers: {
         Query: {
           fluid(obj, args) {
+            console.log('here', obj, args)
             return {
               name: args.path,
             }
@@ -186,36 +222,45 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         },
       },
     }),
+    merge: {
+      TS_Asset: {
+        fieldName: 'fluid',
+        selectionSet: '{ _id }',
+        resolve: (a: any) => {
+          console.log('resolve', a)
+        },
+        args: (partialAsset: any) => {
+          console.log('000000000000')
+          return {_id: partialAsset._id}
+        },
+      },
+    },
   }
 
   const schema = stitchSchemas({
     mergeTypes: true,
     subschemas: [remoteSubschemaConfig, fluidSubschemaConfig],
-    typeDefs: /* GraphQL */ `
-      extend type TS_Asset {
-        fluid: FluidImage!
-      }
-    `,
-    resolvers: {
-      TS_Asset: {
-        fluid: {
-          // selectionSet: `{ path }`,
-          fragment: ` ... on TS_Asset { path } `,
-          resolve(obj, args, context, info) {
-            console.log(`path: ${obj.path}`)
-            console.log({obj, args})
-            return delegateToSchema({
-              schema: fluidSubschemaConfig,
-              operation: `query`,
-              fieldName: `fluid`,
-              args: {path: obj.path},
-              context,
-              info,
-            })
-          },
-        },
-      },
-    },
+    // resolvers: {
+    //   TS_Asset: {
+    //     fluid: {
+    //       selectionSet: `{ path }`,
+    //       // selectionSet: forwardArgsToSelectionSet(`{ path }`),
+    //       // fragment: ` ... on TS_Asset { path } `,
+    //       resolve(obj, args, context, info) {
+    //         console.log(`path: ${obj.path}`)
+    //         console.log({obj, args})
+    //         return delegateToSchema({
+    //           schema: fluidSubschemaConfig,
+    //           operation: `query`,
+    //           fieldName: `fluid`,
+    //           args: {path: obj.path},
+    //           context,
+    //           info,
+    //         })
+    //       },
+    //     },
+    //   },
+    // },
   })
 
   addThirdPartySchema({schema})
@@ -284,4 +329,52 @@ function createSchemaNode({
 // }
 
 // return fields
+// }
+
+// export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = async ({
+//   actions,
+// }: CreateSchemaCustomizationArgs) => {
+//   const {createTypes} = actions
+
+//   const typeDefs = /* GraphQL */ `
+//     extend type TS_Asset {
+//       fluid: String
+//     }
+//   `
+
+//   createTypes(typeDefs)
+// }
+
+// export const createResolvers: GatsbyNode['createResolvers'] = async ({
+//   createResolvers,
+// }: CreateResolversArgs): Promise<void> => {
+//   const resolvers = {
+//     TS_Asset: {
+//       testfield: {
+//         type: `String`,
+//         resolve(source: any, args: any, context: any, info: any) {
+//           console.log(source, args, context, info)
+//           return 'test'
+//         },
+//       },
+//     },
+//   }
+//   createResolvers(resolvers)
+// }
+
+// export const onCreateNode: GatsbyNode['onCreateNode'] = ({
+//   node,
+//   actions,
+//   createNodeId,
+// }: CreateNodeArgs) => {
+//   console.log(node.internal.type)
+
+//   actions.createNode({
+//     id: createNodeId(`BlogPostMarkdown-${node.id}`),
+//     parent: node.id,
+//     internal: {
+//       type: 'BlogPostMarkdown',
+//       contentDigest: node.internal.contentDigest,
+//     },
+//   })
 // }
