@@ -8,6 +8,9 @@ export const query = graphql`
     takeshape {
       homepage: getHomepage {
         title
+        image {
+          filename
+        }
       }
     }
   }

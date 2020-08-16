@@ -1,6 +1,7 @@
 import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'gatsby/graphql'
 import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from '@graphql-tools/utils'
 import {GatsbyGraphQLFieldResolver, GatsbyGraphQLConfigMap} from './types/gatsby'
+import {FieldNodeTransformer, FieldTransformer, TransformObjectFields} from '@graphql-tools/wrap'
 
 export class NamespaceUnderFieldTransform implements Transform {
   typeName: string
@@ -66,4 +67,25 @@ export class StripNonQueryTransform implements Transform {
       },
     })
   }
+}
+
+export const testFieldTransformer: FieldTransformer = (typeName, fieldName, fieldConfig) => {
+  if ((fieldConfig.type as GraphQLObjectType).name === `TS_Asset`) {
+    console.log(`field transformer---------------------`)
+    console.log(typeName, fieldName)
+    console.log(fieldConfig)
+  }
+
+  // if (typeName === `TS` && fieldName === `getHomepage`) {s
+  //   console.log(`field transformer---------------------`)
+  //   console.log(typeName, fieldName)
+  // }
+
+  return undefined
+}
+
+export const testFieldNodeTransformer: FieldNodeTransformer = (typeName, fieldName, fieldNode) => {
+  console.log(`field node transformer---------------------`)
+  console.log(typeName, fieldName, fieldNode)
+  return fieldNode
 }

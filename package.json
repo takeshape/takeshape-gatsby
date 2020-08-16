@@ -17,7 +17,6 @@
     "develop": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
     "preinstall": "npx only-allow pnpm",
     "reset": "pnpm run reset --recursive --parallel && rimraf node_modules pnpm-lock.yaml",
-    "trigger:release": "./.github/scripts/dispatch.sh trigger:release",
     "version": "pnpm recursive exec --filter {packages} -- npm version --no-git-tag-version $npm_package_version && git add -A ."
   },
   "husky": {

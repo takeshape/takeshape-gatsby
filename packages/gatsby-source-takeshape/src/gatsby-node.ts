@@ -3,6 +3,7 @@ import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
 import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {linkToExecutor} from '@graphql-tools/links'
+// import {mergeSchemas} from '@graphql-tools/merge'
 import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
 import {createHttpLink} from 'apollo-link-http'
 import {HeadersInit as FetchHeaders} from 'node-fetch'
@@ -15,9 +16,13 @@ import {GatsbyGraphQLFieldResolver} from './types/gatsby'
 import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
+import {stitchSchemas} from '@graphql-tools/stitch'
+import {makeExecutableSchema} from '@graphql-tools/schema'
+import {delegateToSchema} from '@graphql-tools/delegate'
+// import {IResolvers, ITypeDefinitions} from '@graphql-tools/utils'
+// import {extendImageNode} from './images/extend-image-node'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
-
 const typeName = `TS`
 const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
@@ -25,6 +30,26 @@ const nodeType = `TakeShapeSource`
 const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
 const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
 const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
+
+// const typeDefs: ITypeDefinitions = /* GraphQL */ `
+//   type TakeShapeFluid {
+//     name: String!
+//   }
+// `
+
+// const resolvers: IResolvers = {
+//   TakeShapeFluid: {
+//     name: () => ({name: `John Doe`}),
+//   },
+// }
+
+// const localSchema = makeExecutableSchema({typeDefs, resolvers})
+
+// const linkTypeDefs = `
+//   extend type Asset {
+//     fluid: TakeShapeFluid
+//   }
+// `
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   {actions, createNodeId, cache, reporter}: SourceNodesArgs,
@@ -107,7 +132,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     return {}
   }
 
-  const schema = wrapSchema(
+  const remoteSchema = wrapSchema(
     {
       schema: introspectionSchema,
       executor,
@@ -120,8 +145,78 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         fieldName,
         resolver,
       }),
+      // new TransformObjectFields(testFieldTransformer, testFieldNodeTransformer),
     ],
   )
+
+  // const fluidResolver: GraphQLFieldResolver = (source, args, context, info) => {
+  //   return info.mergeInfo.delegateToSchema({
+  //     schema: remoteSchema,
+  //     operation: `query`,
+  //     fieldName: `getAsset`,
+  //     args: {
+  //       _id: user.id,
+  //     },
+  //     context,
+  //     info,
+  //   })
+  // }
+
+  const remoteSubschemaConfig = {
+    schema: remoteSchema,
+  }
+
+  const fluidSubschemaConfig = {
+    schema: makeExecutableSchema({
+      typeDefs: /* GraphQL */ `
+        type FluidImage {
+          name: String
+        }
+        type Query {
+          fluid(path: String!): FluidImage
+        }
+      `,
+      resolvers: {
+        Query: {
+          fluid(obj, args) {
+            return {
+              name: args.path,
+            }
+          },
+        },
+      },
+    }),
+  }
+
+  const schema = stitchSchemas({
+    mergeTypes: true,
+    subschemas: [remoteSubschemaConfig, fluidSubschemaConfig],
+    typeDefs: /* GraphQL */ `
+      extend type TS_Asset {
+        fluid: FluidImage!
+      }
+    `,
+    resolvers: {
+      TS_Asset: {
+        fluid: {
+          // selectionSet: `{ path }`,
+          fragment: ` ... on TS_Asset { path } `,
+          resolve(obj, args, context, info) {
+            console.log(`path: ${obj.path}`)
+            console.log({obj, args})
+            return delegateToSchema({
+              schema: fluidSubschemaConfig,
+              operation: `query`,
+              fieldName: `fluid`,
+              args: {path: obj.path},
+              context,
+              info,
+            })
+          },
+        },
+      },
+    },
+  })
 
   addThirdPartySchema({schema})
 
@@ -155,3 +250,38 @@ function createSchemaNode({
     },
   }
 }
+
+// export const onPreExtractQueries: GatsbyNode['onPreExtractQueries'] = async (
+//   {getNodes, store}: ParentSpanPluginArgs,
+//   options: PluginOptionsInit = {} as PluginOptionsInit,
+// ) => {
+// const typeMapKey = getCacheKey(pluginConfig, CACHE_KEYS.TYPE_MAP)
+// const typeMap = (stateCache[typeMapKey] || defaultTypeMap) as TypeMap
+// let shouldAddFragments = typeof typeMap.objects.SanityImageAsset !== `undefined`
+// if (!shouldAddFragments) {
+//   shouldAddFragments = getNodes().some((node) =>
+//     Boolean(node.internal && node.internal.type === `SanityImageAsset`),
+//   )
+// }
+// if (shouldAddFragments) {
+//   const program = store.getState().program
+//   await copy(
+//     path.join(__dirname, `..`, `fragments`, `imageFragments.js`),
+//     `${program.directory}/.cache/fragments/sanity-image-fragments.js`,
+//   )
+// }
+// }
+
+// export const setFieldsOnGraphQLNodeType: GatsbyNode['setFieldsOnGraphQLNodeType'] = async (
+//   {type}: ParentSpanPluginArgs,
+//   options: PluginOptionsInit = {} as PluginOptionsInit,
+// ) => {
+//   console.log(`nodetype-------------`)
+//   console.log(type)
+// let fields: {[key: string]: GraphQLFieldConfig<any, any>} = {}
+// if (type.name === `SanityImageAsset`) {
+//   fields = {...fields, ...extendImageNode(context, pluginConfig)}
+// }
+
+// return fields
+// }
