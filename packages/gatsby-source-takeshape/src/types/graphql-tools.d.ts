@@ -24,3 +24,25 @@ declare module '@graphql-tools/wrap' {
     transforms?: Array<Transform>,
   ): GraphQLSchema
 }
+
+declare module '@graphql-tools/stitch' {
+  export declare function stitchSchemas({
+    subschemas,
+    types,
+    typeDefs,
+    schemas,
+    onTypeConflict,
+    resolvers,
+    schemaDirectives,
+    inheritResolversFromInterfaces,
+    mergeTypes,
+    mergeDirectives,
+    logger,
+    allowUndefinedInResolve,
+    resolverValidationOptions,
+    directiveResolvers,
+    schemaTransforms,
+    parseOptions,
+    pruningOptions,
+  }: IStitchSchemasOptions): GraphQLSchema
+}

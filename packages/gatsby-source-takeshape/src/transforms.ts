@@ -68,24 +68,3 @@ export class StripNonQueryTransform implements Transform {
     })
   }
 }
-
-export const testFieldTransformer: FieldTransformer = (typeName, fieldName, fieldConfig) => {
-  if ((fieldConfig.type as GraphQLObjectType).name === `TS_Asset`) {
-    console.log(`field transformer---------------------`)
-    console.log(typeName, fieldName)
-    console.log(fieldConfig)
-  }
-
-  // if (typeName === `TS` && fieldName === `getHomepage`) {s
-  //   console.log(`field transformer---------------------`)
-  //   console.log(typeName, fieldName)
-  // }
-
-  return undefined
-}
-
-export const testFieldNodeTransformer: FieldNodeTransformer = (typeName, fieldName, fieldNode) => {
-  console.log(`field node transformer---------------------`)
-  console.log(typeName, fieldName, fieldNode)
-  return fieldNode
-}
