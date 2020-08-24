@@ -76,7 +76,7 @@ function ensureCacheDir() {
   }
 }
 
-async function cacheGet(assetPath: string): Promise<string | null> {
+export async function cacheGet(assetPath: string): Promise<string | null> {
   const cachePath = path.join(CACHE_ASSETS_FOLDER, assetPath)
   if (fs.existsSync(cachePath)) {
     return fs.promises.readFile(cachePath, `utf8`)
@@ -84,7 +84,7 @@ async function cacheGet(assetPath: string): Promise<string | null> {
   return null
 }
 
-async function cacheSet(assetPath: string, data: string): Promise<string> {
+export async function cacheSet(assetPath: string, data: string): Promise<string> {
   const cachePath = path.join(CACHE_ASSETS_FOLDER, assetPath)
   await fs.promises.writeFile(cachePath, data)
   return data
@@ -114,7 +114,7 @@ async function getImageDimensions(imgPath: string): Promise<ImageDimensions | nu
   const imageData = await getImageData(imgPath)
   if (imageData) {
     return {
-      aspectRatio: imageData.PixelWidth / imageData.PixelHeight,
+      aspectRatio: Math.round((imageData.PixelWidth / imageData.PixelHeight) * 100) / 100,
       height: imageData.PixelHeight,
       width: imageData.PixelWidth,
     }
@@ -219,14 +219,15 @@ export async function getFixedGatsbyImage(
   const fit = fixedArgs.fit || ImageFit.Crop
 
   const desiredWidth = !fixedArgs.width && !fixedArgs.height ? DEFAULT_FIXED_WIDTH : fixedArgs.width
+  // The TypeScript compiler cannot seem to determine we've ensured a value for desiredWidth here
   const height = fixedArgs.height
     ? fixedArgs.height
-    : Math.round(desiredWidth! / dimensions.aspectRatio)
+    : Math.round(desiredWidth! / dimensions.aspectRatio) // eslint-disable-line @typescript-eslint/no-non-null-assertion
   const width = desiredWidth ? desiredWidth : Math.round(height * dimensions.aspectRatio)
 
   let aspectRatio = dimensions.aspectRatio
   if (hasNewAspectRatio(fit)) {
-    aspectRatio = width / height
+    aspectRatio = Math.round((width / height) * 100) / 100
   }
 
   const params: ImgixParamsWithHeightWidth = {
@@ -249,9 +250,15 @@ export async function getFixedGatsbyImage(
   }
 
   const src = imgixClient.buildURL(assetPath, params)
-  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
+  const srcWebp = imgixClient.buildURL(assetPath, {
+    ...params,
+    fm: ImageFormat.Webp,
+  })
   const srcSet = imgixClient.buildSrcSet(assetPath, params)
-  const srcSetWebp = imgixClient.buildSrcSet(assetPath, {...params, fm: ImageFormat.Webp})
+  const srcSetWebp = imgixClient.buildSrcSet(assetPath, {
+    ...params,
+    fm: ImageFormat.Webp,
+  })
 
   return {
     aspectRatio,
@@ -292,7 +299,7 @@ export async function getFluidGatsbyImage(
 
   let aspectRatio = dimensions.aspectRatio
   if (hasNewAspectRatio(fit)) {
-    aspectRatio = maxWidth / maxHeight
+    aspectRatio = Math.round((maxWidth / maxHeight) * 100) / 100
   }
 
   if (fit === ImageFit.Fill || fit === ImageFit.Fillmax) {
