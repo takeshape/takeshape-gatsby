@@ -35,7 +35,7 @@ interface ImgixParamsWithHeightWidth extends ImgixParams {
   w: number
 }
 
-const imgix = new ImgixClient({
+export const imgixClient = new ImgixClient({
   domain: `images.takeshape.io`,
   includeLibraryParam: false,
   useHTTPS: true,
@@ -95,7 +95,7 @@ async function getImageData(imgPath: string): Promise<ImageData | null> {
   const dataPath = `${getImageId(imgPath)}.json`
   let imgData = await cacheGet(dataPath)
   if (!imgData) {
-    const dataUrl = imgix.buildURL(imgPath, {
+    const dataUrl = imgixClient.buildURL(imgPath, {
       fm: `json`,
     })
     const fetched = await fetch(dataUrl)
@@ -139,7 +139,7 @@ async function getBase64Image(
   imgixParams: ImgixParamsWithHeightWidth,
 ): Promise<string | null> {
   ensureCacheDir()
-  const base64Url = imgix.buildURL(imgPath, imgixParams)
+  const base64Url = imgixClient.buildURL(imgPath, imgixParams)
   const base64UrlSha = crypto.createHash(`sha1`).update(base64Url).digest(`hex`)
   const base64Path = `${getImageId(imgPath)}-${base64UrlSha}.base64`
   let base64Data = await cacheGet(base64Path)
@@ -189,8 +189,8 @@ const getSrcSets = (
         w: width,
         h: Math.round(width / aspectRatio),
       }
-      const baseUrl = imgix.buildURL(imgPath, params)
-      const webpUrl = imgix.buildURL(imgPath, {...params, fm: ImageFormat.Webp})
+      const baseUrl = imgixClient.buildURL(imgPath, params)
+      const webpUrl = imgixClient.buildURL(imgPath, {...params, fm: ImageFormat.Webp})
       acc[0].push(`${baseUrl} ${width}w`)
       acc[1].push(`${webpUrl} ${width}w`)
       return acc
@@ -248,10 +248,10 @@ export async function getFixedGatsbyImage(
     base64 = await getBase64(assetPath, params, fixedArgs.toFormatBase64)
   }
 
-  const src = imgix.buildURL(assetPath, params)
-  const srcWebp = imgix.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
-  const srcSet = imgix.buildSrcSet(assetPath, params)
-  const srcSetWebp = imgix.buildSrcSet(assetPath, {...params, fm: ImageFormat.Webp})
+  const src = imgixClient.buildURL(assetPath, params)
+  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
+  const srcSet = imgixClient.buildSrcSet(assetPath, params)
+  const srcSetWebp = imgixClient.buildSrcSet(assetPath, {...params, fm: ImageFormat.Webp})
 
   return {
     aspectRatio,
@@ -322,8 +322,8 @@ export async function getFluidGatsbyImage(
   }
 
   const sizes = `(max-width: ${maxWidth}px) 100vw, ${maxWidth}px`
-  const src = imgix.buildURL(assetPath, params)
-  const srcWebp = imgix.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
+  const src = imgixClient.buildURL(assetPath, params)
+  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
 
   const breakpoints =
     fluidArgs.srcSetBreakpoints ||
