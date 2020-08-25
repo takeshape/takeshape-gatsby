@@ -16,32 +16,31 @@ export interface FluidArgs {
   fit?: ImageFit
   toFormat?: ImageFormat
   toFormatBase64?: ImageFormat
-  aspectRatio?: number
   noBase64?: boolean
 }
 
 export enum ImageFormat {
-  Gif = `gif`,
-  Jp2 = `jp2`,
-  Jpg = `jpg`,
-  Jxr = `jxr`,
-  Pjpg = `pjpg`,
-  Png = `png`,
-  Png8 = `png8`,
-  Png32 = `png32`,
-  Webp = `webp`,
+  Gif = `GIF`,
+  Jp2 = `JP2`,
+  Jpg = `JPG`,
+  Jxr = `JXR`,
+  Pjpg = `PJPG`,
+  Png = `PNG`,
+  Png8 = `PNG8`,
+  Png32 = `PNG32`,
+  Webp = `WEBP`,
 }
 
 export enum ImageFit {
-  Clamp = `clamp`,
-  Clip = `clip`,
-  Crop = `crop`,
-  Facearea = `facearea`,
-  Fill = `fill`,
-  Fillmax = `fillmax`,
-  Max = `max`,
-  Min = `min`,
-  Scale = `scale`,
+  Clamp = `CLAMP`,
+  Clip = `CLIP`,
+  Crop = `CROP`,
+  Facearea = `FACEAREA`,
+  Fill = `FILL`,
+  Fillmax = `FILLMAX`,
+  Max = `MAX`,
+  Min = `MIN`,
+  Scale = `SCALE`,
 }
 
 export type ImageData = {

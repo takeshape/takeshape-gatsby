@@ -47,10 +47,8 @@ export interface GatsbyFixedImageProps {
   src: string
   srcSet: string
   base64?: string
-  tracedSVG?: string
   srcWebp?: string
   srcSetWebp?: string
-  media?: string
 }
 
 export type GatsbyFluidImageProps = {
@@ -59,7 +57,6 @@ export type GatsbyFluidImageProps = {
   srcSet: string
   sizes: string
   base64?: string
-  tracedSVG?: string
   srcWebp?: string
   srcSetWebp?: string
 }

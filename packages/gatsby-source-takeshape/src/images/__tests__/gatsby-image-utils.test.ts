@@ -6,7 +6,7 @@ import {
   cacheSet,
   cacheGet,
   CACHE_ASSETS_FOLDER,
-} from '../gatsby-image-utils'
+} from '../gatsby-image-tools'
 import {ImageFormat, ImageFit} from '../../types/images'
 
 // Since it's easier to work with imgix fixtures, we'll override the domain

@@ -26,7 +26,6 @@ const sizeMultipliersFluid = [0.25, 0.5, 1, 1.5, 2, 3]
 let cacheDirCreated = false
 
 export interface ImgixParams {
-  fm?: ImageFormat
   [key: string]: string | number | (string | number)[] | undefined
 }
 
@@ -163,7 +162,7 @@ async function getBase64(
 ): Promise<string> {
   const base64Image = await getBase64Image(imgPath, {
     ...imgixParams,
-    fm: toFormat,
+    fm: toFormat.toLowerCase(),
     h: Math.round(imgixParams.h / (imgixParams.w / BASE64_WIDTH)),
     w: BASE64_WIDTH,
   })
@@ -190,7 +189,7 @@ const getSrcSets = (
         h: Math.round(width / aspectRatio),
       }
       const baseUrl = imgixClient.buildURL(imgPath, params)
-      const webpUrl = imgixClient.buildURL(imgPath, {...params, fm: ImageFormat.Webp})
+      const webpUrl = imgixClient.buildURL(imgPath, {...params, fm: ImageFormat.Webp.toLowerCase()})
       acc[0].push(`${baseUrl} ${width}w`)
       acc[1].push(`${webpUrl} ${width}w`)
       return acc
@@ -232,7 +231,7 @@ export async function getFixedGatsbyImage(
 
   const params: ImgixParamsWithHeightWidth = {
     ...imgixParams,
-    fit,
+    fit: fit.toLowerCase(),
     h: height,
     w: width,
   }
@@ -240,7 +239,7 @@ export async function getFixedGatsbyImage(
   const format = getFormatParam(assetPath, fixedArgs.toFormat)
 
   if (format) {
-    params.fm = format
+    params.fm = format.toLowerCase()
   }
 
   let base64 = ``
@@ -252,12 +251,12 @@ export async function getFixedGatsbyImage(
   const src = imgixClient.buildURL(assetPath, params)
   const srcWebp = imgixClient.buildURL(assetPath, {
     ...params,
-    fm: ImageFormat.Webp,
+    fm: ImageFormat.Webp.toLowerCase(),
   })
   const srcSet = imgixClient.buildSrcSet(assetPath, params)
   const srcSetWebp = imgixClient.buildSrcSet(assetPath, {
     ...params,
-    fm: ImageFormat.Webp,
+    fm: ImageFormat.Webp.toLowerCase(),
   })
 
   return {
@@ -311,7 +310,7 @@ export async function getFluidGatsbyImage(
 
   const params: ImgixParamsWithHeightWidth = {
     ...imgixParams,
-    fit,
+    fit: fit.toLowerCase(),
     h: maxHeight,
     w: maxWidth,
   }
@@ -319,7 +318,7 @@ export async function getFluidGatsbyImage(
   const format = getFormatParam(assetPath, fluidArgs.toFormat)
 
   if (format) {
-    params.fm = format
+    params.fm = format.toLowerCase()
   }
 
   let base64 = ``
@@ -330,7 +329,7 @@ export async function getFluidGatsbyImage(
 
   const sizes = `(max-width: ${maxWidth}px) 100vw, ${maxWidth}px`
   const src = imgixClient.buildURL(assetPath, params)
-  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp})
+  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp.toLowerCase()})
 
   const breakpoints =
     fluidArgs.srcSetBreakpoints ||

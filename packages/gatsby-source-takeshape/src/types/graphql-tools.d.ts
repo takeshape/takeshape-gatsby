@@ -1,5 +1,4 @@
-import {ExecutionResult, Transform} from '@graphql-tools/utils'
-import {ExecutionParams, SubschemaConfig, Executor} from '@graphql-tools/delegate'
+import {ExecutionResult, Transform, ExecutionParams, SubschemaConfig, Executor} from 'graphql-tools'
 import {GraphQLSchema, GraphQLScalarType} from 'graphql'
 
 // GraphQL Tools has some bad types: https://github.com/ardatan/graphql-tools/issues/1585
@@ -14,18 +13,14 @@ interface MySubschemaConfig extends SubschemaConfig {
   executor?: Executor | MyAsyncExecutor
 }
 
-declare module '@graphql-tools/delegate' {
+declare module 'graphql-tools' {
   export type AsyncExecutor = MyAsyncExecutor
-}
 
-declare module '@graphql-tools/wrap' {
   export declare function wrapSchema(
     subschemaOrSubschemaConfig: GraphQLSchema | MySubschemaConfig,
     transforms?: Array<Transform>,
   ): GraphQLSchema
-}
 
-declare module '@graphql-tools/stitch' {
   export declare function stitchSchemas({
     subschemas,
     types,

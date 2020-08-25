@@ -2,8 +2,13 @@ import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
 import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
-import {linkToExecutor} from '@graphql-tools/links'
-import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
+import {
+  linkToExecutor,
+  RenameTypes,
+  wrapSchema,
+  introspectSchema,
+  mergeSchemas,
+} from 'graphql-tools'
 import {createHttpLink} from 'apollo-link-http'
 import {HeadersInit as FetchHeaders} from 'node-fetch'
 import {createContentDigest} from 'gatsby-core-utils'
@@ -15,6 +20,7 @@ import {GatsbyGraphQLFieldResolver} from './types/gatsby'
 import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
+import {getFixedGatsbyImage, getFluidGatsbyImage} from './images/gatsby-image-tools'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
 
@@ -66,6 +72,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   } else {
     link = createHttpLink({
       uri,
+      // @ts-ignore
       fetch: getRateLimitedFetch(throttle),
       fetchOptions,
       headers,
@@ -83,6 +90,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   reporter.info(`[takeshape] Fetching remote schema`)
 
   if (!sdl) {
+    // @ts-ignore
     introspectionSchema = await introspectSchema(executor)
     sdl = printSchema(introspectionSchema)
   } else {
@@ -107,7 +115,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     return {}
   }
 
-  const schema = wrapSchema(
+  const takeshapeSchema = wrapSchema(
     {
       schema: introspectionSchema,
       executor,
@@ -122,6 +130,92 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
       }),
     ],
   )
+
+  const schema = mergeSchemas({
+    schemas: [takeshapeSchema],
+    typeDefs: /* GraphQL */ `
+      enum TakeShapeImageFit {
+        CLAMP
+        CLIP
+        CROP
+        FACEAREA
+        FILL
+        FILLMAX
+        MAX
+        MIN
+        SCALE
+      }
+
+      enum TakeShapeImageFormat {
+        GIF
+        JP2
+        JPG
+        JXR
+        PJPG
+        PNG
+        PNG8
+        PNG32
+        WEBP
+      }
+
+      type TakeShapeImageFixed {
+        aspectRatio: Float!
+        base64: String
+        height: Int!
+        width: Int!
+        src: String!
+        srcSet: String!
+        srcWebp: String!
+        srcSetWebp: String!
+      }
+
+      type TakeShapeImageFluid {
+        aspectRatio: Float!
+        base64: String
+        sizes: String!
+        src: String!
+        srcSet: String!
+        srcWebp: String!
+        srcSetWebp: String!
+      }
+
+      extend type TS_Asset {
+        fixed(
+          width: Int
+          height: Int
+          fit: TakeShapeImageFit
+          noBase64: Boolean
+          quality: Int
+          toFormat: TakeShapeImageFormat
+          toFormatBase64: TakeShapeImageFormat
+        ): TakeShapeImageFixed!
+        fluid(
+          maxWidth: Int
+          maxHeight: Int
+          fit: TakeShapeImageFit
+          noBase64: Boolean
+          quality: Int
+          toFormat: TakeShapeImageFormat
+          toFormatBase64: TakeShapeImageFormat
+          srcSetBreakpoints: [Int]
+        ): TakeShapeImageFluid!
+      }
+    `,
+    resolvers: {
+      TS_Asset: {
+        fixed: {
+          resolve(source: any, args: any, context: any, info: any) {
+            return getFixedGatsbyImage(source.path, args)
+          },
+        },
+        fluid: {
+          resolve(source: any, args: any, context: any, info: any) {
+            return getFluidGatsbyImage(source.path, args)
+          },
+        },
+      },
+    },
+  })
 
   addThirdPartySchema({schema})
 
