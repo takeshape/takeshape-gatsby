@@ -1,8 +1,8 @@
 import ImgixClient from 'imgix-core-js'
-import path, {extname} from 'path'
-import fs from 'fs'
+import {extname} from 'path'
 import crypto from 'crypto'
 import fetch from 'node-fetch'
+import {GatsbyCache} from 'gatsby'
 import {GatsbyFixedImageProps, GatsbyFluidImageProps} from '../types/gatsby'
 import {
   ImageFormat,
@@ -12,8 +12,8 @@ import {
   FixedArgs,
   FluidArgs,
 } from '../types/images'
+import {tmpl} from '../utils/strings'
 
-export const CACHE_ASSETS_FOLDER = `${process.cwd()}/.cache/takeshape/assets`
 export const BASE64_WIDTH = 20
 export const LOWEST_FLUID_BREAKPOINT_WIDTH = 100
 export const DEFAULT_FIXED_WIDTH = 400
@@ -23,8 +23,6 @@ export const DEFAULT_FIXED_QUALITY = 50
 
 const sizeMultipliersFluid = [0.25, 0.5, 1, 1.5, 2, 3]
 
-let cacheDirCreated = false
-
 export interface ImgixParams {
   [key: string]: string | number | (string | number)[] | undefined
 }
@@ -33,6 +31,13 @@ interface ImgixParamsWithHeightWidth extends ImgixParams {
   h: number
   w: number
 }
+
+interface GatsbyContext {
+  cache: GatsbyCache
+}
+
+const createMetadataCacheKey = tmpl<[string]>(`takeshape-asset-metadata-%s`)
+const createBase64CacheKey = tmpl<[string, string]>(`takeshape-asset-base64-%s-%s`)
 
 export const imgixClient = new ImgixClient({
   domain: `images.takeshape.io`,
@@ -66,33 +71,9 @@ function getImageId(imgPath: string): string {
   return crypto.createHash(`sha1`).update(imgPath).digest(`hex`)
 }
 
-function ensureCacheDir() {
-  if (!cacheDirCreated) {
-    fs.mkdirSync(CACHE_ASSETS_FOLDER, {
-      recursive: true,
-    })
-    cacheDirCreated = true
-  }
-}
-
-export async function cacheGet(assetPath: string): Promise<string | null> {
-  const cachePath = path.join(CACHE_ASSETS_FOLDER, assetPath)
-  if (fs.existsSync(cachePath)) {
-    return fs.promises.readFile(cachePath, `utf8`)
-  }
-  return null
-}
-
-export async function cacheSet(assetPath: string, data: string): Promise<string> {
-  const cachePath = path.join(CACHE_ASSETS_FOLDER, assetPath)
-  await fs.promises.writeFile(cachePath, data)
-  return data
-}
-
-async function getImageData(imgPath: string): Promise<ImageData | null> {
-  ensureCacheDir()
-  const dataPath = `${getImageId(imgPath)}.json`
-  let imgData = await cacheGet(dataPath)
+async function getImageData(imgPath: string, {cache}: GatsbyContext): Promise<ImageData | null> {
+  const cacheKey = createMetadataCacheKey(getImageId(imgPath))
+  let imgData = await cache.get(cacheKey)
   if (!imgData) {
     const dataUrl = imgixClient.buildURL(imgPath, {
       fm: `json`,
@@ -100,17 +81,18 @@ async function getImageData(imgPath: string): Promise<ImageData | null> {
     const fetched = await fetch(dataUrl)
     if (fetched.status === 200) {
       const fetchedData = await fetched.json()
-      imgData = await cacheSet(dataPath, JSON.stringify(fetchedData))
+      imgData = JSON.stringify(fetchedData)
+      await cache.set(cacheKey, imgData)
     }
   }
-  if (imgData) {
-    return JSON.parse(imgData)
-  }
-  return null
+  return imgData ? JSON.parse(imgData) : null
 }
 
-async function getImageDimensions(imgPath: string): Promise<ImageDimensions | null> {
-  const imageData = await getImageData(imgPath)
+async function getImageDimensions(
+  imgPath: string,
+  context: GatsbyContext,
+): Promise<ImageDimensions | null> {
+  const imageData = await getImageData(imgPath, context)
   if (imageData) {
     return {
       aspectRatio: Math.round((imageData.PixelWidth / imageData.PixelHeight) * 100) / 100,
@@ -136,20 +118,20 @@ function hasNewAspectRatio(fit: ImageFit): boolean {
 async function getBase64Image(
   imgPath: string,
   imgixParams: ImgixParamsWithHeightWidth,
+  {cache}: GatsbyContext,
 ): Promise<string | null> {
-  ensureCacheDir()
   const base64Url = imgixClient.buildURL(imgPath, imgixParams)
   const base64UrlSha = crypto.createHash(`sha1`).update(base64Url).digest(`hex`)
-  const base64Path = `${getImageId(imgPath)}-${base64UrlSha}.base64`
-  let base64Data = await cacheGet(base64Path)
+  const cacheKey = createBase64CacheKey(getImageId(imgPath), base64UrlSha)
+  let base64Data = await cache.get(cacheKey)
   if (!base64Data) {
     const fetched = await fetch(base64Url)
     if (fetched.status === 200) {
       const fetchedBuffer = await fetched.buffer()
       const fetchedContentType = fetched.headers.get(`content-type`)
       const fetchedBase64String = fetchedBuffer.toString(`base64`)
-      const base64String = `data:${fetchedContentType};base64,${fetchedBase64String}`
-      base64Data = await cacheSet(base64Path, base64String)
+      base64Data = `data:${fetchedContentType};base64,${fetchedBase64String}`
+      await cache.set(cacheKey, base64Data)
     }
   }
   return base64Data
@@ -159,13 +141,18 @@ async function getBase64(
   imgPath: string,
   imgixParams: ImgixParamsWithHeightWidth,
   toFormat = ImageFormat.Jpg,
+  context: GatsbyContext,
 ): Promise<string> {
-  const base64Image = await getBase64Image(imgPath, {
-    ...imgixParams,
-    fm: toFormat.toLowerCase(),
-    h: Math.round(imgixParams.h / (imgixParams.w / BASE64_WIDTH)),
-    w: BASE64_WIDTH,
-  })
+  const base64Image = await getBase64Image(
+    imgPath,
+    {
+      ...imgixParams,
+      fm: toFormat.toLowerCase(),
+      h: Math.round(imgixParams.h / (imgixParams.w / BASE64_WIDTH)),
+      w: BASE64_WIDTH,
+    },
+    context,
+  )
 
   if (base64Image) {
     return base64Image
@@ -199,13 +186,14 @@ const getSrcSets = (
 }
 
 export async function getFixedGatsbyImage(
+  context: GatsbyContext,
   assetPath: string,
   fixedArgs: FixedArgs = {},
   imgixParams: ImgixParams = {},
 ): Promise<GatsbyFixedImageProps | null> {
   assetPath = safePath(assetPath)
 
-  const dimensions = await getImageDimensions(assetPath)
+  const dimensions = await getImageDimensions(assetPath, context)
   if (!dimensions) {
     throw new Error(`Could not get image dimensions for ${assetPath}`)
   }
@@ -245,7 +233,7 @@ export async function getFixedGatsbyImage(
   let base64 = ``
 
   if (!fixedArgs.noBase64) {
-    base64 = await getBase64(assetPath, params, fixedArgs.toFormatBase64)
+    base64 = await getBase64(assetPath, params, fixedArgs.toFormatBase64, context)
   }
 
   const src = imgixClient.buildURL(assetPath, params)
@@ -272,13 +260,14 @@ export async function getFixedGatsbyImage(
 }
 
 export async function getFluidGatsbyImage(
+  context: GatsbyContext,
   assetPath: string,
   fluidArgs: FluidArgs = {},
   imgixParams: ImgixParams = {},
 ): Promise<GatsbyFluidImageProps | null> {
   assetPath = safePath(assetPath)
 
-  const dimensions = await getImageDimensions(assetPath)
+  const dimensions = await getImageDimensions(assetPath, context)
   if (!dimensions) {
     throw new Error(`Could not get image dimensions for ${assetPath}`)
   }
@@ -324,12 +313,15 @@ export async function getFluidGatsbyImage(
   let base64 = ``
 
   if (!fluidArgs.noBase64) {
-    base64 = await getBase64(assetPath, params, fluidArgs.toFormatBase64)
+    base64 = await getBase64(assetPath, params, fluidArgs.toFormatBase64, context)
   }
 
   const sizes = `(max-width: ${maxWidth}px) 100vw, ${maxWidth}px`
   const src = imgixClient.buildURL(assetPath, params)
-  const srcWebp = imgixClient.buildURL(assetPath, {...params, fm: ImageFormat.Webp.toLowerCase()})
+  const srcWebp = imgixClient.buildURL(assetPath, {
+    ...params,
+    fm: ImageFormat.Webp.toLowerCase(),
+  })
 
   const breakpoints =
     fluidArgs.srcSetBreakpoints ||

@@ -38,7 +38,6 @@
     "dataloader": "^2.0.0",
     "flush-promises": "^1.0.2",
     "gatsby-core-utils": "^1.3.14",
-    "gatsby-source-filesystem": "^2.3.25",
     "graphql-tools": "^6.0.18",
     "imgix-core-js": "^2.3.1",
     "node-fetch": "^2.6.0",

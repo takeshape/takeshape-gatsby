@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
-import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
+import {GatsbyNode, SourceNodesArgs, NodeInput, ParentSpanPluginArgs} from 'gatsby'
 import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {
   linkToExecutor,
@@ -30,11 +30,11 @@ const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
 
 const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
-const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
-const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
+const createCacheKey = tmpl<[string, string]>(`takeshape-schema-%s-%s`)
+const createSourceNodeId = tmpl<[string]>(`takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
-  {actions, createNodeId, cache, reporter}: SourceNodesArgs,
+  {actions, createNodeId, cache, store, reporter}: SourceNodesArgs,
   options: PluginOptionsInit = {} as PluginOptionsInit,
 ): Promise<void> => {
   const {createNode, addThirdPartySchema} = actions
@@ -207,12 +207,12 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
       TS_Asset: {
         fixed: {
           resolve(source: any, args: FixedArgs, context: any, info: any) {
-            return getFixedGatsbyImage(source.path, args)
+            return getFixedGatsbyImage({cache}, source.path, args)
           },
         },
         fluid: {
           resolve(source: any, args: FluidArgs, context: any, info: any) {
-            return getFluidGatsbyImage(source.path, args)
+            return getFluidGatsbyImage({cache}, source.path, args)
           },
         },
       },
