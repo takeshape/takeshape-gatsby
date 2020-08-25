@@ -21,6 +21,7 @@ import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
 import {getFixedGatsbyImage, getFluidGatsbyImage} from './images/gatsby-image-tools'
+import {FixedArgs, FluidArgs} from './types/images'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
 
@@ -189,6 +190,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
           toFormat: TakeShapeImageFormat
           toFormatBase64: TakeShapeImageFormat
         ): TakeShapeImageFixed!
+
         fluid(
           maxWidth: Int
           maxHeight: Int
@@ -204,12 +206,12 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     resolvers: {
       TS_Asset: {
         fixed: {
-          resolve(source: any, args: any, context: any, info: any) {
+          resolve(source: any, args: FixedArgs, context: any, info: any) {
             return getFixedGatsbyImage(source.path, args)
           },
         },
         fluid: {
-          resolve(source: any, args: any, context: any, info: any) {
+          resolve(source: any, args: FluidArgs, context: any, info: any) {
             return getFluidGatsbyImage(source.path, args)
           },
         },

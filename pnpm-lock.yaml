@@ -43,6 +43,7 @@ importers:
   packages/example:
     dependencies:
       gatsby: 2.24.49_4b0cc8d2487efa5ae9c99f7ac212853f
+      gatsby-image: 2.4.16
       gatsby-plugin-pnpm: 1.2.5_gatsby@2.24.49
       gatsby-source-takeshape: 'link:../gatsby-source-takeshape'
       react: 16.13.1
@@ -53,6 +54,7 @@ importers:
     specifiers:
       dotenv: ^6.1.0
       gatsby: ^2.24.47
+      gatsby-image: ^2.4.16
       gatsby-plugin-pnpm: ^1.2.5
       gatsby-source-takeshape: 'workspace:^1.0.0'
       react: ^16.13.1
@@ -60,12 +62,6 @@ importers:
       rimraf: ^3.0.2
   packages/gatsby-source-takeshape:
     dependencies:
-      '@graphql-tools/delegate': 6.0.18_graphql@14.7.0
-      '@graphql-tools/links': 6.0.18_graphql@14.7.0+react@16.13.1
-      '@graphql-tools/merge': 6.0.18_graphql@14.7.0
-      '@graphql-tools/schema': 6.0.18_graphql@14.7.0
-      '@graphql-tools/stitch': 6.0.18_graphql@14.7.0
-      '@graphql-tools/wrap': 6.0.18_graphql@14.7.0
       apollo-link: 1.2.14_graphql@14.7.0
       apollo-link-http: 1.5.17_graphql@14.7.0
       dataloader: 2.0.0
@@ -79,7 +75,6 @@ importers:
       pusher-js: 7.0.0
       uuid: 8.3.0
     devDependencies:
-      '@graphql-tools/utils': 6.0.18_graphql@14.7.0
       gatsby: 2.24.49_c5c2faa97402ad41f2271def552bc6f9
       graphql: 14.7.0
       react: 16.13.1
@@ -87,13 +82,6 @@ importers:
       rimraf: 3.0.2
       typescript: 4.0.2
     specifiers:
-      '@graphql-tools/delegate': ^6.0.15
-      '@graphql-tools/links': ^6.0.15
-      '@graphql-tools/merge': ^6.0.18
-      '@graphql-tools/schema': ^6.0.18
-      '@graphql-tools/stitch': ^6.0.18
-      '@graphql-tools/utils': ^6.0.18
-      '@graphql-tools/wrap': ^6.0.15
       apollo-link: ^1.2.14
       apollo-link-http: ^1.5.17
       dataloader: ^2.0.0
@@ -2477,7 +2465,6 @@ packages:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
     peerDependencies:
       eslint: '*'
-      typescript: '*'
     resolution:
       integrity: sha512-eS6FTkq+wuMJ+sgtuNTtcqavWXqsflWcfBnlYhg/nS4aZ1leewkXGbvBhaapn1q6qf4M71bsR1tez5JTRMuqwA==
   /@typescript-eslint/experimental-utils/2.34.0_eslint@6.8.0+typescript@4.0.2:
@@ -3439,7 +3426,7 @@ packages:
       integrity: sha512-JrB9ZASlMAfkRF+5NdgoQxgenhJxzXFEO1vrqsSDJdzLrC38L2wrvXF9mm1YLbrehkZxcrNz9UYDyARP4jaY9g==
   /babel-plugin-remove-graphql-queries/2.9.17_gatsby@2.24.49:
     dependencies:
-      gatsby: 2.24.49_c5c2faa97402ad41f2271def552bc6f9
+      gatsby: 2.24.49_4b0cc8d2487efa5ae9c99f7ac212853f
     engines:
       node: '>=10.13.0'
     peerDependencies:
@@ -5565,8 +5552,8 @@ packages:
       integrity: sha512-oB8cpLWSAjOVFEJhhyMZh6NOEOtBVziaqdDQ86+qhDHFbZXoRTM7pNSvFRfW/W/L/LrQ38C99J5CGuRBBzBsdA==
   /eslint-config-react-app/5.2.1_d04fefd11bd53fb45f169c274338f464:
     dependencies:
-      '@typescript-eslint/eslint-plugin': 2.34.0_36572c4037d6636e12fdb87a6bbfa4a5
-      '@typescript-eslint/parser': 2.34.0_eslint@6.8.0+typescript@4.0.2
+      '@typescript-eslint/eslint-plugin': 2.34.0_984cbb313f9ea271f36cadd8f9814e06
+      '@typescript-eslint/parser': 2.34.0_eslint@6.8.0
       babel-eslint: 10.1.0_eslint@6.8.0
       confusing-browser-globals: 1.0.9
       eslint: 6.8.0
@@ -6655,6 +6642,16 @@ packages:
       node: '>=10.13.0'
     resolution:
       integrity: sha512-kHVHzGvebZlUGeGOoAAJVdLWAXftZiYeOk6EitWFkXEZtYxpgXM5Pum9qDMCzUCJ6pzS8r9U5IBJncjMal3ScQ==
+  /gatsby-image/2.4.16:
+    dependencies:
+      '@babel/runtime': 7.11.2
+      object-fit-images: 3.2.4
+      prop-types: 15.7.2
+    dev: false
+    engines:
+      node: '>=10.13.0'
+    resolution:
+      integrity: sha512-N5kJ3LE8re57DgR1lAZFWP2or0nCSuNXSUKvSBvVgxwcebdcFGCxN/xTJbU4ojFfFBJ/D4gKuxJrvLvDf3jcyg==
   /gatsby-interface/0.0.166_b6ed40fd403214e3cfa1e393a56fdb0e:
     dependencies:
       '@emotion/core': 10.0.35_react@16.13.1
@@ -6671,7 +6668,7 @@ packages:
       case: 1.6.3
       date-fns: 2.15.0
       formik: 2.1.5_react@16.13.1
-      gatsby: 2.24.49_c5c2faa97402ad41f2271def552bc6f9
+      gatsby: 2.24.49_4b0cc8d2487efa5ae9c99f7ac212853f
       gatsby-design-tokens: 2.0.10
       lodash.sample: 4.2.1
       prop-types: 15.7.2
@@ -6731,7 +6728,7 @@ packages:
     dependencies:
       '@babel/traverse': 7.11.0
       fs-exists-cached: 1.0.0
-      gatsby: 2.24.49_c5c2faa97402ad41f2271def552bc6f9
+      gatsby: 2.24.49_4b0cc8d2487efa5ae9c99f7ac212853f
       gatsby-page-utils: 0.2.21
       globby: 11.0.1
       graphql: 14.7.0
@@ -7077,7 +7074,6 @@ packages:
       gatsby: '*'
       react: ^16.4.2
       react-dom: ^16.4.2
-      typescript: '*'
     requiresBuild: true
     resolution:
       integrity: sha512-QFPJz+C87piBf3UO7cufYiSzYR+7/LDY/EHsT37bx2MNQewGdIoD8ixxRnoOLaYJVqh1WQ+jHVWOcQCtHG1XmQ==
@@ -10349,6 +10345,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-fn2Fi3gb18mRpBupde04EnVOmYw=
+  /object-fit-images/3.2.4:
+    dev: false
+    resolution:
+      integrity: sha512-G+7LzpYfTfqUyrZlfrou/PLLLAPNC52FTy5y1CBywX+1/FkxIloOyQXBmZ3Zxa2AWO+lMF0JTuvqbr7G5e5CWg==
   /object-hash/1.3.1:
     engines:
       node: '>= 0.10.0'
@@ -10979,8 +10979,6 @@ packages:
     dev: false
     engines:
       node: '>=6'
-    peerDependencies:
-      typescript: '*'
     resolution:
       integrity: sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg==
   /pnp-webpack-plugin/1.6.4_typescript@4.0.2:
