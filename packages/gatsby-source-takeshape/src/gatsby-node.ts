@@ -36,7 +36,7 @@ const createCacheKey = tmpl<[string, string]>(`takeshape-schema-%s-%s`)
 const createSourceNodeId = tmpl<[string]>(`takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
-  {actions, createNodeId, cache, store, reporter}: SourceNodesArgs,
+  {actions, createNodeId, cache, reporter}: SourceNodesArgs,
   options: PluginOptionsInit = {} as PluginOptionsInit,
 ): Promise<void> => {
   const {createNode, addThirdPartySchema} = actions
