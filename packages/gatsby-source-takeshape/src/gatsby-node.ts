@@ -1,9 +1,14 @@
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
-import {GatsbyNode, SourceNodesArgs, NodeInput} from 'gatsby'
+import {GatsbyNode, SourceNodesArgs, NodeInput, ParentSpanPluginArgs} from 'gatsby'
 import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
-import {linkToExecutor} from '@graphql-tools/links'
-import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
+import {
+  linkToExecutor,
+  RenameTypes,
+  wrapSchema,
+  introspectSchema,
+  mergeSchemas,
+} from 'graphql-tools'
 import {createHttpLink} from 'apollo-link-http'
 import {HeadersInit as FetchHeaders} from 'node-fetch'
 import {createContentDigest} from 'gatsby-core-utils'
@@ -15,6 +20,10 @@ import {GatsbyGraphQLFieldResolver} from './types/gatsby'
 import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
+import {
+  typeDefs as gatsbyImageTypeDefs,
+  resolvers as gatsbyImageResolvers,
+} from './images/gatsby-image-schema'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
 
@@ -23,8 +32,8 @@ const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
 
 const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
-const createCacheKey = tmpl<[string, string]>(`gatsby-source-takeshape-schema-%s-%s`)
-const createSourceNodeId = tmpl<[string]>(`gatsby-source-takeshape-%s`)
+const createCacheKey = tmpl<[string, string]>(`takeshape-schema-%s-%s`)
+const createSourceNodeId = tmpl<[string]>(`takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   {actions, createNodeId, cache, reporter}: SourceNodesArgs,
@@ -66,7 +75,8 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   } else {
     link = createHttpLink({
       uri,
-      fetch: getRateLimitedFetch(throttle),
+      // Apollo is relying on DOM types here, which will not match the node-fetch types
+      fetch: getRateLimitedFetch(throttle) as any,
       fetchOptions,
       headers,
     })
@@ -107,7 +117,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     return {}
   }
 
-  const schema = wrapSchema(
+  const takeshapeSchema = wrapSchema(
     {
       schema: introspectionSchema,
       executor,
@@ -122,6 +132,12 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
       }),
     ],
   )
+
+  const schema = mergeSchemas({
+    schemas: [takeshapeSchema],
+    typeDefs: gatsbyImageTypeDefs,
+    resolvers: gatsbyImageResolvers({cache}),
+  })
 
   addThirdPartySchema({schema})
 

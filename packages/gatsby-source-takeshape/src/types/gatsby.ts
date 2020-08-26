@@ -39,3 +39,24 @@ export type GatsbyGraphQLConfigMap = GraphQLFieldConfigMap<
   Record<string, unknown>,
   GatsbyGraphQLContext
 >
+
+export interface GatsbyFixedImageProps {
+  aspectRatio: number
+  width: number
+  height: number
+  src: string
+  srcSet: string
+  base64?: string
+  srcWebp?: string
+  srcSetWebp?: string
+}
+
+export type GatsbyFluidImageProps = {
+  aspectRatio?: number
+  src: string
+  srcSet: string
+  sizes: string
+  base64?: string
+  srcWebp?: string
+  srcSetWebp?: string
+}

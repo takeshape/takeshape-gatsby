@@ -30,6 +30,7 @@ indent_size = 2
 
 # Markdown
 [*.md]
+indent_size = 2
 trim_trailing_whitespace = false
 
 # Web

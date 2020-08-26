@@ -1,5 +1,5 @@
 import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'gatsby/graphql'
-import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from '@graphql-tools/utils'
+import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from 'graphql-tools'
 import {GatsbyGraphQLFieldResolver, GatsbyGraphQLConfigMap} from './types/gatsby'
 
 export class NamespaceUnderFieldTransform implements Transform {

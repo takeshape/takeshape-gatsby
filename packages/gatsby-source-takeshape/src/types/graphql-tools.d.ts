@@ -1,26 +1,34 @@
-import {ExecutionResult, Transform} from '@graphql-tools/utils'
-import {ExecutionParams, SubschemaConfig, Executor} from '@graphql-tools/delegate'
+import {
+  ExecutionResult,
+  Transform,
+  ExecutionParams,
+  SubschemaConfig,
+  Executor,
+  IntrospectionOptions,
+} from 'graphql-tools'
 import {GraphQLSchema, GraphQLScalarType} from 'graphql'
 
-// GraphQL Tools has some bad types: https://github.com/ardatan/graphql-tools/issues/1585
-type MyAsyncExecutor<TContext = Record<string, unknown>> = <
-  TReturn = Record<string, unknown>,
-  TArgs = Record<string, unknown>
->(
-  params: Required<ExecutionParams<TArgs, TContext>>,
-) => Promise<ExecutionResult<TReturn>>
+declare module 'graphql-tools' {
+  // GraphQL Tools has some bad types: https://github.com/ardatan/graphql-tools/issues/1585
+  export declare type AsyncExecutor<TContext = Record<string, unknown>> = <
+    TReturn = Record<string, unknown>,
+    TArgs = Record<string, unknown>
+  >(
+    params: Required<ExecutionParams<TArgs, TContext>>,
+  ) => Promise<ExecutionResult<TReturn>>
 
-interface MySubschemaConfig extends SubschemaConfig {
-  executor?: Executor | MyAsyncExecutor
-}
+  interface MySubschemaConfig extends SubschemaConfig {
+    executor?: Executor | AsyncExecutor
+  }
 
-declare module '@graphql-tools/delegate' {
-  export type AsyncExecutor = MyAsyncExecutor
-}
-
-declare module '@graphql-tools/wrap' {
   export declare function wrapSchema(
     subschemaOrSubschemaConfig: GraphQLSchema | MySubschemaConfig,
     transforms?: Array<Transform>,
   ): GraphQLSchema
+
+  export declare function introspectSchema(
+    executor: AsyncExecutor,
+    context?: Record<string, any>,
+    options?: IntrospectionOptions,
+  ): Promise<GraphQLSchema>
 }

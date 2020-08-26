@@ -4,8 +4,8 @@
 
 Use TakeShape as the API for your Gatsby site.
 
--   [Example website](https://shape-portfolio.takeshapesampleproject.com/)
--   [Example website source](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs)
+- [Example website](https://shape-portfolio.takeshapesampleproject.com/)
+- [Example website source](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs)
 
 ### Learning Resources
 
@@ -40,32 +40,137 @@ module.exports = {
 
 ## Options
 
--   `apiKey` (string) -- Your API Key from your TakeShape project. You'll need
-    `dev` or `ci` permissions. Create it in the `API Keys` section under the
-    projects dropdown.
--   `projectId` (string) -- Your project ID from your TakeShape project. (see
-    note below)
--   `batch` (boolean) -- Set to true to batch queries that happen around the
-    same time. By default, each query is a separate network request. See
-    [gatsby-source-graphql](https://www.gatsbyjs.org/packages/gatsby-source-graphql/#performance-tuning)
-    for more performance tuning tips. Default: `false`
--   `fetchOptions` (object) -- Additional options to pass in with the second
-    argument to `fetch`.
--   `dataLoaderOptions` (object) -- Advanced. Override or set options passed to
-    [Dataloader](https://www.npmjs.com/package/dataloader#new-dataloaderbatchloadfn--options).
-    Dataloader is used if `batch` is `true`.
--   `throttle` (boolean) -- Throttle queries based on the `x-ratelimit-limit`
-    response header. Enabling throttling will slow down your build, but will
-    reduce the risk of hitting your API rate limit. Regardless of throttling,
-    [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) errors
-    are handled with
-    [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
-    Default `false`
+| Name                | Type      | Description                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apiKey`            | `string`  | Your API Key from your project. You'll need `dev` or `ci` permissions. Create in the `API Keys` section under the projects dropdown.                                                                                                                                                                                                                                                       |
+| `projectId`         | `string`  | Your project ID from your TakeShape project. (see note below)                                                                                                                                                                                                                                                                                                                              |
+| `batch`             | `boolean` | Set to true to batch queries that happen around the same time. By default, each query is a separate network request. See [gatsby-source-graphql](https://www.gatsbyjs.org/packages/gatsby-source-graphql/#performance-tuning) for more performance tuning tips. Default: `false`                                                                                                           |
+| `fetchOptions`      | `object`  | Additional options to pass in with the second argument to `fetch`.                                                                                                                                                                                                                                                                                                                         |
+| `dataLoaderOptions` | `object`  | Advanced. Override or set options passed to [Dataloader](https://www.npmjs.com/package/dataloader#new-dataloaderbatchloadfn--options). Dataloader is used if `batch` is `true`.                                                                                                                                                                                                            |
+| `throttle`          | `boolean` | Throttle queries based on the `x-ratelimit-limit` response header. Enabling throttling will slow down your build, but will reduce the risk of hitting your API rate limit. Regardless of throttling, [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) errors are handled with [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff). Default `false` |
 
 > You can get your project ID from the URL when logged in to a project on the
 > [TakeShape](https://app.takeshape.io/). For example, the URL might look like
 > this: `https://app.takeshape.io/projects/b878915b-0f45-406b-b036-8ec76be92d7c`
 > In this case, the project ID is `b878915b-0f45-406b-b036-8ec76be92d7c`
+
+## Data Queries
+
+Here is an extremely simple query from the
+[hello world example](https://github.com/takeshape/takeshape-gatsby/tree/trunk/packages/example/src/index.jsx):
+
+```js
+import React from 'react'
+import {graphql} from 'gatsby'
+
+export const query = graphql`
+  query {
+    takeshape {
+      helloWorld: getHelloWorld {
+        content
+      }
+    }
+  }
+`
+
+const IndexPage = ({data}) => <>{data.takeshape.helloWorld.content}</>
+
+export default IndexPage
+```
+
+More advanced examples can be found in the
+[shape-portfolio-gatsby](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs)
+sample project.
+
+You can use the API Explorer in [TakeShape](https://app.takeshape.io/) to help
+build your queries. You can get there from "API Explorer" under the project
+menu. More help can be found in
+[the documentation](https://www.takeshape.io/docs/quickstart/).
+
+## Image Queries
+
+You can use Gatsby's GraphQL queries to pull objects suitable for use with the
+[gatsby-image](https://www.gatsbyjs.com/plugins/gatsby-image/) plugin.
+TakeShape's `fixed` and `fluid` fields will provide objects that support the
+base64 blur up effect, provide srcSets for responsive images, and faster page
+loads.
+
+> Note: Because of limitations in how Gatsby handles third-party schemas you
+> must include the `path` field on your image queries for the `fixed` and
+> `fluid` fields to work properly.
+
+### Fixed
+
+```js
+import React from 'react'
+import Img from 'gatsby-image'
+
+export const query = graphql`
+  query HomepageQuery {
+    takeshape {
+      homepage: getHomepage {
+        title
+        image {
+          path
+          fixed(width: 400, height: 400) {
+            ...GatsbyTakeShapeImageFixed
+          }
+        }
+      }
+    }
+  }
+`
+
+const Homepage = ({data}) => (
+  <>
+    <h1>{data.takeshape.homepage.title}</h1>
+    <Img fixed={data.takeshape.homepage.image.fixed} />
+  </>
+)
+
+export default Homepage
+```
+
+### Fluid
+
+```js
+import React from 'react'
+import Img from 'gatsby-image'
+
+export const query = graphql`
+  query HomepageQuery {
+    takeshape {
+      homepage: getHomepage {
+        title
+        image {
+          path
+          fluid(maxWidth: 400, maxHeight: 400) {
+            ...GatsbyTakeShapeImageFluid
+          }
+        }
+      }
+    }
+  }
+`
+
+const Homepage = ({data}) => (
+  <>
+    <h1>{data.takeshape.homepage.title}</h1>
+    <Img fluid={data.takeshape.homepage.image.fluid} />
+  </>
+)
+
+export default Homepage
+```
+
+### Args
+
+Image queries support a number of arguments. Take a look at the
+[type defs](src/images/gatsby-image-schema.ts#L31-L50) to see what you can do.
+
+There is also the `imgixParams` argument which allows you to pass in arbitrary
+[imgix](https://docs.imgix.com/apis/url) filters as a query param-formatted
+string, e.g., `crop=faces,edges&txt=Hello%20World!`.
 
 ## When do I use this plugin?
 
@@ -89,39 +194,6 @@ TAKESHAPE_TOKEN=<paste API key here>
 > Make sure `.env` is included in your `.gitignore` so you don't accidentally
 > commit your API key!
 
-## Querying
-
-Here is an extremely simple query from the
-[hello world example](https://github.com/takeshape/takeshape-gatsby/tree/trunk/packages/example/src/index.jsx):
-
-```js
-import React from 'react'
-import {graphql} from 'gatsby'
-
-const IndexPage = ({data}) => <>{data.takeshape.helloWorld.content}</>
-
-export default IndexPage
-
-export const query = graphql`
-    query {
-        takeshape {
-            helloWorld: getHelloWorld {
-                content
-            }
-        }
-    }
-`
-```
-
-More advanced examples can be found in the
-[shape-portfolio-gatsby](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs)
-sample project.
-
-You can use the API Explorer in [TakeShape](https://app.takeshape.io/) to help
-build your queries. You can get there from "API Explorer" under the project
-menu. More help can be found in
-[the documentation](https://www.takeshape.io/docs/quickstart/).
-
 ## Developing
 
 ### How to run tests
@@ -136,10 +208,10 @@ Currently, dependency resolution doesn't work when running the tests with npm,
 but it does work with pnpm or yarn. Therefore, the following examples assume you
 are using [pnpm](https://pnpm.js.org).
 
--   `pnpm run lint`
--   `pnpm run typecheck`
--   `pnpm run test`
--   `pnpm run build`
+- `pnpm run lint`
+- `pnpm run typecheck`
+- `pnpm run test`
+- `pnpm run build`
 
 The example project in this repo is provided for development and testing
 convenience. You can build and copy gatsby-source-takeshape into the example's
