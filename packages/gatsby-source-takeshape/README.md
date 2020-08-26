@@ -111,7 +111,7 @@ export const query = graphql`
       homepage: getHomepage {
         title
         image {
-          path
+          path // <-- this is important, see note above
           fixed(width: 400, height: 400) {
             ...GatsbyTakeShapeImageFixed
           }
@@ -143,7 +143,7 @@ export const query = graphql`
       homepage: getHomepage {
         title
         image {
-          path
+          path // <-- this is important, see note above
           fluid(maxWidth: 400, maxHeight: 400) {
             ...GatsbyTakeShapeImageFluid
           }
