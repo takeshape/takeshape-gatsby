@@ -8,23 +8,27 @@ import {graphql} from 'gatsby'
  *   fixed {
  *     ...GatsbyTakeShapeImageFixed
  *     # ^ identical to using the following fields:
+ *     # aspectRatio
  *     # base64
- *     # width
  *     # height
  *     # src
  *     # srcSet
+ *     # srcWebp
+ *     # srcSetWebp
+ *     # width
  *   }
  * }
  */
 export const gatsbyTakeShapeImageFixed = graphql`
   fragment GatsbyTakeShapeImageFixed on TakeShapeImageFixed {
+    aspectRatio
     base64
-    width
     height
     src
     srcSet
     srcWebp
     srcSetWebp
+    width
   }
 `
 
@@ -34,12 +38,13 @@ export const gatsbyTakeShapeImageFixed = graphql`
  */
 export const gatsbyTakeShapeImageFixedNoBase64 = graphql`
   fragment GatsbyTakeShapeImageFixed_noBase64 on TakeShapeImageFixed {
-    width
+    aspectRatio
     height
     src
     srcSet
     srcWebp
     srcSetWebp
+    width
   }
 `
 
@@ -49,8 +54,8 @@ export const gatsbyTakeShapeImageFixedNoBase64 = graphql`
  */
 export const gatsbyTakeShapeImageFluid = graphql`
   fragment GatsbyTakeShapeImageFluid on TakeShapeImageFluid {
-    base64
     aspectRatio
+    base64
     src
     srcSet
     srcWebp
