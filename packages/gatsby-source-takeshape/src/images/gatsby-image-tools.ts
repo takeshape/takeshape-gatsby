@@ -206,12 +206,11 @@ export async function getFixedGatsbyImage(
 
   const fit = fixedArgs.fit || ImageFit.Crop
 
-  const desiredWidth = !fixedArgs.width && !fixedArgs.height ? DEFAULT_FIXED_WIDTH : fixedArgs.width
+  const desiredWidth =
+    !fixedArgs.width && !fixedArgs.height ? DEFAULT_FIXED_WIDTH : fixedArgs.width || 0
   // The TypeScript compiler cannot seem to determine we've ensured a value for desiredWidth here
-  const height = fixedArgs.height
-    ? fixedArgs.height
-    : Math.round(desiredWidth! / dimensions.aspectRatio) // eslint-disable-line @typescript-eslint/no-non-null-assertion
-  const width = desiredWidth ? desiredWidth : Math.round(height * dimensions.aspectRatio)
+  const height = fixedArgs.height || Math.round(desiredWidth / dimensions.aspectRatio)
+  const width = desiredWidth || Math.round(height * dimensions.aspectRatio)
 
   let aspectRatio = dimensions.aspectRatio
   if (hasNewAspectRatio(fit)) {
