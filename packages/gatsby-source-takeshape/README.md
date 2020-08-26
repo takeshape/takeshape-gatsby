@@ -19,7 +19,7 @@ $ npm install --save gatsby-source-takeshape
 
 After you install the plugin, add it to your `gatsby-config.js` like this:
 
-```
+```js
 require('dotenv').config();
 
 module.exports = {
