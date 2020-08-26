@@ -24,7 +24,6 @@ export const query = graphql`
 `
 
 const IndexPage = ({data}) => {
-  console.log(data.takeshape.homepage.image.fixed)
   return (
     <>
       <h1>{data.takeshape.homepage.title}</h1>
