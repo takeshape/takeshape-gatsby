@@ -75,8 +75,8 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   } else {
     link = createHttpLink({
       uri,
-      // @ts-ignore
-      fetch: getRateLimitedFetch(throttle),
+      // Apollo is relying on DOM types here, which will not match the node-fetch types
+      fetch: getRateLimitedFetch(throttle) as any,
       fetchOptions,
       headers,
     })
@@ -93,7 +93,6 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   reporter.info(`[takeshape] Fetching remote schema`)
 
   if (!sdl) {
-    // @ts-ignore
     introspectionSchema = await introspectSchema(executor)
     sdl = printSchema(introspectionSchema)
   } else {
