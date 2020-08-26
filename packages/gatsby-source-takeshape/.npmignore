@@ -1,2 +1,11 @@
-coverage
 src
+test
+coverage
+.eslintignore
+.eslintrc.js
+.gitignore
+.lintstagedrc.js
+.editorconfig
+.prettierrc
+jest.config.js
+tsconfig.*
