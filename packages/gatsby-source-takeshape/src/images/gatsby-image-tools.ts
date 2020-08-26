@@ -62,6 +62,7 @@ function getFormatParam(imgPath: string, toFormat?: ImageFormat): ImageFormat | 
   if (toFormat && toFormat !== format) {
     return toFormat
   } else if (isWebP(imgPath)) {
+    // If the source is webp, let's offer a highly compatible alternative with a good compression ratio.
     return ImageFormat.Jpg
   }
   return
