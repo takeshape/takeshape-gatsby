@@ -20,8 +20,10 @@ import {GatsbyGraphQLFieldResolver} from './types/gatsby'
 import {subscribe} from './utils/pusher'
 import {tmpl} from './utils/strings'
 import {getRateLimitedFetch} from './rate-limiting/rate-limiting'
-import {getFixedGatsbyImage, getFluidGatsbyImage} from './images/gatsby-image-tools'
-import {FixedArgs, FluidArgs} from './types/images'
+import {
+  typeDefs as gatsbyImageTypeDefs,
+  resolvers as gatsbyImageResolvers,
+} from './images/gatsby-image-schema'
 
 const isDevelopMode = process.env.gatsby_executing_command === `develop`
 
@@ -134,89 +136,8 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
 
   const schema = mergeSchemas({
     schemas: [takeshapeSchema],
-    typeDefs: /* GraphQL */ `
-      enum TakeShapeImageFit {
-        CLAMP
-        CLIP
-        CROP
-        FACEAREA
-        FILL
-        FILLMAX
-        MAX
-        MIN
-        SCALE
-      }
-
-      enum TakeShapeImageFormat {
-        GIF
-        JP2
-        JPG
-        JXR
-        PJPG
-        PNG
-        PNG8
-        PNG32
-        WEBP
-      }
-
-      type TakeShapeImageFixed {
-        aspectRatio: Float!
-        base64: String
-        height: Int!
-        width: Int!
-        src: String!
-        srcSet: String!
-        srcWebp: String!
-        srcSetWebp: String!
-      }
-
-      type TakeShapeImageFluid {
-        aspectRatio: Float!
-        base64: String
-        sizes: String!
-        src: String!
-        srcSet: String!
-        srcWebp: String!
-        srcSetWebp: String!
-      }
-
-      extend type TS_Asset {
-        fixed(
-          width: Int
-          height: Int
-          fit: TakeShapeImageFit
-          noBase64: Boolean
-          quality: Int
-          toFormat: TakeShapeImageFormat
-          toFormatBase64: TakeShapeImageFormat
-        ): TakeShapeImageFixed!
-
-        fluid(
-          maxWidth: Int
-          maxHeight: Int
-          fit: TakeShapeImageFit
-          noBase64: Boolean
-          quality: Int
-          toFormat: TakeShapeImageFormat
-          toFormatBase64: TakeShapeImageFormat
-          srcSetBreakpoints: [Int]
-        ): TakeShapeImageFluid!
-      }
-    `,
-    resolvers: {
-      TS_Asset: {
-        fixed: {
-          resolve(source: any, args: FixedArgs, context: any, info: any) {
-            return getFixedGatsbyImage({cache}, source.path, args)
-          },
-        },
-        fluid: {
-          resolve(source: any, args: FluidArgs, context: any, info: any) {
-            return getFluidGatsbyImage({cache}, source.path, args)
-          },
-        },
-      },
-    },
+    typeDefs: gatsbyImageTypeDefs,
+    resolvers: gatsbyImageResolvers({cache}),
   })
 
   addThirdPartySchema({schema})

@@ -12,23 +12,10 @@ export const query = graphql`
         image {
           path
           fixed(width: 400, height: 400) {
-            aspectRatio
-            base64
-            height
-            src
-            srcSet
-            srcWebp
-            srcSetWebp
-            width
+            ...GatsbyTakeShapeImageFixed
           }
           fluid(maxWidth: 400, maxHeight: 400) {
-            aspectRatio
-            base64
-            sizes
-            src
-            srcSet
-            srcWebp
-            srcSetWebp
+            ...GatsbyTakeShapeImageFluid
           }
         }
       }
@@ -37,6 +24,7 @@ export const query = graphql`
 `
 
 const IndexPage = ({data}) => {
+  console.log(data.takeshape.homepage.image.fixed)
   return (
     <>
       <h1>{data.takeshape.homepage.title}</h1>

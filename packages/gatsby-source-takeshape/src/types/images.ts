@@ -6,6 +6,7 @@ export interface FixedArgs {
   toFormat?: ImageFormat
   toFormatBase64?: ImageFormat
   width?: number
+  imgixParams?: string
 }
 
 export interface FluidArgs {
@@ -17,6 +18,7 @@ export interface FluidArgs {
   toFormat?: ImageFormat
   toFormatBase64?: ImageFormat
   noBase64?: boolean
+  imgixParams?: string
 }
 
 export enum ImageFormat {
