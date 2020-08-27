@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput, ParentSpanPluginArgs} from 'gatsby'
@@ -82,24 +84,11 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     })
   }
 
-  let introspectionSchema: GraphQLSchema
-
-  const cacheKey = createCacheKey(typeName, fieldName)
-
-  let sdl = await cache.get(cacheKey)
-
   const executor = linkToExecutor(link)
 
   reporter.info(`[takeshape] Fetching remote schema`)
 
-  if (!sdl) {
-    introspectionSchema = await introspectSchema(executor)
-    sdl = printSchema(introspectionSchema)
-  } else {
-    introspectionSchema = buildSchema(sdl)
-  }
-
-  await cache.set(cacheKey, sdl)
+  const introspectionSchema = await introspectSchema(executor)
 
   const nodeId = createNodeId(createSourceNodeId(typeName))
   const node = createSchemaNode({
@@ -152,6 +141,21 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         }),
       )
     })
+  }
+}
+
+let shouldAddFragments = true
+
+export const onPreExtractQueries: GatsbyNode['onPreExtractQueries'] = async ({
+  store,
+}: ParentSpanPluginArgs) => {
+  if (shouldAddFragments) {
+    const {program} = store.getState()
+    await fs.promises.copyFile(
+      path.join(__dirname, `..`, `fragments`, `imageFragments.js`),
+      `${program.directory}/.cache/fragments/takeshape-image-fragments.js`,
+    )
+    shouldAddFragments = false
   }
 }
 
