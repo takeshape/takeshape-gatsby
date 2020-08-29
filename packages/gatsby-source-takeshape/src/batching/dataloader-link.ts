@@ -2,7 +2,7 @@ import DataLoader from 'dataloader'
 import {HeadersInit} from 'node-fetch'
 import {ApolloLink, Observable} from 'apollo-link'
 import {merge, resolveResult} from './merge-queries'
-import {graphQLRequest, formatErrors} from '../utils/requests'
+import {graphQLRequest} from '../utils/requests'
 import {PluginOptions} from '../types/takeshape'
 import {Fetch} from '../types/fetch'
 import {handleGraphQLError} from '../errors'
@@ -19,7 +19,7 @@ export interface CreateDataloaderLinkOptions
 export function createDataloaderLink(options: CreateDataloaderLinkOptions): ApolloLink {
   // WHY? Don't feel like properly typing all this borrowed code yet.. but soon
   const load = async (keys: any) => {
-    const result = await graphQLRequest<Record<string, any>>(merge(keys), options)
+    const result = await graphQLRequest<Record<string, unknown>>(merge(keys), options)
     if (result.success === false) {
       throw handleGraphQLError(result.errors)
     }

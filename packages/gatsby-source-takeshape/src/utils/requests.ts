@@ -1,5 +1,5 @@
 import {print, ASTNode} from 'gatsby/graphql'
-import fetch, {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
+import {RequestInfo, RequestInit, HeadersInit} from 'node-fetch'
 import {GraphQLError} from '../errors'
 import {Fetch} from '../types/fetch'
 

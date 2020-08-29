@@ -1,7 +1,12 @@
 import qs from 'querystring'
 import {GatsbyCache} from 'gatsby'
+import {IResolvers} from 'graphql-tools'
 import {FluidArgs, FixedArgs} from '../types/images'
 import {getFixedGatsbyImage, getFluidGatsbyImage} from './gatsby-image-tools'
+
+export interface AssetSource {
+  path: string
+}
 
 export const typeDefs = /* GraphQL */ `
   enum TakeShapeImageFit {
@@ -75,16 +80,16 @@ export const typeDefs = /* GraphQL */ `
   }
 `
 
-export const resolvers = ({cache}: {cache: GatsbyCache}) => ({
+export const resolvers = ({cache}: {cache: GatsbyCache}): IResolvers => ({
   TS_Asset: {
     fixed: {
-      resolve(source: any, args: FixedArgs, context: any, info: any) {
-        return getFixedGatsbyImage({cache}, source.path, args, qs.parse(args.imgixParams || ''))
+      resolve(source: AssetSource, args: FixedArgs) {
+        return getFixedGatsbyImage({cache}, source.path, args, qs.parse(args.imgixParams || ``))
       },
     },
     fluid: {
-      resolve(source: any, args: FluidArgs, context: any, info: any) {
-        return getFluidGatsbyImage({cache}, source.path, args, qs.parse(args.imgixParams || ''))
+      resolve(source: AssetSource, args: FluidArgs) {
+        return getFluidGatsbyImage({cache}, source.path, args, qs.parse(args.imgixParams || ``))
       },
     },
   },

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {visit, visitInParallel, Kind, VisitorKeyMap, ASTKindToNode, ASTNode} from 'gatsby/graphql'
 import {tmpl} from '../utils/strings'
 import {flatMap} from '../utils/arrays'

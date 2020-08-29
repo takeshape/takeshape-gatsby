@@ -28,7 +28,7 @@ declare module 'graphql-tools' {
 
   export declare function introspectSchema(
     executor: AsyncExecutor,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     options?: IntrospectionOptions,
   ): Promise<GraphQLSchema>
 }

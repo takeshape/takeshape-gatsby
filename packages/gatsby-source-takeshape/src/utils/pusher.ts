@@ -78,7 +78,11 @@ export async function subscribe(
     endpoint: apiUrl,
   }
 
-  const config = await api(apiConfig, `GET`, `/project/${projectId}/pusher-client-config`)
+  const config = await api<{key: string; cluster: string}>(
+    apiConfig,
+    `GET`,
+    `/project/${projectId}/pusher-client-config`,
+  )
 
   const pusher = new Pusher(config.key, {
     auth: {

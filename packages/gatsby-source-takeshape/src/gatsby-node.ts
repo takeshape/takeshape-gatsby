@@ -3,7 +3,6 @@ import path from 'path'
 import {v4 as uuidv4} from 'uuid'
 import {ApolloLink} from 'apollo-link'
 import {GatsbyNode, SourceNodesArgs, NodeInput, ParentSpanPluginArgs} from 'gatsby'
-import {buildSchema, printSchema, GraphQLSchema} from 'gatsby/graphql'
 import {
   linkToExecutor,
   RenameTypes,
@@ -34,7 +33,6 @@ const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
 
 const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
-const createCacheKey = tmpl<[string, string]>(`takeshape-schema-%s-%s`)
 const createSourceNodeId = tmpl<[string]>(`takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
@@ -78,7 +76,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     link = createHttpLink({
       uri,
       // Apollo is relying on DOM types here, which will not match the node-fetch types
-      fetch: getRateLimitedFetch(throttle) as any,
+      fetch: getRateLimitedFetch(throttle) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       fetchOptions,
       headers,
     })

@@ -2,11 +2,11 @@ import fetch, {RequestInit} from 'node-fetch'
 import {ApiConfig} from '../types/takeshape'
 import {HTTPError} from '../errors'
 
-export default async function api<T = any>(
+export default async function api<T = unknown>(
   params: ApiConfig,
   method: string,
   path: string,
-  body?: any,
+  body?: Record<string, unknown>,
 ): Promise<T> {
   const requestParams: RequestInit = {
     method,

@@ -222,8 +222,8 @@ describe(`Resolving merged query results`, () => {
   })
 })
 
-function fromFixtures(fixtures: any) {
-  return fixtures.map(([query, variables]: [any, any]) => {
+function fromFixtures(fixtures: [string, Record<string, string>][]) {
+  return fixtures.map(([query, variables]) => {
     return {
       query: parse(query),
       variables,
