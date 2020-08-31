@@ -15,9 +15,11 @@
   "scripts": {
     "build": "pnpm run build --filter {packages}",
     "develop": "pnpm run develop --recursive --parallel",
+    "lint": "pnpm run lint --recursive",
     "preinstall": "npx only-allow pnpm",
     "publish": "pnpm recursive exec --filter gatsby-source-takeshape -- npm publish",
     "reset": "pnpm run reset --filter {packages} --parallel && rimraf node_modules pnpm-lock.yaml",
+    "test": "pnpm run test --recursive",
     "version": "pnpm recursive exec --filter {packages} -- npm version --no-git-tag-version $npm_package_version && git add -A ."
   },
   "husky": {
