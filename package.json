@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "pnpm run build --filter {packages}",
-    "develop": "pnpm run build --filter gatsby-source-takeshape && pnpm run develop --recursive --parallel",
+    "develop": "pnpm run develop --recursive --parallel",
     "preinstall": "npx only-allow pnpm",
     "publish": "pnpm recursive exec --filter gatsby-source-takeshape -- npm publish",
     "reset": "pnpm run reset --filter {packages} --parallel && rimraf node_modules pnpm-lock.yaml",
