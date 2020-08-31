@@ -25,6 +25,17 @@ module.exports = {
       },
     },
     {
+      // JavaScript
+      files: [`**/esm/**/*.js`],
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: `module`,
+      },
+      rules: {
+        quotes: [`error`, `backtick`],
+      },
+    },
+    {
       // TypeScript
       files: [`**/*.ts`],
       extends: [
