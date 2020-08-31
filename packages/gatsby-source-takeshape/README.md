@@ -4,6 +4,7 @@
 
 Use TakeShape as the API for your Gatsby site.
 
+- [Gatsby Starter project](https://github.com/takeshape/gatsby-starter-takeshape-portfolio)
 - [Example website](https://shape-portfolio.takeshapesampleproject.com/)
 - [Example website source](https://github.com/takeshape/takeshape-samples/tree/master/shape-portfolio-gatsbyjs)
 
