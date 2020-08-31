@@ -16,10 +16,12 @@
   },
   "scripts": {
     "build": "npm run clean && tsc --build",
+    "build:ci": "npm run build",
     "clean": "rimraf ./dist *.tsbuildinfo",
     "develop": "tsc --watch --preserveWatchOutput",
     "lint": "eslint src -c ./.eslintrc.js --ignore-path .eslintignore",
     "pre-push": "lint-staged",
+    "prepublish": "npm run build",
     "reset": "npm run clean && rimraf ./node_modules",
     "test": "jest",
     "test:changed": "npm run test -- --changedSince=trunk",
