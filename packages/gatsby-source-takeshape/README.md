@@ -173,12 +173,6 @@ There is also the `imgixParams` argument which allows you to pass in arbitrary
 [imgix](https://docs.imgix.com/apis/url) filters as a query param-formatted
 string, e.g., `crop=faces,edges&txt=Hello%20World!`.
 
-## When do I use this plugin?
-
-You want to build a [Jamstack](https://jamstack.org/) site using
-[Gatsby](https://www.gatsbyjs.org/) for the client and
-[TakeShape](https://www.takeshape.io/) for the API.
-
 ## `.env` variables
 
 Like many projects out there, you can use
@@ -205,26 +199,15 @@ pnpm run test
 
 ### How to develop locally
 
-Currently, dependency resolution doesn't work when running the tests with npm,
-but it does work with pnpm or yarn. Therefore, the following examples assume you
-are using [pnpm](https://pnpm.js.org).
-
-- `pnpm run lint`
-- `pnpm run typecheck`
-- `pnpm run test`
-- `pnpm run build`
-
-The example project in this repo is provided for development and testing
-convenience. You can build and copy gatsby-source-takeshape into the example's
-plugin directory with this command:
-
-```console
-pnpm run example:deploy
-```
-
-See
+This plugin needs to be run inside of a Gatsby project. See
 [example/README.md](https://github.com/takeshape/takeshape-gatsby/tree/trunk/packages/example/README.md)
 for instructions on running the example.
+
+The following scripts are useful when developing:
+
+- `pnpm run lint`
+- `pnpm run test`
+- `pnpm run build`
 
 ## Contributing
 
