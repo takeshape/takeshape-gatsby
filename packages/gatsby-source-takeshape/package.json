@@ -18,7 +18,7 @@
     "build": "tsc --build",
     "clean": "rimraf ./dist *.tsbuildinfo",
     "develop": "tsc --watch --preserveWatchOutput",
-    "lint": "eslint src -c ./.eslintrc.js --ignore-path .eslintignore",
+    "lint": "eslint src -c ./.eslintrc.js",
     "pre-push": "lint-staged",
     "prepare": "npm run clean && npm run build",
     "reset": "npm run clean && rimraf ./node_modules",
