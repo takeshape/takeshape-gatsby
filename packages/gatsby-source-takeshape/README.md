@@ -1,8 +1,6 @@
 # gatsby-source-takeshape
 
-## Description
-
-Use TakeShape as the API for your Gatsby site.
+Use the TakeShape CMS as the data source for your Gatsby website.
 
 - [Gatsby Starter project](https://github.com/takeshape/gatsby-starter-takeshape-portfolio)
 - [Example website](https://shape-portfolio.takeshapesampleproject.com/)
@@ -21,11 +19,11 @@ $ npm install --save gatsby-source-takeshape
 After you install the plugin, add it to your `gatsby-config.js` like this:
 
 ```js
-require('dotenv').config();
+require('dotenv').config()
 
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Source TakeShape Example'
+    title: 'Gatsby Source TakeShape Example',
   },
   plugins: [
     {
@@ -33,10 +31,10 @@ module.exports = {
       options: {
         apiKey: process.env.TAKESHAPE_TOKEN,
         projectId: process.env.TAKESHAPE_PROJECT,
-      }
-    }
-  ]
-};
+      },
+    },
+  ],
+}
 ```
 
 ## Options
