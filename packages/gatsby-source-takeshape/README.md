@@ -37,6 +37,22 @@ module.exports = {
 }
 ```
 
+## `.env` variables
+
+Like many projects out there, you can use
+[dotenv](https://github.com/motdotla/dotenv) to load a `.env` file with
+variables in your project's directory.
+
+It would look something like this:
+
+```inputrc
+TAKESHAPE_PROJECT=<paste project id here>
+TAKESHAPE_TOKEN=<paste API key here>
+```
+
+> Make sure `.env` is included in your `.gitignore` so you don't accidentally
+> commit your API key!
+
 ## Options
 
 | Name                | Type      | Description                                                                                                                                                                                                                                                                                                                                                                                |
@@ -170,22 +186,6 @@ Image queries support a number of arguments. Take a look at the
 There is also the `imgixParams` argument which allows you to pass in arbitrary
 [imgix](https://docs.imgix.com/apis/url) filters as a query param-formatted
 string, e.g., `crop=faces,edges&txt=Hello%20World!`.
-
-## `.env` variables
-
-Like many projects out there, you can use
-[dotenv](https://github.com/motdotla/dotenv) to load a `.env` file with
-variables in your project's directory.
-
-It would look something like this:
-
-```inputrc
-TAKESHAPE_PROJECT=<paste project id here>
-TAKESHAPE_TOKEN=<paste API key here>
-```
-
-> Make sure `.env` is included in your `.gitignore` so you don't accidentally
-> commit your API key!
 
 ## Developing
 
