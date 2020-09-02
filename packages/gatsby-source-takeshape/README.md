@@ -189,14 +189,6 @@ string, e.g., `crop=faces,edges&txt=Hello%20World!`.
 
 ## Developing
 
-### How to run tests
-
-```console
-pnpm run test
-```
-
-### How to develop locally
-
 This plugin needs to be run inside of a Gatsby project. See
 [example/README.md](https://github.com/takeshape/takeshape-gatsby/tree/trunk/packages/example/README.md)
 for instructions on running the example.
