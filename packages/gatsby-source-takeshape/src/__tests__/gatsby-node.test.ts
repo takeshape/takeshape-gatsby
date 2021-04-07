@@ -4,19 +4,10 @@ import {sourceNodes as _sourceNodes} from '../gatsby-node'
 const projectId = `00000000-0000-0000-0000-000000000000`
 const apiKey = `00000000000000000000000000000000`
 
-jest.mock(`graphql-tools`, () => {
-  return {
-    wrapSchema: jest.fn(),
-    introspectSchema: jest.fn(),
-    RenameTypes: jest.fn(),
-  }
-})
-
-jest.mock(`apollo-link-http`, () => {
-  return {
-    createHttpLink: jest.fn(),
-  }
-})
+jest.mock(`@graphql-tools/wrap`)
+jest.mock(`@graphql-tools/merge`)
+jest.mock(`@graphql-tools/links`)
+jest.mock(`@apollo/client`)
 
 jest.mock(`gatsby/graphql`, () => {
   const graphql = jest.requireActual(`gatsby/graphql`)
