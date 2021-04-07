@@ -14,6 +14,8 @@ describe(`gatsby image utils`, () => {
   ;(imgixClient as any).settings.domain = IMGIX_DOMAIN
 
   const cache: GatsbyCache = {
+    name: ``,
+    directory: ``,
     get: jest.fn(() => Promise.resolve(null)),
     set: jest.fn(() => Promise.resolve(null)),
   }

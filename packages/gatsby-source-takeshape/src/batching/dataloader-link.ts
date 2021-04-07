@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader'
 import {HeadersInit} from 'node-fetch'
-import {ApolloLink, Observable} from 'apollo-link'
+import {ApolloLink, Observable} from '@apollo/client'
 import {merge, resolveResult} from './merge-queries'
 import {graphQLRequest} from '../utils/requests'
 import {PluginOptions} from '../types/takeshape'

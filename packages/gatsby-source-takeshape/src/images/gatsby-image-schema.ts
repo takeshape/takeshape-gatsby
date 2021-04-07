@@ -1,6 +1,6 @@
 import qs from 'querystring'
 import {GatsbyCache} from 'gatsby'
-import {IResolvers} from 'graphql-tools'
+import {IResolvers} from '@graphql-tools/utils'
 import {FluidArgs, FixedArgs} from '../types/images'
 import {getFixedGatsbyImage, getFluidGatsbyImage} from './gatsby-image-tools'
 

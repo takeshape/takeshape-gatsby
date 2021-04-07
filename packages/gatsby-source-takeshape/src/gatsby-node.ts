@@ -1,16 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import {v4 as uuidv4} from 'uuid'
-import {ApolloLink} from 'apollo-link'
+import {ApolloLink, createHttpLink} from '@apollo/client'
 import {GatsbyNode, SourceNodesArgs, NodeInput, ParentSpanPluginArgs} from 'gatsby'
-import {
-  linkToExecutor,
-  RenameTypes,
-  wrapSchema,
-  introspectSchema,
-  mergeSchemas,
-} from 'graphql-tools'
-import {createHttpLink} from 'apollo-link-http'
+import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap'
+import {mergeSchemas} from '@graphql-tools/merge'
+import {linkToExecutor} from '@graphql-tools/links'
 import {HeadersInit as FetchHeaders} from 'node-fetch'
 import {createContentDigest} from 'gatsby-core-utils'
 import {NamespaceUnderFieldTransform, StripNonQueryTransform} from './transforms'
@@ -32,7 +27,7 @@ const typeName = `TS`
 const fieldName = `takeshape`
 const nodeType = `TakeShapeSource`
 
-const createUri = tmpl<[string, string]>(`%s/project/%s/graphql`)
+const createUri = tmpl<[string, string]>(`%s/project/%s/v3/graphql`)
 const createSourceNodeId = tmpl<[string]>(`takeshape-%s`)
 
 export const sourceNodes: GatsbyNode['sourceNodes'] = async (
@@ -82,11 +77,9 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     })
   }
 
-  const executor = linkToExecutor(link)
-
   reporter.info(`[takeshape] Fetching remote schema`)
 
-  const introspectionSchema = await introspectSchema(executor)
+  const introspectionSchema = await introspectSchema(linkToExecutor(link))
 
   const nodeId = createNodeId(createSourceNodeId(typeName))
   const node = createSchemaNode({
@@ -104,12 +97,10 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     return {}
   }
 
-  const takeshapeSchema = wrapSchema(
-    {
-      schema: introspectionSchema,
-      executor,
-    },
-    [
+  const takeshapeSchema = wrapSchema({
+    schema: introspectionSchema,
+    executor: linkToExecutor(link),
+    transforms: [
       new StripNonQueryTransform(),
       new RenameTypes((name) => `${typeName}_${name}`),
       new NamespaceUnderFieldTransform({
@@ -118,7 +109,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
         resolver,
       }),
     ],
-  )
+  })
 
   const schema = mergeSchemas({
     schemas: [takeshapeSchema],
