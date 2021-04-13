@@ -1,7 +1,7 @@
 import fetchMock, {enableFetchMocks} from 'jest-fetch-mock'
 enableFetchMocks()
-import {parse} from 'graphql'
-import {execute} from 'apollo-link'
+import {parse} from 'gatsby/graphql'
+import {execute} from '@apollo/client'
 import {createDataloaderLink} from '../dataloader-link'
 import {Response} from 'node-fetch'
 import {Fetch} from '../../types/fetch'

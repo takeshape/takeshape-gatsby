@@ -1,5 +1,5 @@
 import {Node} from 'gatsby'
-import {GraphQLResolveInfo, GraphQLFieldConfigMap} from 'graphql'
+import {GraphQLResolveInfo, GraphQLFieldConfigMap} from 'gatsby/graphql'
 
 export interface CreatePageDependencyArgs {
   connection?: string

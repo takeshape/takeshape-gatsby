@@ -1,5 +1,6 @@
 import {GraphQLObjectType, GraphQLNonNull, GraphQLSchema} from 'gatsby/graphql'
-import {mapSchema, MapperKind, addTypes, modifyObjectFields, Transform} from 'graphql-tools'
+import {mapSchema, MapperKind, addTypes, modifyObjectFields} from '@graphql-tools/utils'
+import {Transform} from '@graphql-tools/delegate'
 import {GatsbyGraphQLFieldResolver, GatsbyGraphQLConfigMap} from './types/gatsby'
 
 export class NamespaceUnderFieldTransform implements Transform {
@@ -40,7 +41,13 @@ export class NamespaceUnderFieldTransform implements Transform {
     const newRootFieldConfigMap: GatsbyGraphQLConfigMap = {
       [this.fieldName]: {
         type: new GraphQLNonNull(nestedQuery),
-        resolve: this.resolver,
+        resolve: (parent, args, context, info) => {
+          if (this.resolver != null) {
+            return this.resolver(parent, args, context, info)
+          }
+
+          return {}
+        },
       },
     }
 
