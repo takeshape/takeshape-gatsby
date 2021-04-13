@@ -12,9 +12,16 @@ Use the TakeShape CMS as the data source for your Gatsby website.
 
 ## Installing
 
+For use with Gatsby 3.x:
 ```console
 $ npm install --save gatsby-source-takeshape
 ```
+For use with Gatsby 2.x:
+```console
+$ npm install --save gatsby-source-takeshape@1
+```
+
+
 
 After you install the plugin, add it to your `gatsby-config.js` like this:
 
