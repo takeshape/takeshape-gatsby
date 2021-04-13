@@ -2,7 +2,7 @@
   "name": "example",
   "private": true,
   "description": "An example gatsby site for gatsby-source-takeshape",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": {
     "name": "TakeShape",
     "email": "contact@takeshape.io"
